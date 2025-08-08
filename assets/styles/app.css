@@ -521,7 +521,47 @@ footer p {
     font-family: 'Inter', sans-serif;
 }
 
-/* Header de la page de connexion */
+/* Barre de navigation des pages de formulaires - En haut fixe */
+.form-page .navbar {
+    background: var(--white) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.form-page .navbar-brand {
+    color: var(--primary-blue) !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.form-page .navbar-brand:hover {
+    color: var(--dark-blue) !important;
+    transform: scale(1.05);
+}
+
+.form-page .nav-link {
+    color: var(--medium-gray) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-page .nav-link:hover {
+    color: var(--primary-blue) !important;
+    background-color: var(--light-blue);
+    transform: translateY(-1px);
+}
+
+.form-page .nav-link i {
+    color: var(--primary-blue);
+}
+
+/* Header de la page de connexion - Sous la navbar */
 .form-page .header {
     background: var(--gradient-primary);
     color: var(--white);

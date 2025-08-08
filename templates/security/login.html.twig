@@ -1,39 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion Administrateur{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-<body class="form-page">
-    <header id="main_header" class="header">
-        <h1 class="header-title">Connexion Administrateur</h1>
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand fw-bold" href="{{ path('app_home') }}">Portfolio</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
-                        </li>
-                        {% if app.user %}
+<div class="form-page">
+    <!-- Barre de navigation en haut -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="{{ path('app_home') }}">
+                <i class="fas fa-home me-2"></i>Portfolio
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if not app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}">
+                            <i class="fas fa-user-plus me-1"></i>Inscription
+                        </a>
+                    </li>
+                    {% else %}
                         {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_project_index') }}">Gestion Projets</a>
+                            <a class="nav-link" href="{{ path('app_project_index') }}">
+                                <i class="fas fa-cog me-1"></i>Gestion
+                            </a>
                         </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                            <a class="nav-link" href="{{ path('app_logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+                            </a>
                         </li>
-                        {% endif %}
-                    </ul>
-                </div>
+                    {% endif %}
+                </ul>
             </div>
-        </nav>
+        </div>
+    </nav>
+
+    <!-- En-tête avec sous-titre -->
+    <header class="header">
+        <div class="container text-center">
+            <h1 class="header-title">Connexion</h1>
+        </div>
     </header>
 
-    <section id="main_section" class="form-section">
+    <section class="form-section">
         {% if error %}
             <div class="alert alert-danger mb-4">
                 <i class="fas fa-exclamation-triangle me-2"></i>
@@ -162,5 +176,12 @@
             }
         });
     </script>
-</body>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2025 Portfolio. Tous droits réservés.</p>
+        </div>
+    </footer>
+</div>
 {% endblock %}
