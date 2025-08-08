@@ -650,7 +650,8 @@ footer p {
 }
 
 .password-input {
-    padding-right: 3.5rem !important; /* Espace pour le bouton */
+    width: 100% !important;
+    padding-right: 3.5rem !important;
 }
 
 /* Gestion des icônes dans les containers d'input avec mot de passe */
@@ -659,9 +660,9 @@ footer p {
     z-index: 2;
 }
 
+/* Style spécifique pour le mot de passe dans son conteneur */
 .password-input-container .password-input {
-    padding-left: 3rem !important; /* Espace pour l'icône à gauche */
-    padding-right: 3.5rem !important; /* Espace pour le bouton à droite */
+    padding: 0.875rem 3.5rem 0.875rem 1rem !important; /* top right bottom left */
 }
 
 /* Bouton pour afficher/masquer le mot de passe */
