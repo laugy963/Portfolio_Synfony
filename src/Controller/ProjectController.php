@@ -19,6 +19,7 @@ class ProjectController extends AbstractController
     {
         return $this->render('project/index.html.twig', [
             'projects' => $projectRepository->findBy([], ['createdAt' => 'DESC']),
+            'controller_name' => 'ProjectController',
         ]);
     }
 
