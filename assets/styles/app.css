@@ -6,15 +6,12 @@
     
     /* Teintes foncées */
     --dark-blue: #1e40af;
-    --dark-orange: #c2410c;
     --dark-gray: #1f2937;
     --darker-gray: #111827;
     
     /* Teintes moyennes */
     --medium-blue: #3b82f6;
-    --medium-orange: #f97316;
     --medium-gray: #6b7280;
-    --medium-light-gray: #9ca3af;
     
     /* Teintes claires */
     --light-blue: #dbeafe;
@@ -27,6 +24,12 @@
     --accent-teal: #14b8a6;
     --accent-purple: #8b5cf6;
     --accent-green: #10b981;
+    
+    /* Couleurs de statut */
+    --error-red: #dc2626;
+    --error-bg: #fef2f2;
+    --success-green: #059669;
+    --success-bg: #f0fdf4;
     
     /* Gradients harmonieux */
     --gradient-primary: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-teal) 100%);
@@ -68,17 +71,17 @@ body {
 
 .banner-image-1 {
     background-image: linear-gradient(rgba(37, 99, 235, 0.7), rgba(30, 64, 175, 0.8)), 
-                      url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+                      url('/images/banner-1.jpg');
 }
 
 .banner-image-2 {
     background-image: linear-gradient(rgba(234, 88, 12, 0.7), rgba(194, 65, 12, 0.8)), 
-                      url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+                      url('/images/banner-2.jpg');
 }
 
 .banner-image-3 {
     background-image: linear-gradient(rgba(20, 184, 166, 0.7), rgba(139, 92, 246, 0.8)), 
-                      url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+                      url('/images/banner-3.jpg');
 }
 
 /* Contenu hero centré */
@@ -106,7 +109,7 @@ body {
 .hero-content p {
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 1px 1px 4px rgba(0, 0, 0, 0.7);
     animation: fadeInUp 1s ease-out 0.3s both;
-    color: #1e40af;
+    color: var(--dark-blue);
     font-size: 1.25rem;
     max-width: 600px;
     margin: 0 auto 2rem;
@@ -178,6 +181,10 @@ body {
 
 .nav-link.active {
     color: var(--white) !important;
+}
+
+.nav-link i {
+    color: var(--accent-teal);
 }
 
 /* Styles pour les sections */
@@ -337,39 +344,6 @@ section:nth-child(odd) {
     box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .hero-content {
-        padding: 1.5rem;
-        margin: 0 1rem;
-        max-width: calc(100% - 2rem);
-    }
-    
-    .hero-content h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        color: var(--primary-blue);
-    }
-    
-    .hero-content p {
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-        color: #1e40af;
-    }
-    
-    .hero-buttons .btn {
-        display: block;
-        margin: 10px auto;
-        width: 200px;
-    }
-    
-    .hero-buttons {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
 /* Footer */
 footer {
     background: var(--gradient-dark) !important;
@@ -521,46 +495,6 @@ footer p {
     font-family: 'Inter', sans-serif;
 }
 
-/* Barre de navigation des pages de formulaires - En haut fixe */
-.form-page .navbar {
-    background: var(--white) !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.form-page .navbar-brand {
-    color: var(--primary-blue) !important;
-    font-weight: 700;
-    font-size: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-.form-page .navbar-brand:hover {
-    color: var(--dark-blue) !important;
-    transform: scale(1.05);
-}
-
-.form-page .nav-link {
-    color: var(--medium-gray) !important;
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-}
-
-.form-page .nav-link:hover {
-    color: var(--primary-blue) !important;
-    background-color: var(--light-blue);
-    transform: translateY(-1px);
-}
-
-.form-page .nav-link i {
-    color: var(--primary-blue);
-}
-
 /* Header de la page de connexion - Sous la navbar */
 .form-page .header {
     background: var(--gradient-primary);
@@ -628,17 +562,6 @@ footer p {
 .form-half {
     flex: 1;
     margin-bottom: 1rem !important;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .form-half {
-        margin-bottom: 1.5rem !important;
-    }
 }
 
 /* Labels */
@@ -797,32 +720,73 @@ footer p {
 }
 
 .alert-danger {
-    background-color: #fef2f2;
-    color: #dc2626;
-    border-left-color: #dc2626;
+    background-color: var(--error-bg);
+    color: var(--error-red);
+    border-left-color: var(--error-red);
 }
 
 .alert-success {
-    background-color: #f0fdf4;
-    color: #059669;
-    border-left-color: #059669;
+    background-color: var(--success-bg);
+    color: var(--success-green);
+    border-left-color: var(--success-green);
 }
 
 .alert i {
     margin-right: 0.5rem;
 }
 
-/* Footer de la page de connexion */
+/* Footer pages de formulaires */
 .form-page .footer {
     background: var(--dark-gray);
-    color: var(--medium-light-gray);
+    color: var(--light-gray);
     padding: 2rem 0;
     text-align: center;
     margin-top: auto;
 }
 
-/* Responsive */
+/* ========== RESPONSIVE DESIGN - Consolidation de toutes les media queries ========== */
 @media (max-width: 768px) {
+    /* Hero section responsive */
+    .hero-content {
+        padding: 1.5rem;
+        margin: 0 1rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-blue);
+    }
+    
+    .hero-content p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #1e40af;
+    }
+    
+    .hero-buttons .btn {
+        display: block;
+        margin: 10px auto;
+        width: 200px;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Formulaires responsive */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-half {
+        margin-bottom: 1.5rem !important;
+    }
+    
     .form-page .header-title {
         font-size: 2rem;
     }
@@ -835,6 +799,19 @@ footer p {
     .form-section {
         padding: 2rem 1rem;
         min-height: 50vh;
+    }
+    
+    /* Inscription responsive */
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .checkbox-container {
+        align-items: flex-start;
+    }
+    
+    .checkbox-label {
+        font-size: 0.9rem;
     }
 }
 
@@ -957,7 +934,7 @@ footer p {
 
 /* Erreurs de formulaire */
 .form-error {
-    color: #dc2626;
+    color: var(--error-red);
     font-size: 0.875rem;
     margin-top: 0.5rem;
     display: block;
@@ -1005,33 +982,4 @@ footer p {
     }
 }
 
-.alert-danger {
-    background-color: #fef2f2;
-    color: #dc2626;
-    border-left-color: #dc2626;
-}
-
-.alert-success {
-    background-color: #f0fdf4;
-    color: #059669;
-    border-left-color: #059669;
-}
-
-.alert i {
-    margin-right: 0.5rem;
-}
-
-/* Responsive pour l'inscription */
-@media (max-width: 768px) {
-    .form-title {
-        font-size: 1.5rem;
-    }
-    
-    .checkbox-container {
-        align-items: flex-start;
-    }
-    
-    .checkbox-label {
-        font-size: 0.9rem;
-    }
-}
+/* Responsive pour l'inscription - consolidé plus bas avec les autres media queries */
