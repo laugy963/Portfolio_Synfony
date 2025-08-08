@@ -65,6 +65,10 @@ class CreateUserCommand extends Command
         // Hasher le mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
+        
+        // Définir la date de création
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setIsVerified(true); // Utilisateur vérifié par défaut
 
         // Sauvegarder en base
         $this->entityManager->persist($user);
