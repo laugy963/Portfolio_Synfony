@@ -18,15 +18,24 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        // Récupération des informations depuis les variables d'environnement
+        $adminEmail = $_ENV['ADMIN_EMAIL'] ?? 'admin@portfolio.com';
+        $adminFirstName = $_ENV['ADMIN_FIRSTNAME'] ?? 'Admin';
+        $adminLastName = $_ENV['ADMIN_LASTNAME'] ?? 'Portfolio';
+        $adminPassword = $_ENV['ADMIN_PASSWORD'] ?? 'admin123';
+        
         // Création de l'utilisateur administrateur
         $admin = new User();
-        $admin->setEmail('admin@portfolio.com');
+        $admin->setEmail($adminEmail);
+        $admin->setFirstName($adminFirstName);
+        $admin->setLastName($adminLastName);
         $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setCreatedAt(new \DateTimeImmutable());
         
-        // Hash du mot de passe
+        // Hash du mot de passe depuis la variable d'environnement
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,
-            'admin123' // Mot de passe par défaut
+            $adminPassword
         );
         $admin->setPassword($hashedPassword);
 

@@ -20,6 +20,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $lastName = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lastLoginAt = null;
+
     /**
      * @var list<string> The user roles
      */
@@ -111,5 +123,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): static
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        $parts = array_filter([$this->firstName, $this->lastName]);
+        return implode(' ', $parts) ?: $this->email;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getLastLoginAt(): ?\DateTimeInterface
+    {
+        return $this->lastLoginAt;
+    }
+
+    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): static
+    {
+        $this->lastLoginAt = $lastLoginAt;
+        return $this;
     }
 }
