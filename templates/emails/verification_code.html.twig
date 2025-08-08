@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Code de vérification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .verification-code {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🔐</div>
+            <h1>Code de vérification</h1>
+            <p>Votre code de vérification Portfolio est prêt !</p>
+        </div>
+        
+        <div class="content">
+            <h2>Bonjour {{ user.firstName ?? 'Utilisateur' }} !</h2>
+            
+            <p>Merci de vous être inscrit(e) sur notre <strong>Portfolio</strong>. Pour finaliser votre inscription et sécuriser votre compte, veuillez utiliser le code de vérification ci-dessous :</p>
+            
+            <div class="verification-code">
+                {{ verificationCode }}
+            </div>
+            
+            <div class="instructions">
+                <h3>📝 Instructions :</h3>
+                <ol>
+                    <li>Retournez sur le site web</li>
+                    <li>Saisissez ce code dans le formulaire de vérification</li>
+                    <li>Cliquez sur "Vérifier"</li>
+                </ol>
+            </div>
+            
+            <div class="warning">
+                <strong>⏰ Important :</strong> Ce code est valide pendant <strong>15 minutes seulement</strong> et expire le {{ expiresAt|date('d/m/Y à H:i') }}.
+            </div>
+            
+            <hr style="margin: 30px 0; border: none; height: 1px; background: #dee2e6;">
+            
+            <h3>🛡️ Sécurité :</h3>
+            <ul>
+                <li>Ne partagez jamais ce code avec personne</li>
+                <li>Notre équipe ne vous demandera jamais ce code par téléphone</li>
+                <li>Si vous n'avez pas demandé ce code, ignorez cet email</li>
+            </ul>
+            
+            <p>Une fois votre email vérifié, vous pourrez :</p>
+            <ul>
+                <li>✅ Accéder à votre compte</li>
+                <li>🌟 Explorer notre portfolio</li>
+                <li>📬 Recevoir nos notifications</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Portfolio - Tous droits réservés</p>
+            <p>Cet email a été envoyé depuis <strong>laukingportfolio@gmail.com</strong> à {{ user.email }}</p>
+            <p>Si vous avez des questions, vous pouvez répondre directement à cet email.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -32,6 +32,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastLoginAt = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
+    #[ORM\Column(length: 6, nullable: true)]
+    private ?string $verificationCode = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $verificationCodeExpiresAt = null;
+
     /**
      * @var list<string> The user roles
      */
@@ -150,7 +159,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFullName(): string
     {
         $parts = array_filter([$this->firstName, $this->lastName]);
-        return implode(' ', $parts) ?: $this->email;
+        return implode(' ', $parts) ?: ($this->email ?? '');
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -173,5 +182,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->lastLoginAt = $lastLoginAt;
         return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getVerificationCode(): ?string
+    {
+        return $this->verificationCode;
+    }
+
+    public function setVerificationCode(?string $verificationCode): static
+    {
+        $this->verificationCode = $verificationCode;
+        return $this;
+    }
+
+    public function getVerificationCodeExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->verificationCodeExpiresAt;
+    }
+
+    public function setVerificationCodeExpiresAt(?\DateTimeImmutable $verificationCodeExpiresAt): static
+    {
+        $this->verificationCodeExpiresAt = $verificationCodeExpiresAt;
+        return $this;
+    }
+
+    public function isVerificationCodeExpired(): bool
+    {
+        return $this->verificationCodeExpiresAt !== null 
+            && $this->verificationCodeExpiresAt < new \DateTimeImmutable();
     }
 }

@@ -43,9 +43,9 @@ class RegistrationFormType extends AbstractType
                     'placeholder' => 'votre@email.com'
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez entrer une adresse email',
-                    ]),
+                    new NotBlank(
+                        message: 'Veuillez entrer une adresse email'
+                    ),
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
@@ -58,14 +58,14 @@ class RegistrationFormType extends AbstractType
                         'autocomplete' => 'new-password'
                     ],
                     'constraints' => [
-                        new NotBlank([
-                            'message' => 'Veuillez entrer un mot de passe',
-                        ]),
-                        new Length([
-                            'min' => 6,
-                            'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères',
-                            'max' => 4096,
-                        ]),
+                        new NotBlank(
+                            message: 'Veuillez entrer un mot de passe'
+                        ),
+                        new Length(
+                            min: 6,
+                            minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caractères',
+                            max: 4096
+                        ),
                     ],
                 ],
                 'second_options' => [
@@ -82,9 +82,9 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'attr' => ['class' => 'form-check-input'],
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez accepter les conditions d\'utilisation.',
-                    ]),
+                    new IsTrue(
+                        message: 'Vous devez accepter les conditions d\'utilisation.'
+                    ),
                 ],
             ])
         ;
