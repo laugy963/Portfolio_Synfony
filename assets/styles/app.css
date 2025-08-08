@@ -578,6 +578,29 @@ footer p {
     margin-bottom: 0;
 }
 
+/* Ligne de formulaire avec deux champs côte à côte */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-half {
+    flex: 1;
+    margin-bottom: 1rem !important;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-half {
+        margin-bottom: 1.5rem !important;
+    }
+}
+
 /* Labels */
 .form-container label {
     display: block;
@@ -628,6 +651,17 @@ footer p {
 
 .password-input {
     padding-right: 3.5rem !important; /* Espace pour le bouton */
+}
+
+/* Gestion des icônes dans les containers d'input avec mot de passe */
+.password-input-container .input-icon {
+    left: 1rem;
+    z-index: 2;
+}
+
+.password-input-container .password-input {
+    padding-left: 3rem !important; /* Espace pour l'icône à gauche */
+    padding-right: 3.5rem !important; /* Espace pour le bouton à droite */
 }
 
 /* Bouton pour afficher/masquer le mot de passe */
@@ -777,4 +811,186 @@ footer p {
 
 .form-container {
     animation: slideInForm 0.6s ease-out;
+}
+
+/* ===== STYLES SPÉCIFIQUES À L'INSCRIPTION ===== */
+
+/* En-tête du formulaire d'inscription */
+.registration-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: var(--medium-gray);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Conteneur d'input avec icône */
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--medium-gray);
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.input-container .form-input {
+    padding-left: 3rem !important;
+}
+
+.input-container:focus-within .input-icon {
+    color: var(--primary-blue);
+}
+
+/* Groupe de checkbox */
+.checkbox-group {
+    margin: 1.5rem 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.checkbox-label {
+    font-size: 0.95rem;
+    color: var(--medium-gray);
+    line-height: 1.4;
+    cursor: pointer;
+    margin: 0 !important;
+}
+
+.form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.2rem;
+    border: 2px solid var(--light-gray);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Pied du formulaire */
+.form-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--light-gray);
+}
+
+.link-primary {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.link-primary:hover {
+    color: var(--dark-blue);
+    text-decoration: underline;
+}
+
+/* Erreurs de formulaire */
+.form-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Amélioration du bouton pour l'inscription */
+.form-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.form-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.form-button:hover::before {
+    left: 100%;
+}
+
+/* Messages flash améliorés */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+    font-weight: 500;
+    animation: slideInAlert 0.5s ease-out;
+}
+
+@keyframes slideInAlert {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-left-color: #dc2626;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    color: #059669;
+    border-left-color: #059669;
+}
+
+.alert i {
+    margin-right: 0.5rem;
+}
+
+/* Responsive pour l'inscription */
+@media (max-width: 768px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .checkbox-container {
+        align-items: flex-start;
+    }
+    
+    .checkbox-label {
+        font-size: 0.9rem;
+    }
 }

@@ -1,0 +1,305 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte{% endblock %}
+
+{% block body %}
+<div class="form-page">
+    <header id="main_header" class="header">
+        <h1 class="header-title">Créer un compte</h1>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="{{ path('app_home') }}">Portfolio</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section id="main_section" class="form-section">
+        {# Affichage des messages flash #}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} mb-4">
+                    <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-triangle' }} me-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form_start(registrationForm, {'attr': {'class': 'form-container', 'novalidate': 'novalidate'}}) }}
+            
+            <div class="registration-header mb-4">
+                <h2 class="form-title">Rejoignez-nous</h2>
+                <p class="form-subtitle">Créez votre compte pour accéder à toutes les fonctionnalités</p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-half">
+                    {{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form_widget(registrationForm.firstName) }}
+                    </div>
+                    {{ form_errors(registrationForm.firstName) }}
+                </div>
+
+                <div class="form-group form-half">
+                    {{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form_widget(registrationForm.lastName) }}
+                    </div>
+                    {{ form_errors(registrationForm.lastName) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-container">
+                    <i class="fas fa-envelope input-icon"></i>
+                    {{ form_widget(registrationForm.email) }}
+                </div>
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="password-input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input password-input', 'id': 'password'}}) }}
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
+                        <i class="fas fa-eye-slash" id="password-toggle-icon-1"></i>
+                        <span class="password-toggle-fallback" id="password-toggle-fallback-1" style="display: none;">🙈</span>
+                    </button>
+                </div>
+                {{ form_errors(registrationForm.plainPassword.first) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="password-input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input password-input', 'id': 'password-confirm'}}) }}
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
+                        <i class="fas fa-eye-slash" id="password-toggle-icon-2"></i>
+                        <span class="password-toggle-fallback" id="password-toggle-fallback-2" style="display: none;">🙈</span>
+                    </button>
+                </div>
+                {{ form_errors(registrationForm.plainPassword.second) }}
+            </div>
+
+            <div class="form-group checkbox-group">
+                <div class="checkbox-container">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'checkbox-label'}}) }}
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="form-button">
+                    <i class="fas fa-user-plus me-2"></i>Créer mon compte
+                </button>
+            </div>
+
+            <div class="form-footer">
+                <p class="text-center">
+                    Vous avez déjà un compte ? 
+                    <a href="{{ path('app_login') }}" class="link-primary">Se connecter</a>
+                </p>
+            </div>
+
+        {{ form_end(registrationForm) }}
+    </section>
+
+    <footer id="main_footer" class="footer">
+        <div class="container text-center">
+            <p>&copy; 2025 Portfolio. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        function togglePasswordField(inputId, iconId) {
+            console.log('togglePasswordField appelée avec:', inputId, iconId);
+            
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+            const fallbackId = iconId.replace('icon', 'fallback');
+            const toggleFallback = document.getElementById(fallbackId);
+            
+            console.log('Éléments trouvés:', {
+                passwordInput: passwordInput,
+                toggleIcon: toggleIcon,
+                toggleFallback: toggleFallback,
+                inputType: passwordInput ? passwordInput.type : 'null'
+            });
+            
+            if (!passwordInput) {
+                console.error('Input de mot de passe non trouvé:', inputId);
+                return;
+            }
+            
+            if (!toggleIcon) {
+                console.error('Icône toggle non trouvée:', iconId);
+                return;
+            }
+            
+            if (passwordInput.type === 'password') {
+                // Afficher le mot de passe
+                passwordInput.type = 'text';
+                // Icône œil ouvert (le mot de passe est visible)
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+                // Fallback emoji - œil ouvert
+                if (toggleFallback) {
+                    toggleFallback.textContent = '👁️';
+                }
+                console.log('Mot de passe affiché pour:', inputId);
+            } else {
+                // Masquer le mot de passe
+                passwordInput.type = 'password';
+                // Icône œil barré (le mot de passe est masqué)
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+                // Fallback emoji - œil fermé/caché
+                if (toggleFallback) {
+                    toggleFallback.textContent = '🙈';
+                }
+                console.log('Mot de passe masqué pour:', inputId);
+            }
+        }
+
+        // Fonction alternative basée sur la proximité des éléments
+        function togglePasswordByButton(button) {
+            console.log('togglePasswordByButton appelée');
+            
+            const container = button.closest('.password-input-container');
+            if (!container) {
+                console.error('Container parent non trouvé');
+                return;
+            }
+            
+            const passwordInput = container.querySelector('input[type="password"], input[type="text"]');
+            const toggleIcon = button.querySelector('i[class*="fa-eye"]');
+            const toggleFallback = button.querySelector('.password-toggle-fallback');
+            
+            if (!passwordInput) {
+                console.error('Input de mot de passe non trouvé dans le container');
+                return;
+            }
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+                if (toggleFallback) {
+                    toggleFallback.textContent = '👁️';
+                }
+                console.log('Mot de passe affiché (méthode proximité)');
+            } else {
+                passwordInput.type = 'password';
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                }
+                if (toggleFallback) {
+                    toggleFallback.textContent = '🙈';
+                }
+                console.log('Mot de passe masqué (méthode proximité)');
+            }
+        }
+
+        // Validation en temps réel
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page d\'inscription chargée, initialisation...');
+            
+            const password = document.getElementById('password');
+            const passwordConfirm = document.getElementById('password-confirm');
+            
+            console.log('Champs de mot de passe:', {
+                password: password,
+                passwordConfirm: passwordConfirm
+            });
+            
+            function validatePasswords() {
+                if (password.value && passwordConfirm.value) {
+                    if (password.value === passwordConfirm.value) {
+                        passwordConfirm.style.borderColor = 'var(--accent-green)';
+                        passwordConfirm.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                    } else {
+                        passwordConfirm.style.borderColor = '#dc2626';
+                        passwordConfirm.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
+                    }
+                } else {
+                    // Remettre le style par défaut
+                    passwordConfirm.style.borderColor = '';
+                    passwordConfirm.style.boxShadow = '';
+                }
+            }
+            
+            if (password && passwordConfirm) {
+                password.addEventListener('input', validatePasswords);
+                passwordConfirm.addEventListener('input', validatePasswords);
+            }
+
+            // Test des boutons de toggle
+            const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+            console.log('Boutons toggle trouvés:', toggleButtons.length);
+            
+            toggleButtons.forEach(function(button, index) {
+                console.log('Bouton toggle ' + (index + 1) + ':', button);
+                
+                // Test du clic
+                button.addEventListener('click', function() {
+                    console.log('Clic détecté sur bouton toggle ' + (index + 1));
+                });
+            });
+
+            // Vérification si Font Awesome est chargé
+            const toggleIcons = document.querySelectorAll('[id^="password-toggle-icon-"]');
+            const toggleFallbacks = document.querySelectorAll('[id^="password-toggle-fallback-"]');
+            
+            console.log('Icônes trouvées:', toggleIcons.length, 'Fallbacks trouvés:', toggleFallbacks.length);
+            
+            setTimeout(function() {
+                toggleIcons.forEach(function(icon, index) {
+                    const computedStyle = window.getComputedStyle(icon, '::before');
+                    if (computedStyle.content === 'none' || computedStyle.content === '""') {
+                        // Font Awesome non disponible, utiliser le fallback
+                        console.log('Font Awesome non disponible pour icône ' + (index + 1) + ', utilisation du fallback');
+                        icon.style.display = 'none';
+                        if (toggleFallbacks[index]) {
+                            toggleFallbacks[index].style.display = 'inline';
+                        }
+                    } else {
+                        console.log('Font Awesome disponible pour icône ' + (index + 1));
+                    }
+                });
+            }, 100);
+
+            // Gestion du clavier pour les boutons toggle
+            toggleButtons.forEach(function(button) {
+                button.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+{% endblock %}
