@@ -3,7 +3,7 @@ name: Tests
 # Déclencher les tests sur push et pull request
 on:
   push:
-    branches: [ main, feature/motdepasseoublier ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 

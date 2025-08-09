@@ -3,7 +3,7 @@ name: CI Quick
 # Workflow léger pour les vérifications rapides
 on:
   push:
-    branches: [ "**" ]  # Tous les branches
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 

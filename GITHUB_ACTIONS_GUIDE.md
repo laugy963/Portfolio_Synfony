@@ -33,14 +33,14 @@ Cliquez sur un workflow pour voir :
 
 ### 4. 🧪 Test manuel immédiat
 
-Pour déclencher les tests maintenant, faites un petit changement :
+Pour déclencher les tests maintenant, faites un petit changement et mergez vers main :
 
 ```bash
-# Modifiez un fichier et committez
-echo "# Tests GitHub Actions configurés ✅" >> README.md
-git add README.md
-git commit -m "Test GitHub Actions"
+# Les tests ne se déclenchent QUE sur la branche main
+# Créez une Pull Request depuis votre branche feature
 git push origin feature/motdepasseoublier
+
+# Puis mergez vers main pour déclencher les tests
 ```
 
 ### 5. 📊 Résultats attendus

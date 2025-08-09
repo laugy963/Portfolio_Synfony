@@ -9,7 +9,7 @@ Ce projet utilise GitHub Actions pour exécuter automatiquement tous les tests �
 ### 1. Tests complets (`tests.yml`)
 
 **Déclenché sur :**
-- Push vers `main` et `feature/motdepasseoublier`
+- Push vers `main` seulement
 - Pull requests vers `main`
 
 **Ce qui est testé :**
@@ -28,7 +28,7 @@ Ce projet utilise GitHub Actions pour exécuter automatiquement tous les tests �
 ### 2. Vérifications rapides (`quick-check.yml`)
 
 **Déclenché sur :**
-- Push vers tous les branches
+- Push vers `main` seulement
 - Pull requests vers `main`
 
 **Vérifications légères :**
