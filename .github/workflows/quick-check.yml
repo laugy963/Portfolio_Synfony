@@ -48,8 +48,8 @@ jobs:
         php bin/console --version
         echo "✅ Console Symfony opérationnelle"
 
-    - name: 📋 Check Symfony requirements
+    - name: 📋 Check PHP requirements
       run: |
-        echo "🔍 Vérification des prérequis Symfony..."
+        echo "🔍 Vérification des prérequis PHP..."
         php -v
         echo "✅ PHP version compatible"
