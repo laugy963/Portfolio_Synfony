@@ -40,58 +40,114 @@
 
 /* Styles généraux */
 body {
-    padding-top: 76px; /* Compensation pour la navbar fixe */
+    padding-top: 0; /* Supprime le padding-top du body */
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--lighter-gray);
     color: var(--dark-gray);
     line-height: 1.6;
+    overflow-x: hidden; /* Évite le scroll horizontal */
+    width: 100%;
 }
 
-/* Styles pour la bannière hero */
+/* Correction pour le HTML */
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Assure que le contenu principal commence directement sous la navbar */
+main {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Le premier élément après la navbar doit commencer sans espace */
+.navbar + * {
+    margin-top: 0 !important;
+}
+
+/* Styles pour la bannière hero avec carrousel Bootstrap */
 .hero-banner {
     position: relative;
     height: 100vh;
+    width: 100vw;
     overflow: hidden;
+    margin-top: 0; /* Supprime l'espace au-dessus */
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .carousel-inner {
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
 }
 
 .carousel-item {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
 }
 
-.banner-image {
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+.carousel-item img {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    min-width: 100vw;
+    max-height: none;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    z-index: 1;
+    /* Assure une couverture complète sans espaces */
+    margin: 0;
+    padding: 0;
 }
 
-.banner-image-1 {
-    background-image: linear-gradient(rgba(37, 99, 235, 0.7), rgba(30, 64, 175, 0.8)), 
-                      url('/images/banner-1.jpg');
-}
-
-.banner-image-2 {
-    background-image: linear-gradient(rgba(234, 88, 12, 0.7), rgba(194, 65, 12, 0.8)), 
-                      url('/images/banner-2.jpg');
-}
-
-.banner-image-3 {
-    background-image: linear-gradient(rgba(20, 184, 166, 0.7), rgba(139, 92, 246, 0.8)), 
-                      url('/images/banner-3.jpg');
+/* Overlay sombre pour améliorer la lisibilité du texte */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg, 
+        rgba(0, 0, 0, 0.3) 0%, 
+        rgba(0, 0, 0, 0.1) 50%, 
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    z-index: 10;
+    pointer-events: none;
 }
 
 /* Contenu hero centré */
 .hero-content {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
     width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     padding: 2rem;
 }
@@ -139,6 +195,8 @@ body {
     transition: all 0.3s ease;
     border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Assure que la navbar reste au-dessus */
+    height: 76px; /* Hauteur fixe pour la navbar */
 }
 
 .navbar-brand {
@@ -190,6 +248,10 @@ body {
 /* Styles pour les sections */
 section {
     padding: 80px 0;
+    width: 100%;
+    margin: 0;
+    position: relative;
+    min-height: auto; /* Assure une hauteur minimale adaptative */
 }
 
 section:nth-child(even) {
@@ -198,6 +260,56 @@ section:nth-child(even) {
 
 section:nth-child(odd) {
     background-color: var(--white);
+}
+
+/* Correction spécifique pour la section hero */
+section.hero-banner {
+    padding: 0;
+    margin-top: 0; /* Supprime la marge négative */
+    margin-bottom: 0; /* Assure une transition fluide */
+}
+
+/* Container pour toutes les sections */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Garantit l'adaptation parfaite des éléments */
+* {
+    box-sizing: border-box;
+}
+
+/* Supprime les marges par défaut qui pourraient créer des espaces */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Responsive containers */
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
 }
 
 .display-4 {
@@ -364,12 +476,18 @@ footer p {
 /* Section spéciale pour les projets */
 #projects {
     background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-orange) 50%, var(--lighter-gray) 100%) !important;
+    width: 100%;
+    margin: 0;
+    padding: 80px 0;
 }
 
 /* Section contact avec accent */
 #contact {
     background: linear-gradient(135deg, var(--white) 0%, var(--light-blue) 100%);
     position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 80px 0;
 }
 
 #contact::before {
@@ -384,47 +502,163 @@ footer p {
     pointer-events: none;
 }
 
-/* Amélioration des indicateurs du carrousel */
-.carousel-indicators button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--white);
-    background-color: transparent;
-    opacity: 0.6;
-    transition: all 0.3s ease;
+/* Section à propos */
+#about {
+    width: 100%;
+    margin: 0;
+    padding: 80px 0;
 }
 
-.carousel-indicators button.active {
-    background-color: var(--white);
+/* ===== RESPONSIVE DESIGN POUR LE NOUVEAU CARROUSEL ===== */
+@media (max-width: 768px) {
+    /* Barre de progression responsive */
+    .carousel-progress {
+        height: 3px;
+    }
+    
+    /* Indicateurs dots plus petits sur mobile */
+    .carousel-dots {
+        top: 50%; /* Centre vertical aussi sur mobile */
+        gap: 10px;
+        transform: translate(-50%, -50%); /* Maintient le centrage complet */
+    }
+    
+    .carousel-dots button {
+        width: 12px; /* Taille légèrement plus grande sur mobile */
+        height: 12px;
+    }
+    
+    .carousel-dots button.active {
+        transform: scale(1.8); /* Effet plus prononcé sur mobile */
+    }
+    
+    /* Images avec moins de parallaxe sur mobile */
+    .carousel-item img {
+        transform: scale(1.02);
+    }
+    
+    .carousel-item.active img {
+        transform: scale(1);
+    }
+}
+
+/* Transition fade pour un effet plus fluide */
+.carousel-fade .carousel-item {
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.carousel-fade .carousel-item.active {
     opacity: 1;
-    transform: scale(1.2);
 }
 
-/* Amélioration des contrôles du carrousel */
-.carousel-control-prev,
-.carousel-control-next {
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: all 0.3s ease;
-}
-
-.carousel-control-prev {
-    left: 30px;
-}
-
-.carousel-control-next {
-    right: 30px;
-}
-
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
+/* Barre de progression moderne pour le défilement */
+.carousel-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.1);
+    z-index: 20;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--accent-teal) 100%);
+    width: 0;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
+/* Indicateurs dots modernisés */
+.carousel-dots {
+    position: absolute;
+    top: 50%; /* Centre vertical du carrousel */
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centre horizontal et vertical */
+    display: flex;
+    gap: 20px; /* Agrandi l'espace entre les dots */
+    z-index: 25;
+}
+
+.carousel-dots button {
+    width: 16px; /* Agrandi de 12px à 16px */
+    height: 16px; /* Agrandi de 12px à 16px */
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-dots button::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary-blue) 0deg, transparent 0deg);
+    transition: all 0.3s ease;
+    z-index: -1;
+}
+
+.carousel-dots button.active {
+    background: var(--primary-blue);
+    border-color: rgba(255, 255, 255, 1);
+    transform: scale(1.6); /* Agrandi l'effet de scale pour l'état actif */
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.8); /* Ombre plus prononcée */
+}
+
+.carousel-dots button.active::before {
+    background: conic-gradient(var(--primary-blue) 360deg, transparent 0deg);
+    animation: progressRing 4s linear infinite;
+}
+
+.carousel-dots button:hover:not(.active) {
+    border-color: rgba(255, 255, 255, 0.9);
+    background: rgba(37, 99, 235, 0.3);
+    transform: scale(1.3); /* Effet hover plus prononcé */
+}
+
+/* Animation pour l'indicateur actif */
+@keyframes progressRing {
+    0% {
+        background: conic-gradient(var(--primary-blue) 0deg, transparent 0deg);
+    }
+    100% {
+        background: conic-gradient(var(--primary-blue) 360deg, transparent 360deg);
+    }
+}
+
+/* Effet de parallaxe léger sur les images */
+.carousel-item img {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    min-width: 100vw;
+    max-height: none;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    z-index: 1;
+    transform: scale(1.05);
+    transition: transform 8s ease-out;
+}
+
+.carousel-item.active img {
+    transform: scale(1);
 }
 
 /* Badges de compétences harmonieux */
@@ -483,6 +717,20 @@ footer p {
 .animate-on-scroll.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Correction pour la hero-banner avec animation */
+.hero-banner.animate-on-scroll,
+.hero-banner.animate-on-scroll.visible {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    margin-top: -76px;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    transform: none !important;
+    opacity: 1 !important;
+    overflow: hidden;
 }
 
 /* ===== STYLES POUR LA PAGE DE CONNEXION ===== */
@@ -747,10 +995,19 @@ footer p {
 /* ========== RESPONSIVE DESIGN - Consolidation de toutes les media queries ========== */
 @media (max-width: 768px) {
     /* Hero section responsive */
+    .hero-banner {
+        height: 100vh;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        margin-top: 0; /* Maintient l'absence d'espace en haut */
+    }
+    
     .hero-content {
         padding: 1.5rem;
         margin: 0 1rem;
         max-width: calc(100% - 2rem);
+        width: 90%;
     }
     
     .hero-content h1 {
@@ -775,6 +1032,16 @@ footer p {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+    
+    /* Sections responsive */
+    section {
+        padding: 60px 0;
+    }
+    
+    .container {
+        padding: 0 1rem;
+        max-width: 100%;
     }
     
     /* Formulaires responsive */
@@ -812,6 +1079,28 @@ footer p {
     
     .checkbox-label {
         font-size: 0.9rem;
+    }
+}
+
+/* Media query pour très petits écrans */
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    section {
+        padding: 40px 0;
+    }
+}
+
+/* Media query pour grands écrans */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
     }
 }
 
