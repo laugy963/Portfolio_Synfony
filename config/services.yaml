@@ -34,3 +34,10 @@ services:
         arguments:
             $fromEmail: '%env(MAILER_FROM_EMAIL)%'
             $fromName: '%env(MAILER_FROM_NAME)%'
+
+when@test:
+    services:
+        # Rendre le password hasher public pour les tests
+        Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+            public: true
+            alias: security.user_password_hasher
