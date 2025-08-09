@@ -1,6 +1,6 @@
-name: 🧪 Tests Complets
+name: Tests
 
-# Déclencher les tests complets sur push et pull request
+# Déclencher les tests sur push et pull request
 on:
   push:
     branches: [ main ]
@@ -9,7 +9,6 @@ on:
 
 jobs:
   tests:
-    name: 🧪 Tests PHPUnit avec base de données
     runs-on: ubuntu-latest
     
     # Services nécessaires (base de données PostgreSQL)
@@ -110,75 +109,3 @@ jobs:
           echo "PHP CS Fixer not installed, skipping..."
         fi
       continue-on-error: true
-
-  # Job séparé pour tester sur différentes versions de PHP
-  test-php-versions:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['8.3', '8.4']
-    
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: "!ChangeMe!"
-          POSTGRES_USER: app
-          POSTGRES_DB: app_test
-        options: >-
-          --health-cmd "pg_isready -U app"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup PHP ${{ matrix.php-version }}
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pgsql
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction
-
-    - name: Wait for database to be ready
-      run: |
-        for i in {1..30}; do
-          if pg_isready -h 127.0.0.1 -p 5432 -U app; then
-            echo "✅ Base de données prête"
-            break
-          fi
-          echo "⏳ Attente de la base de données... ($i/30)"
-          sleep 2
-        done
-
-    - name: Setup test environment
-      run: |
-        cp .env.test .env.test.local
-        echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
-        echo "MAILER_DSN=null://null" >> .env.test.local
-        echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
-        echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
-
-    - name: Create database and run migrations
-      run: |
-        # Vérifier la connexion PostgreSQL et créer la base si nécessaire
-        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
-        
-        # Créer aussi la base 'app' au cas où elle serait référencée
-        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
-        
-        # Créer la base de données via Symfony (si elle n'existe pas déjà)
-        php bin/console doctrine:database:create --env=test --if-not-exists --no-interaction
-        php bin/console doctrine:migrations:migrate --env=test --no-interaction --quiet
-
-    - name: Load fixtures
-      run: php bin/console doctrine:fixtures:load --env=test --no-interaction
-
-    - name: Run tests
-      run: php bin/phpunit --testdox
