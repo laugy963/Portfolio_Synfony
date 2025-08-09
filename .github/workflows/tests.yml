@@ -1,6 +1,6 @@
-name: Tests
+name: 🧪 Tests Complets
 
-# Déclencher les tests sur push et pull request
+# Déclencher les tests complets sur push et pull request
 on:
   push:
     branches: [ main ]
@@ -9,6 +9,7 @@ on:
 
 jobs:
   tests:
+    name: 🧪 Tests PHPUnit avec base de données
     runs-on: ubuntu-latest
     
     # Services nécessaires (base de données PostgreSQL)
@@ -16,7 +17,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: "changeme"
+          POSTGRES_PASSWORD: "!ChangeMe!"
           POSTGRES_USER: app
           POSTGRES_DB: app_test
         options: >-
@@ -74,7 +75,7 @@ jobs:
     - name: Setup test environment
       run: |
         cp .env.test .env.test.local
-        echo "DATABASE_URL=postgresql://app:changeme@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
+        echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
         echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
@@ -83,10 +84,10 @@ jobs:
     - name: Create database
       run: |
         # Vérifier la connexion PostgreSQL et créer la base si nécessaire
-        PGPASSWORD="changeme" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
         
         # Créer aussi la base 'app' au cas où elle serait référencée
-        PGPASSWORD="changeme" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
+        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
         
         # Créer la base de données via Symfony (si elle n'existe pas déjà)
         php bin/console doctrine:database:create --env=test --if-not-exists --no-interaction
@@ -121,7 +122,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: "changeme"
+          POSTGRES_PASSWORD: "!ChangeMe!"
           POSTGRES_USER: app
           POSTGRES_DB: app_test
         options: >-
@@ -159,7 +160,7 @@ jobs:
     - name: Setup test environment
       run: |
         cp .env.test .env.test.local
-        echo "DATABASE_URL=postgresql://app:changeme@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
+        echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
         echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
@@ -167,10 +168,10 @@ jobs:
     - name: Create database and run migrations
       run: |
         # Vérifier la connexion PostgreSQL et créer la base si nécessaire
-        PGPASSWORD="changeme" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
         
         # Créer aussi la base 'app' au cas où elle serait référencée
-        PGPASSWORD="changeme" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
+        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
         
         # Créer la base de données via Symfony (si elle n'existe pas déjà)
         php bin/console doctrine:database:create --env=test --if-not-exists --no-interaction
