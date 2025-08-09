@@ -34,8 +34,22 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # Pages publiques (accessible à tous)
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/verify, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        
+        # Zones réservées aux administrateurs
         - { path: ^/projects, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        
+        # Zones réservées aux utilisateurs connectés
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/dashboard, roles: ROLE_USER }
+        
+        # Par défaut, toutes les autres pages nécessitent une authentification
+        # - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
