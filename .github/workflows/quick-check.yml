@@ -1,0 +1,58 @@
+name: CI Quick
+
+# Workflow léger pour les vérifications rapides
+on:
+  push:
+    branches: [ "**" ]  # Tous les branches
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quick-checks:
+    name: Vérifications rapides
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+
+    - name: Cache Composer packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Check Symfony requirements
+      run: |
+        if [ -f "vendor/bin/requirements-checker" ]; then
+          vendor/bin/requirements-checker
+        else
+          echo "Requirements checker not found, using basic PHP version check"
+          php -v
+        fi
+
+    - name: Lint PHP files
+      run: |
+        echo "Vérification de la syntaxe PHP..."
+        find src/ -name "*.php" -exec php -l {} \; || exit 1
+        find tests/ -name "*.php" -exec php -l {} \; || exit 1
+        echo "✅ Syntaxe PHP valide"
+
+    - name: Check Symfony console
+      run: |
+        php bin/console --version
+        php bin/console list --format=txt | head -20

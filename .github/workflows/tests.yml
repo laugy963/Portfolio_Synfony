@@ -1,0 +1,141 @@
+name: Tests
+
+# Déclencher les tests sur push et pull request
+on:
+  push:
+    branches: [ main, feature/motdepasseoublier ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    
+    # Services nécessaires (base de données PostgreSQL)
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: "!ChangeMe!"
+          POSTGRES_USER: app
+          POSTGRES_DB: app_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    # 1. Récupérer le code source
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Configurer PHP
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pgsql
+        coverage: none
+
+    # 3. Valider le composer.json
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    # 4. Cache des dépendances Composer
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    # 5. Installer les dépendances
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+    # 6. Configurer l'environnement de test
+    - name: Setup test environment
+      run: |
+        cp .env.test .env.test.local
+        echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
+        echo "MAILER_DSN=smtp://localhost:1025" >> .env.test.local
+
+    # 7. Créer la base de données et les tables
+    - name: Create database
+      run: |
+        php bin/console doctrine:database:create --env=test --no-interaction
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+    # 8. Charger les fixtures (données de test)
+    - name: Load fixtures
+      run: php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+    # 9. Lancer tous les tests PHPUnit
+    - name: Run PHPUnit tests
+      run: php bin/phpunit --testdox
+
+    # 10. Vérifier la qualité du code (optionnel)
+    - name: Check coding standards (optional)
+      run: |
+        if [ -f "vendor/bin/php-cs-fixer" ]; then
+          vendor/bin/php-cs-fixer fix --dry-run --diff
+        else
+          echo "PHP CS Fixer not installed, skipping..."
+        fi
+      continue-on-error: true
+
+  # Job séparé pour tester sur différentes versions de PHP
+  test-php-versions:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3']
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: "!ChangeMe!"
+          POSTGRES_USER: app
+          POSTGRES_DB: app_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pgsql
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Setup test environment
+      run: |
+        cp .env.test .env.test.local
+        echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
+
+    - name: Create database and run migrations
+      run: |
+        php bin/console doctrine:database:create --env=test --no-interaction
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+    - name: Load fixtures
+      run: php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+    - name: Run tests
+      run: php bin/phpunit --testdox
