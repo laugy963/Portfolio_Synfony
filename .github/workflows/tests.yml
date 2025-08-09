@@ -77,7 +77,7 @@ jobs:
         echo "DATABASE_URL=postgresql://app:changeme@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
-        echo "MAILER_FROM_NAME=Test Service" >> .env.test.local
+        echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
 
     # 7. Créer la base de données et les tables
     - name: Create database
@@ -162,7 +162,7 @@ jobs:
         echo "DATABASE_URL=postgresql://app:changeme@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
-        echo "MAILER_FROM_NAME=Test Service" >> .env.test.local
+        echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
 
     - name: Create database and run migrations
       run: |
