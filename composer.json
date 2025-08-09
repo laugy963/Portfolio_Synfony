@@ -1,4 +1,6 @@
 {
+    "name": "laugy963/portfolio-synfony",
+    "description": "A Symfony portfolio project with user authentication and project management",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
