@@ -79,28 +79,38 @@ jobs:
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
         echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
 
-    # 7. Créer la base de données et les tables
-    - name: Create database
+    # 8. Créer la base de données et les tables
+    - name: 🗄️ Create database
       run: |
-        # Vérifier la connexion PostgreSQL et créer la base si nécessaire
-        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();" || echo "Connexion à app_test OK"
+        # Attendre que PostgreSQL soit complètement prêt
+        for i in {1..10}; do
+          if PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d postgres -c "SELECT 1;" >/dev/null 2>&1; then
+            echo "✅ PostgreSQL est prêt"
+            break
+          fi
+          echo "⏳ Attente PostgreSQL... ($i/10)"
+          sleep 2
+        done
         
-        # Créer aussi la base 'app' au cas où elle serait référencée
-        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base 'app' existe déjà ou ne peut être créée"
+        # Créer les bases de données nécessaires
+        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app_test || echo "Base app_test existe déjà"
+        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base app existe déjà"
         
-        # Créer la base de données via Symfony (si elle n'existe pas déjà)
-        php bin/console doctrine:database:create --env=test --if-not-exists --no-interaction
-        php bin/console doctrine:migrations:migrate --env=test --no-interaction --quiet
+        # Vérifier que la base de test est accessible
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();"
+        
+        # Créer et migrer via Symfony (pour la base de test)
+        php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
-    # 8. Charger les fixtures (données de test)
+    # 9. Charger les fixtures (données de test)
     - name: Load fixtures
       run: php bin/console doctrine:fixtures:load --env=test --no-interaction
 
-    # 9. Lancer tous les tests PHPUnit
+    # 10. Lancer tous les tests PHPUnit
     - name: Run PHPUnit tests
       run: php bin/phpunit --testdox
 
-    # 10. Vérifier la qualité du code (optionnel)
+    # 11. Vérifier la qualité du code (optionnel)
     - name: Check coding standards (optional)
       run: |
         if [ -f "vendor/bin/php-cs-fixer" ]; then
