@@ -20,6 +20,11 @@ final class Version20250808165616 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        
+        // D'abord, ajouter la colonne is_verified si elle n'existe pas
+        $this->addSql('ALTER TABLE "user" ADD COLUMN is_verified BOOLEAN DEFAULT false');
+        
+        // Ensuite ajouter les colonnes de vérification
         $this->addSql('ALTER TABLE "user" ADD verification_code VARCHAR(6) DEFAULT NULL');
         $this->addSql('ALTER TABLE "user" ADD verification_code_expires_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL');
         $this->addSql('ALTER TABLE "user" ALTER is_verified DROP DEFAULT');
@@ -32,6 +37,6 @@ final class Version20250808165616 extends AbstractMigration
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE "user" DROP verification_code');
         $this->addSql('ALTER TABLE "user" DROP verification_code_expires_at');
-        $this->addSql('ALTER TABLE "user" ALTER is_verified SET DEFAULT false');
+        $this->addSql('ALTER TABLE "user" DROP is_verified');
     }
 }

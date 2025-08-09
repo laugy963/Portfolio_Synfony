@@ -69,7 +69,7 @@ jobs:
     - name: Create database
       run: |
         php bin/console doctrine:database:create --env=test --no-interaction
-        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction --quiet
 
     # 8. Charger les fixtures (données de test)
     - name: Load fixtures
@@ -132,7 +132,7 @@ jobs:
     - name: Create database and run migrations
       run: |
         php bin/console doctrine:database:create --env=test --no-interaction
-        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction --quiet
 
     - name: Load fixtures
       run: php bin/console doctrine:fixtures:load --env=test --no-interaction
