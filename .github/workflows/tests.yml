@@ -74,10 +74,23 @@ jobs:
     - name: Setup test environment
       run: |
         cp .env.test .env.test.local
+        # Configuration DATABASE_URL pour éviter le suffixe automatique _test
         echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
         echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
+        # Définir TEST_TOKEN pour éviter le suffixe automatique
+        echo "TEST_TOKEN=" >> .env.test.local
+        
+        # Vérifier la configuration DATABASE_URL
+        echo "🔍 Configuration de la base de données:"
+        grep "DATABASE_URL" .env.test.local
+
+    # 7. Vérifier la configuration Doctrine
+    - name: 🔍 Check Doctrine configuration
+      run: |
+        echo "📋 Configuration Doctrine dans l'environnement de test:"
+        php bin/console debug:config doctrine dbal --env=test | head -20
 
     # 8. Créer la base de données et les tables
     - name: 🗄️ Create database
@@ -92,14 +105,21 @@ jobs:
           sleep 2
         done
         
-        # Créer les bases de données nécessaires
-        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app_test || echo "Base app_test existe déjà"
-        PGPASSWORD="!ChangeMe!" createdb -h 127.0.0.1 -U app app || echo "Base app existe déjà"
+        # Supprimer et recréer les bases de données pour éviter les conflits
+        echo "🗑️ Suppression des bases existantes..."
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d postgres -c "DROP DATABASE IF EXISTS app_test;" || echo "app_test n'existait pas"
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d postgres -c "DROP DATABASE IF EXISTS app;" || echo "app n'existait pas"
+        
+        echo "🏗️ Création des nouvelles bases..."
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d postgres -c "CREATE DATABASE app_test;"
+        PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d postgres -c "CREATE DATABASE app;"
         
         # Vérifier que la base de test est accessible
+        echo "✅ Vérification de l'accès à app_test..."
         PGPASSWORD="!ChangeMe!" psql -h 127.0.0.1 -U app -d app_test -c "SELECT version();"
         
         # Créer et migrer via Symfony (pour la base de test)
+        echo "🔄 Exécution des migrations..."
         php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
     # 9. Charger les fixtures (données de test)
