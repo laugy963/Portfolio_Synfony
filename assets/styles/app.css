@@ -812,9 +812,10 @@ footer p {
     margin-bottom: 1rem !important;
 }
 
-/* Labels */
+/* Labels avec icônes */
 .form-container label {
-    display: block;
+    display: flex;
+    align-items: center;
     font-weight: 600;
     color: var(--dark-gray);
     margin-bottom: 0.75rem;
@@ -862,19 +863,21 @@ footer p {
 
 .password-input {
     width: 100% !important;
-    padding-right: 3.5rem !important;
+    padding: 1rem 3.5rem 1rem 1.25rem !important;
 }
 
-/* Gestion des icônes dans les containers d'input avec mot de passe */
-.password-input-container .input-icon {
-    left: 1rem;
-    z-index: 2;
+/* Suppression des anciens styles d'icônes dans les champs */
+/* Ces styles ne sont plus nécessaires car les icônes sont maintenant dans les labels */
+
+/* Style pour tous les inputs dans un container de mot de passe */
+.password-input-container input[type="password"],
+.password-input-container input[type="text"],
+.password-input-container .form-input {
+    padding: 1rem 3.5rem 1rem 1.25rem !important;
 }
 
-/* Style spécifique pour le mot de passe dans son conteneur */
-.password-input-container .password-input {
-    padding: 0.875rem 3.5rem 0.875rem 1rem !important; /* top right bottom left */
-}
+/* Suppression des anciens styles pour les containers d'input */
+/* Ces styles ne sont plus nécessaires car les icônes sont maintenant dans les labels */
 
 /* Bouton pour afficher/masquer le mot de passe */
 .password-toggle-btn {
@@ -1141,28 +1144,7 @@ footer p {
     margin: 0;
 }
 
-/* Conteneur d'input avec icône */
-.input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon {
-    position: absolute;
-    left: 1rem;
-    color: var(--medium-gray);
-    z-index: 2;
-    transition: color 0.3s ease;
-}
-
-.input-container .form-input {
-    padding-left: 3rem !important;
-}
-
-.input-container:focus-within .input-icon {
-    color: var(--primary-blue);
-}
+/* Anciens styles supprimés - Les icônes sont maintenant dans les labels */
 
 /* Groupe de checkbox */
 .checkbox-group {

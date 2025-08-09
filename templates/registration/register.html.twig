@@ -52,37 +52,35 @@
 
             <div class="form-row">
                 <div class="form-group form-half">
-                    {{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
-                    <div class="input-container">
-                        <i class="fas fa-user input-icon"></i>
-                        {{ form_widget(registrationForm.firstName) }}
-                    </div>
+                    <label class="form-label">
+                        <i class="fas fa-user me-2"></i>Prénom
+                    </label>
+                    {{ form_widget(registrationForm.firstName) }}
                     {{ form_errors(registrationForm.firstName) }}
                 </div>
 
                 <div class="form-group form-half">
-                    {{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
-                    <div class="input-container">
-                        <i class="fas fa-user input-icon"></i>
-                        {{ form_widget(registrationForm.lastName) }}
-                    </div>
+                    <label class="form-label">
+                        <i class="fas fa-user me-2"></i>Nom
+                    </label>
+                    {{ form_widget(registrationForm.lastName) }}
                     {{ form_errors(registrationForm.lastName) }}
                 </div>
             </div>
 
             <div class="form-group">
-                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
-                <div class="input-container">
-                    <i class="fas fa-envelope input-icon"></i>
-                    {{ form_widget(registrationForm.email) }}
-                </div>
+                <label class="form-label">
+                    <i class="fas fa-envelope me-2"></i>Adresse email
+                </label>
+                {{ form_widget(registrationForm.email) }}
                 {{ form_errors(registrationForm.email) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
+                <label class="form-label">
+                    <i class="fas fa-lock me-2"></i>Mot de passe
+                </label>
                 <div class="password-input-container">
-                    <i class="fas fa-lock input-icon"></i>
                     {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input password-input', 'id': 'password'}}) }}
                     <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
                         <i class="fas fa-eye-slash" id="password-toggle-icon-1"></i>
@@ -93,9 +91,10 @@
             </div>
 
             <div class="form-group">
-                {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
+                <label class="form-label">
+                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe
+                </label>
                 <div class="password-input-container">
-                    <i class="fas fa-lock input-icon"></i>
                     {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input password-input', 'id': 'password-confirm'}}) }}
                     <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
                         <i class="fas fa-eye-slash" id="password-toggle-icon-2"></i>
