@@ -27,10 +27,11 @@ class AuthenticationDiagnosticTest extends WebTestCase
         $password = 'testPassword123';
         
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
+        $user->setPassword($hashedPassword);
         
         $this->assertNotEmpty($hashedPassword);
         $this->assertNotEquals($password, $hashedPassword);
-        $this->assertTrue($this->passwordHasher->isPasswordValid($user, $password));
+        $this->assertTrue($this->passwordHasher->isPasswordValid($user, $password, $hashedPassword));
         
         echo "\n✅ Password hashing works correctly\n";
         echo "Original: " . $password . "\n";

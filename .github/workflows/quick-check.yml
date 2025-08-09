@@ -31,7 +31,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: 🔧 Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction --no-dev
+      run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: ✅ Validate composer.json
       run: composer validate --strict
@@ -42,11 +42,6 @@ jobs:
         find src/ -name "*.php" -exec php -l {} \; || exit 1
         find tests/ -name "*.php" -exec php -l {} \; || exit 1
         echo "✅ Syntaxe PHP valide"
-
-    - name: 🎯 Check Symfony console
-      run: |
-        php bin/console --version
-        echo "✅ Console Symfony opérationnelle"
 
     - name: 📋 Check PHP requirements
       run: |

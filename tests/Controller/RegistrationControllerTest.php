@@ -139,12 +139,25 @@ class RegistrationControllerTest extends WebTestCase
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        // Simuler la session avec l'email
-        $session = $this->client->getContainer()->get('session');
-        $session->set('verification_email', 'verify.test@example.com');
-
-        // Accéder à la page de vérification
-        $crawler = $this->client->request('GET', '/verify/code');
+        // Simuler la session avec l'email en utilisant une approche directe
+        $this->client->request('POST', '/register', [
+            'registration_form' => [
+                'email' => 'verify.test@example.com',
+                'firstname' => 'Test',
+                'lastname' => 'User',
+                'plainPassword' => [
+                    'first' => 'password',
+                    'second' => 'password'
+                ],
+                'agreeTerms' => true,
+            ]
+        ]);
+        
+        // Vérifier la redirection vers la page de vérification
+        $this->assertResponseRedirects('/verify/code');
+        
+        // Suivre la redirection
+        $crawler = $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
         // Soumettre le code de vérification
@@ -183,12 +196,26 @@ class RegistrationControllerTest extends WebTestCase
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        // Simuler la session avec l'email
-        $session = $this->client->getContainer()->get('session');
-        $session->set('verification_email', 'invalid.test@example.com');
-
-        // Accéder à la page de vérification
+        // Simuler l'inscription pour obtenir la session
+        $this->client->request('POST', '/register', [
+            'registration_form' => [
+                'email' => 'invalid.test@example.com',
+                'firstname' => 'Invalid',
+                'lastname' => 'Test',
+                'plainPassword' => [
+                    'first' => 'password',
+                    'second' => 'password'
+                ],
+                'agreeTerms' => true,
+            ]
+        ]);
+        
+        // Suivre la redirection vers la page de vérification
+        $this->client->followRedirect();
+        
+        // Maintenant tester avec un code invalide
         $crawler = $this->client->request('GET', '/verify/code');
+        $this->assertResponseIsSuccessful();
 
         // Soumettre un code incorrect
         $form = $crawler->selectButton('Vérifier')->form([
