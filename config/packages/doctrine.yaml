@@ -30,8 +30,9 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            # "TEST_TOKEN" est généralement défini par ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            # Pas de suffixe automatique pour les tests CI/CD
+            # Le nom de base sera utilisé tel quel depuis DATABASE_URL
+            url: '%env(resolve:DATABASE_URL)%'
 
 when@prod:
     doctrine:

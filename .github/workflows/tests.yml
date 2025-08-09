@@ -74,13 +74,11 @@ jobs:
     - name: Setup test environment
       run: |
         cp .env.test .env.test.local
-        # Configuration DATABASE_URL pour éviter le suffixe automatique _test
+        # Configuration DATABASE_URL explicite pour éviter les suffixes automatiques
         echo "DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8" >> .env.test.local
         echo "MAILER_DSN=null://null" >> .env.test.local
         echo "MAILER_FROM_EMAIL=test@example.com" >> .env.test.local
         echo 'MAILER_FROM_NAME="Test Service"' >> .env.test.local
-        # Définir TEST_TOKEN pour éviter le suffixe automatique
-        echo "TEST_TOKEN=" >> .env.test.local
         
         # Vérifier la configuration DATABASE_URL
         echo "🔍 Configuration de la base de données:"
