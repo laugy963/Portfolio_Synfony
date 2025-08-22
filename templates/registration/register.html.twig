@@ -48,12 +48,16 @@
             <div class="registration-header mb-4">
                 <h2 class="form-title">Rejoignez-nous</h2>
                 <p class="form-subtitle">Créez votre compte pour accéder à toutes les fonctionnalités</p>
+                <div class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Tous les champs sont obligatoires</strong> pour créer votre compte
+                </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group form-half">
                     <label class="form-label">
-                        <i class="fas fa-user me-2"></i>Prénom
+                        <i class="fas fa-user me-2"></i>Prénom <span style="color: #dc2626;">*</span>
                     </label>
                     {{ form_widget(registrationForm.firstName) }}
                     {{ form_errors(registrationForm.firstName) }}
@@ -61,7 +65,7 @@
 
                 <div class="form-group form-half">
                     <label class="form-label">
-                        <i class="fas fa-user me-2"></i>Nom
+                        <i class="fas fa-user me-2"></i>Nom <span style="color: #dc2626;">*</span>
                     </label>
                     {{ form_widget(registrationForm.lastName) }}
                     {{ form_errors(registrationForm.lastName) }}
@@ -70,7 +74,7 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-envelope me-2"></i>Adresse email
+                    <i class="fas fa-envelope me-2"></i>Adresse email <span style="color: #dc2626;">*</span>
                 </label>
                 {{ form_widget(registrationForm.email) }}
                 {{ form_errors(registrationForm.email) }}
@@ -78,7 +82,7 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-lock me-2"></i>Mot de passe
+                    <i class="fas fa-lock me-2"></i>Mot de passe <span style="color: #dc2626;">*</span>
                 </label>
                 <div class="password-input-container">
                     {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input password-input', 'id': 'password'}}) }}
@@ -92,7 +96,7 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe
+                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe <span style="color: #dc2626;">*</span>
                 </label>
                 <div class="password-input-container">
                     {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input password-input', 'id': 'password-confirm'}}) }}
@@ -231,33 +235,157 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page d\'inscription chargée, initialisation...');
             
+            const form = document.querySelector('form[name="registration_form"]');
+            const submitButton = document.querySelector('button[type="submit"]');
             const password = document.getElementById('password');
             const passwordConfirm = document.getElementById('password-confirm');
+            const firstNameField = document.querySelector('input[name="registration_form[firstName]"]');
+            const lastNameField = document.querySelector('input[name="registration_form[lastName]"]');
+            const emailField = document.querySelector('input[name="registration_form[email]"]');
+            const agreeTermsField = document.querySelector('input[name="registration_form[agreeTerms]"]');
             
-            console.log('Champs de mot de passe:', {
+            console.log('Champs trouvés:', {
+                form: form,
                 password: password,
-                passwordConfirm: passwordConfirm
+                passwordConfirm: passwordConfirm,
+                firstName: firstNameField,
+                lastName: lastNameField,
+                email: emailField,
+                agreeTerms: agreeTermsField
             });
-            
+
+            // Fonction pour valider un champ individuel
+            function validateField(field, isEmpty = false) {
+                if (!field) return true;
+                
+                const isValid = !isEmpty && field.value.trim().length > 0;
+                
+                if (isValid) {
+                    field.style.borderColor = 'var(--accent-green)';
+                    field.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                } else if (field.value.length > 0 || field.classList.contains('was-validated')) {
+                    field.style.borderColor = '#dc2626';
+                    field.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
+                } else {
+                    field.style.borderColor = '';
+                    field.style.boxShadow = '';
+                }
+                
+                return isValid;
+            }
+
+            // Fonction pour valider les mots de passe
             function validatePasswords() {
-                if (password.value && passwordConfirm.value) {
-                    if (password.value === passwordConfirm.value) {
+                if (!password || !passwordConfirm) return true;
+                
+                const passwordValue = password.value;
+                const confirmValue = passwordConfirm.value;
+                
+                // Validation du mot de passe principal
+                const isPasswordValid = passwordValue.length >= 6;
+                validateField(password, !isPasswordValid);
+                
+                // Validation de la confirmation
+                if (passwordValue && confirmValue) {
+                    if (passwordValue === confirmValue && isPasswordValid) {
                         passwordConfirm.style.borderColor = 'var(--accent-green)';
                         passwordConfirm.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                        return true;
                     } else {
                         passwordConfirm.style.borderColor = '#dc2626';
                         passwordConfirm.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
+                        return false;
                     }
                 } else {
                     // Remettre le style par défaut
                     passwordConfirm.style.borderColor = '';
                     passwordConfirm.style.boxShadow = '';
+                    return false;
                 }
             }
-            
-            if (password && passwordConfirm) {
-                password.addEventListener('input', validatePasswords);
-                passwordConfirm.addEventListener('input', validatePasswords);
+
+            // Fonction pour valider l'email
+            function validateEmail() {
+                if (!emailField) return true;
+                
+                const emailValue = emailField.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const isValid = emailValue.length > 0 && emailRegex.test(emailValue);
+                
+                validateField(emailField, !isValid);
+                return isValid;
+            }
+
+            // Fonction pour vérifier si tous les champs sont remplis
+            function validateAllFields() {
+                const isFirstNameValid = validateField(firstNameField, !firstNameField?.value.trim());
+                const isLastNameValid = validateField(lastNameField, !lastNameField?.value.trim());
+                const isEmailValid = validateEmail();
+                const arePasswordsValid = validatePasswords();
+                const isTermsChecked = agreeTermsField?.checked || false;
+                
+                return isFirstNameValid && isLastNameValid && isEmailValid && arePasswordsValid && isTermsChecked;
+            }
+
+            // Ajouter les écouteurs d'événements
+            [firstNameField, lastNameField, emailField, password, passwordConfirm].forEach(field => {
+                if (field) {
+                    field.addEventListener('input', function() {
+                        this.classList.add('was-validated');
+                        validateAllFields();
+                    });
+                    
+                    field.addEventListener('blur', function() {
+                        this.classList.add('was-validated');
+                        validateAllFields();
+                    });
+                }
+            });
+
+            if (agreeTermsField) {
+                agreeTermsField.addEventListener('change', validateAllFields);
+            }
+
+            // Validation lors de la soumission
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    // Marquer tous les champs comme validés
+                    [firstNameField, lastNameField, emailField, password, passwordConfirm].forEach(field => {
+                        if (field) field.classList.add('was-validated');
+                    });
+
+                    if (!validateAllFields()) {
+                        e.preventDefault();
+                        
+                        // Afficher un message d'erreur global
+                        let errorMessage = 'Veuillez corriger les erreurs suivantes :\n';
+                        
+                        if (!firstNameField?.value.trim()) errorMessage += '- Prénom requis\n';
+                        if (!lastNameField?.value.trim()) errorMessage += '- Nom requis\n';
+                        if (!emailField?.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) errorMessage += '- Email valide requis\n';
+                        if (!password?.value || password.value.length < 6) errorMessage += '- Mot de passe de 6 caractères minimum requis\n';
+                        if (password?.value !== passwordConfirm?.value) errorMessage += '- Les mots de passe doivent correspondre\n';
+                        if (!agreeTermsField?.checked) errorMessage += '- Acceptation des conditions requise\n';
+                        
+                        alert(errorMessage);
+                        
+                        // Scroll vers le premier champ en erreur
+                        const firstErrorField = [firstNameField, lastNameField, emailField, password, passwordConfirm, agreeTermsField]
+                            .find(field => {
+                                if (!field) return false;
+                                if (field.type === 'checkbox') return !field.checked;
+                                return !field.value.trim() || 
+                                       (field === emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) ||
+                                       (field === password && field.value.length < 6) ||
+                                       (field === passwordConfirm && field.value !== password?.value);
+                            });
+                        
+                        if (firstErrorField) {
+                            firstErrorField.focus();
+                            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                });
             }
 
             // Test des boutons de toggle

@@ -22,18 +22,28 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-input',
                     'placeholder' => 'Votre prénom'
                 ],
+                'constraints' => [
+                    new NotBlank(
+                        message: 'Veuillez entrer votre prénom'
+                    ),
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-input',
                     'placeholder' => 'Votre nom'
+                ],
+                'constraints' => [
+                    new NotBlank(
+                        message: 'Veuillez entrer votre nom'
+                    ),
                 ],
             ])
             ->add('email', EmailType::class, [
