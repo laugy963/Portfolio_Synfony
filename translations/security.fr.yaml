@@ -1,0 +1,12 @@
+# Traductions pour les messages de sécurité
+'Invalid credentials.': 'Email ou mot de passe incorrect. Veuillez vérifier vos informations de connexion.'
+'Bad credentials.': 'Email ou mot de passe incorrect. Veuillez vérifier vos informations de connexion.'
+'Username could not be found.': 'Cet email n''est pas associé à un compte existant.'
+'Account has expired.': 'Ce compte a expiré.'
+'Credentials have expired.': 'Les informations d''identification ont expiré.'
+'Account is disabled.': 'Ce compte est désactivé.'
+'Account is locked.': 'Ce compte est verrouillé.'
+'Too many failed login attempts, please try again later.': 'Trop de tentatives de connexion échouées, veuillez réessayer plus tard.'
+'The presented password is invalid.': 'Le mot de passe saisi est incorrect.'
+'The presented password cannot be empty.': 'Le mot de passe ne peut pas être vide.'
+'The username field cannot be empty.': 'Le champ email ne peut pas être vide.'
