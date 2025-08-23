@@ -214,6 +214,7 @@ main {
     transition: all 0.3s ease;
     color: var(--light-gray) !important;
     position: relative;
+    text-decoration: none !important; /* Supprime le soulignement par défaut */
 }
 
 .nav-link::after {
@@ -230,15 +231,21 @@ main {
 .nav-link:hover {
     color: var(--white) !important;
     transform: translateY(-2px);
+    text-decoration: none !important;
 }
 
-.nav-link:hover::after,
-.nav-link.active::after {
+/* Seulement au hover, pas automatiquement pour .active */
+.nav-link:hover::after {
     width: 100%;
 }
 
-.nav-link.active {
+/* Style spécial pour les liens vraiment actifs (section courante) */
+.nav-link.current-section {
     color: var(--white) !important;
+}
+
+.nav-link.current-section::after {
+    width: 100%;
 }
 
 .nav-link i {
@@ -246,6 +253,18 @@ main {
 }
 
 /* ========== AMÉLIORATIONS NAVBAR RESPONSIVE ========== */
+
+.navbar a,
+.navbar .nav-link,
+.navbar .navbar-brand {
+    text-decoration: none !important;
+}
+
+.navbar a:hover,
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover {
+    text-decoration: none !important;
+}
 
 /* Styles pour le layout de la navbar */
 .navbar .container-fluid {

@@ -251,8 +251,8 @@
                         });
                         
                         // Ajouter une classe active temporaire
-                        navLinks.forEach(link => link.classList.remove('active'));
-                        this.classList.add('active');
+                        navLinks.forEach(link => link.classList.remove('current-section'));
+                        this.classList.add('current-section');
                     }
                 });
             });
@@ -394,8 +394,8 @@
                         const sectionBottom = sectionTop + section.offsetHeight;
                         
                         if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
-                            navLinks.forEach(link => link.classList.remove('active'));
-                            navLink.classList.add('active');
+                            navLinks.forEach(link => link.classList.remove('current-section'));
+                            navLink.classList.add('current-section');
                         }
                     }
                 });
