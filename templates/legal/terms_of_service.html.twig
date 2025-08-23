@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions générales d'utilisation{% endblock %}
+
+{% block body %}
+<div class="form-page">
+    <!-- Barre de navigation en haut -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand fw-bold text-primary me-auto" href="{{ path('app_home') }}">
+                <i class="fas fa-home me-2 d-none d-sm-inline"></i>
+                <span class="brand-text">Portfolio</span>
+            </a>
+            <button class="navbar-toggler ms-auto border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="{{ path('app_home') }}">
+                            <i class="fas fa-arrow-left me-2 d-lg-none"></i>
+                            <span>Retour à l'accueil</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête -->
+    <header class="header">
+        <div class="container text-center">
+            <h1 class="header-title">Conditions générales d'utilisation</h1>
+            <p class="text-muted">Dernière mise à jour : 23 août 2025</p>
+        </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <section class="form-section">
+        <div class="container">
+            <div class="legal-content bg-white p-5 rounded shadow-sm">
+                
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">1. Objet</h2>
+                    <p class="section-content">
+                        Le présent site a pour objectif de présenter mes projets informatiques et de permettre l'accès à certains jeux développés.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">2. Accès au site</h2>
+                    <p class="section-content">
+                        L'accès au site est gratuit. L'éditeur du site se réserve le droit de modifier ou suspendre tout ou partie des services sans préavis.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">3. Propriété intellectuelle</h2>
+                    <p class="section-content">
+                        L'ensemble des contenus (textes, images, codes, jeux) présents sur ce site sont ma propriété et ne peuvent être reproduits ou utilisés sans mon accord.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">4. Utilisation interdite</h2>
+                    <p class="section-content mb-3">L'utilisateur s'engage à ne pas :</p>
+                    <ul class="legal-list">
+                        <li>détourner le site à des fins illégales,</li>
+                        <li>tenter de pirater ou perturber son fonctionnement,</li>
+                        <li>diffuser du contenu offensant ou nuisible.</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">5. Responsabilité</h2>
+                    <p class="section-content">
+                        Je ne peux être tenu responsable d'éventuels bugs, interruptions ou pertes de données liées à l'utilisation du site.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">6. Modifications</h2>
+                    <p class="section-content">
+                        Les présentes conditions peuvent être mises à jour à tout moment. L'utilisateur est invité à les consulter régulièrement.
+                    </p>
+                </div>
+
+                <!-- Navigation entre les pages légales -->
+                <div class="legal-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_privacy_policy') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-shield-alt me-2"></i>Politique de confidentialité
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_home') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-home me-2"></i>Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2025 Portfolio. Tous droits réservés.</p>
+        </div>
+    </footer>
+</div>
+
+<style>
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.section-title {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--light-blue);
+    padding-bottom: 0.5rem;
+}
+
+.section-content {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.legal-list {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    padding-left: 1.5rem;
+}
+
+.legal-list li {
+    margin-bottom: 0.5rem;
+}
+
+.legal-navigation {
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .section-content {
+        font-size: 0.95rem;
+    }
+}
+</style>
+{% endblock %}

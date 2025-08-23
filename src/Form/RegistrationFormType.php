@@ -88,7 +88,7 @@ class RegistrationFormType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas.',
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'J\'accepte les conditions d\'utilisation',
+                'label' => false, // On va gérer le label dans le template
                 'mapped' => false,
                 'attr' => ['class' => 'form-check-input'],
                 'constraints' => [

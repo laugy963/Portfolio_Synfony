@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité{% endblock %}
+
+{% block body %}
+<div class="form-page">
+    <!-- Barre de navigation en haut -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand fw-bold text-primary me-auto" href="{{ path('app_home') }}">
+                <i class="fas fa-home me-2 d-none d-sm-inline"></i>
+                <span class="brand-text">Portfolio</span>
+            </a>
+            <button class="navbar-toggler ms-auto border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="{{ path('app_home') }}">
+                            <i class="fas fa-arrow-left me-2 d-lg-none"></i>
+                            <span>Retour à l'accueil</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête -->
+    <header class="header">
+        <div class="container text-center">
+            <h1 class="header-title">🔒 Politique de confidentialité</h1>
+            <p class="text-muted">Dernière mise à jour : 23 août 2025</p>
+        </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <section class="form-section">
+        <div class="container">
+            <div class="legal-content bg-white p-5 rounded shadow-sm">
+                
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">1. Données collectées</h2>
+                    <p class="section-content">
+                        Ce site peut collecter certaines données personnelles (nom, email, pseudonyme) lorsque l'utilisateur crée un compte ou interagit avec les jeux.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">2. Utilisation des données</h2>
+                    <p class="section-content mb-3">Les données collectées sont utilisées uniquement pour :</p>
+                    <ul class="legal-list">
+                        <li>gérer l'accès aux jeux,</li>
+                        <li>améliorer l'expérience utilisateur,</li>
+                        <li>éventuellement communiquer (ex. contact email).</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">3. Durée de conservation</h2>
+                    <p class="section-content">
+                        Les données sont conservées tant que le compte utilisateur est actif. Elles peuvent être supprimées à la demande.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">4. Cookies</h2>
+                    <p class="section-content">
+                        Le site peut utiliser des cookies pour des besoins techniques (session utilisateur) ou statistiques (ex. Google Analytics).
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">5. Partage des données</h2>
+                    <p class="section-content">
+                        Les données ne sont pas revendues. Elles peuvent être partagées uniquement avec les prestataires techniques nécessaires (hébergeur, outils de mesure d'audience).
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">6. Droits de l'utilisateur</h2>
+                    <p class="section-content">
+                        Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. 
+                        Pour exercer ce droit, contactez : <strong>contact@portfolio.com</strong>
+                    </p>
+                </div>
+
+                <!-- Encadré RGPD -->
+                <div class="rgpd-notice mb-5">
+                    <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-shield-alt text-primary fs-4 me-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-primary mb-2">Conformité RGPD</h5>
+                            <p class="mb-0 small text-muted">
+                                Ce site respecte le Règlement Général sur la Protection des Données (RGPD). 
+                                Vos données personnelles sont traitées de manière transparente et sécurisée.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation entre les pages légales -->
+                <div class="legal-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_terms_of_service') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-file-contract me-2"></i>Conditions d'utilisation
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_home') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-home me-2"></i>Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2025 Portfolio. Tous droits réservés.</p>
+        </div>
+    </footer>
+</div>
+
+<style>
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.section-title {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--light-blue);
+    padding-bottom: 0.5rem;
+}
+
+.section-content {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.legal-list {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    padding-left: 1.5rem;
+}
+
+.legal-list li {
+    margin-bottom: 0.5rem;
+}
+
+.rgpd-notice {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 184, 166, 0.05));
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.legal-navigation {
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .section-content {
+        font-size: 0.95rem;
+    }
+    
+    .rgpd-notice {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}

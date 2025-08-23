@@ -208,8 +208,22 @@
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">
-        <div class="container text-center">
-            <p>&copy; 2025 Mon Portfolio. Tous droits réservés.</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 text-center text-md-start">
+                    <p class="mb-2 mb-md-0">&copy; 2025 Mon Portfolio. Tous droits réservés.</p>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <div class="footer-links">
+                        <a href="{{ path('app_terms_of_service') }}" class="text-light me-3 small">
+                            <i class="fas fa-file-contract me-1"></i>CGU
+                        </a>
+                        <a href="{{ path('app_privacy_policy') }}" class="text-light small">
+                            <i class="fas fa-shield-alt me-1"></i>Confidentialité
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 {% endblock %}

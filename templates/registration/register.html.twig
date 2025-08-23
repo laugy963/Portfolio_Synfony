@@ -111,7 +111,16 @@
             <div class="form-group checkbox-group">
                 <div class="checkbox-container">
                     {{ form_widget(registrationForm.agreeTerms) }}
-                    {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'checkbox-label'}}) }}
+                    <label for="{{ registrationForm.agreeTerms.vars.id }}" class="checkbox-label">
+                        J'accepte les 
+                        <a href="{{ path('app_terms_of_service') }}" target="_blank" class="link-primary">
+                            conditions d'utilisation
+                        </a> 
+                        et la 
+                        <a href="{{ path('app_privacy_policy') }}" target="_blank" class="link-primary">
+                            politique de confidentialité
+                        </a>
+                    </label>
                 </div>
                 {{ form_errors(registrationForm.agreeTerms) }}
             </div>
