@@ -1,0 +1,82 @@
+{# Barre de navigation commune pour toutes les pages #}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container-fluid px-3">
+        <!-- Logo/Brand à gauche -->
+        <a class="navbar-brand fw-bold text-primary me-auto" href="{{ path('app_home') }}">
+            <i class="fas fa-home me-2 d-none d-sm-inline"></i>
+            <span class="brand-text">Portfolio</span>
+        </a>
+        
+        <!-- Bouton toggle pour mobile (à droite du logo) -->
+        <button class="navbar-toggler ms-auto border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Menu de navigation - tous les liens à droite -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <!-- Liens de navigation -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2" href="{{ path('app_home') }}#about">
+                        <i class="fas fa-user me-2 d-lg-none"></i>
+                        <span>À propos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2" href="{{ path('app_home') }}#projects">
+                        <i class="fas fa-folder-open me-2 d-lg-none"></i>
+                        <span>Projets</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2" href="{{ path('app_home') }}#contact">
+                        <i class="fas fa-envelope me-2 d-lg-none"></i>
+                        <span>Contact</span>
+                    </a>
+                </li>
+                
+                <!-- Séparateur visuel sur desktop -->
+                <li class="nav-item d-none d-lg-block">
+                    <span class="navbar-text text-muted mx-2">|</span>
+                </li>
+                
+                <!-- Liens conditionnels selon l'utilisateur -->
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2" href="{{ path('app_project_index') }}">
+                            <i class="fas fa-cog me-2 d-lg-none"></i>
+                            <span>Gestion</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2 {{ app.request.get('_route') starts with 'app_profil' ? 'active' : '' }}" href="{{ path('app_profil_index') }}">
+                            <i class="fas fa-user me-2 d-lg-none"></i>
+                            <span>Mon Profil</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2 text-danger" href="{{ path('app_logout') }}">
+                            <i class="fas fa-sign-out-alt me-2 d-lg-none"></i>
+                            <span>Déconnexion</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2 {{ app.request.get('_route') == 'app_login' ? 'active' : '' }}" href="{{ path('app_login') }}">
+                            <i class="fas fa-sign-in-alt me-2 d-lg-none"></i>
+                            <span>Connexion</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-4 py-2 ms-lg-2 rounded {{ app.request.get('_route') == 'app_register' ? 'active' : '' }}" href="{{ path('app_register') }}">
+                            <i class="fas fa-user-plus me-2 d-lg-none"></i>
+                            <span>Inscription</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

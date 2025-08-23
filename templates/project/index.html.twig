@@ -1,20 +1,95 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProjectController!{% endblock %}
+{% block title %}Gestion des Projets{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container page-container content-fade-in">
+    <div class="row">
+        <div class="col-12">
+            <!-- En-tête de la page -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="fas fa-cog me-2 text-primary"></i>
+                        Gestion des Projets
+                    </h1>
+                    <p class="text-muted">Administrez les projets affichés sur votre portfolio</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Nouveau Projet
+                    </button>
+                </div>
+            </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            <!-- Messages flash -->
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-triangle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/king/Documents/Portfolio_Synfony/src/Controller/ProjectController.php</code></li>
-        <li>Your template at <code>/Users/king/Documents/Portfolio_Synfony/templates/project/index.html.twig</code></li>
-    </ul>
+            <!-- Contenu principal -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Liste des Projets
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="text-muted text-center py-5">
+                                <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary"></i>
+                                Aucun projet configuré pour le moment.
+                                <br>
+                                <small>Commencez par ajouter votre premier projet !</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-primary">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plus-circle fa-2x text-primary mb-3"></i>
+                            <h5>Ajouter un Projet</h5>
+                            <p class="text-muted small">Créez un nouveau projet à afficher sur votre portfolio</p>
+                            <button class="btn btn-outline-primary btn-sm">Créer</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-info">
+                        <div class="card-body text-center">
+                            <i class="fas fa-eye fa-2x text-info mb-3"></i>
+                            <h5>Prévisualiser</h5>
+                            <p class="text-muted small">Voir comment vos projets apparaissent sur le site</p>
+                            <a href="{{ path('app_home') }}#projects" class="btn btn-outline-info btn-sm">Voir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cogs fa-2x text-success mb-3"></i>
+                            <h5>Paramètres</h5>
+                            <p class="text-muted small">Configurez l'affichage des projets</p>
+                            <button class="btn btn-outline-success btn-sm">Configurer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

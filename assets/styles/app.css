@@ -49,6 +49,155 @@ body {
     width: 100%;
 }
 
+/* ============ NAVIGATION COMMUNE ============ */
+.navbar {
+    background: rgba(13, 27, 62, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1030;
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    color: var(--primary-blue) !important;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--accent-teal) !important;
+    transform: translateY(-1px);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 0 2px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary-blue) !important;
+    background-color: rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.nav-link.current-section {
+    color: var(--accent-teal) !important;
+    background-color: rgba(20, 184, 166, 0.1);
+}
+
+.navbar-toggler {
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+/* Responsive navigation */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(13, 27, 62, 0.98);
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-link {
+        padding: 0.75rem 1rem !important;
+        margin: 0.2rem 0;
+    }
+}
+
+/* ============ FOOTER COMMUN ============ */
+footer {
+    background: var(--gradient-dark) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+footer h5 {
+    color: var(--primary-blue) !important;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+footer h5 .fas {
+    color: var(--primary-blue) !important;
+}
+
+footer .text-light {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--accent-teal) !important;
+    transform: translateX(5px);
+}
+
+footer .fab,
+footer .fas {
+    transition: all 0.3s ease;
+}
+
+footer a:hover .fab,
+footer a:hover .fas {
+    transform: scale(1.2);
+    color: var(--accent-teal) !important;
+}
+
+/* ============ BOUTON RETOUR EN HAUT ============ */
+#backToTop {
+    background: var(--gradient-primary) !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+}
+
+#backToTop:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* ============ STRUCTURE DE PAGE ============ */
+.main-content {
+    min-height: calc(100vh - 200px);
+    margin-top: 76px; /* Hauteur de la navbar */
+}
+
+/* Page sans hero banner */
+.page-container {
+    margin-top: 100px;
+    min-height: calc(100vh - 200px);
+}
+
+/* Animation de fade-in pour le contenu */
+.content-fade-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Correction pour le HTML */
 html {
     overflow-x: hidden;
