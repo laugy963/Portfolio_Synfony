@@ -3,58 +3,61 @@
 {% block title %}Mot de passe oublié{% endblock %}
 
 {% block body %}
-<div class="container page-container content-fade-in">
+<div class="form-page page-container content-fade-in">
     <!-- En-tête avec sous-titre -->
-    <header class="text-center mb-5">
-        <h1 class="h2 mb-3">Mot de passe oublié ?</h1>
+    <header class="header">
+        <div class="container text-center">
+            <h1 class="header-title">Mot de passe oublié&nbsp;?</h1>
+        </div>
     </header>
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-6 offset-md-2" style="margin-top:2.5rem;">
             {% for flash_error in app.flashes('reset_password_error') %}
-                <div class="alert alert-danger mb-4">
+                <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     {{ flash_error }}
                 </div>
             {% endfor %}
 
             {{ form_start(requestForm, {'attr': {'class': 'form-container'}}) }}
-                <div class="registration-header mb-4">
+                <div class="registration-header mb-4 text-center">
                     <h2 class="form-title">
-                    <i class="fas fa-key me-2"></i>Réinitialisation
-                </h2>
-                <p class="form-subtitle">
-                    Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
-                </p>
-            </div>
+                        <i class="fas fa-key me-2"></i>Réinitialisation
+                    </h2>
+                    <p class="form-subtitle">
+                        Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+                    </p>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-envelope me-2"></i>Adresse email
-                </label>
-                {{ form_widget(requestForm.email, {
-                    'attr': {
-                        'class': 'form-input',
-                        'placeholder': 'votre@email.com'
-                    }
-                }) }}
-                {{ form_errors(requestForm.email) }}
-            </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope me-2"></i>Adresse email
+                    </label>
+                    {{ form_widget(requestForm.email, {
+                        'attr': {
+                            'class': 'form-input',
+                            'placeholder': 'votre@email.com'
+                        }
+                    }) }}
+                    {{ form_errors(requestForm.email) }}
+                </div>
 
-            <div class="form-group">
-                <button type="submit" class="form-button">
-                    <i class="fas fa-paper-plane me-2"></i>Envoyer le lien de réinitialisation
-                </button>
-            </div>
+                <div class="form-group">
+                    <button type="submit" class="form-button">
+                        <i class="fas fa-paper-plane me-2"></i>Envoyer le lien de réinitialisation
+                    </button>
+                </div>
 
-            <div class="form-footer">
-                <p class="text-center">
-                    Vous vous souvenez de votre mot de passe ? 
-                    <a href="{{ path('app_login') }}" class="link-primary">Retour à la connexion</a>
-                </p>
-            </div>
-        {{ form_end(requestForm) }}
+                <div class="form-footer">
+                    <p class="text-center">
+                        Vous vous souvenez de votre mot de passe ? 
+                        <a href="{{ path('app_login') }}" class="link-primary">Retour à la connexion</a>
+                    </p>
+                </div>
+            {{ form_end(requestForm) }}
         </div>
     </div>
 </div>
 {% endblock %}
+
