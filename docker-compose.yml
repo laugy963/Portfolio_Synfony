@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+      POSTGRES_DB: symfony
+    volumes:
+      - portfolio_synfony_database_data:/var/lib/postgresql/data
+
+  mailer:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  web:
+    image: ton_image:tag
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - database
+      - mailer
+    environment:
+      DATABASE_URL: "postgresql://symfony:symfony@database:5432/symfony"
+      MAILER_DSN: "smtp://mailer:1025"
+
+volumes:
+  portfolio_synfony_database_data:
+    external: true
