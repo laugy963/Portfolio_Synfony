@@ -7,28 +7,36 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20250809163950 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Recréation propre de la table project pour stocker toutes les informations des projets';
     }
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE reset_password_request DROP CONSTRAINT FK_7CE748AA76ED395');
-        $this->addSql('ALTER TABLE reset_password_request ADD CONSTRAINT FK_7CE748AA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        // Supprime la table si elle existe déjà (attention : perte de données !)
+        if ($schema->hasTable('project')) {
+            $this->addSql('DROP TABLE project');
+        }
+
+        $this->addSql('CREATE TABLE project (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            image VARCHAR(255) DEFAULT NULL,
+            description TEXT DEFAULT NULL,
+            technologies VARCHAR(500) DEFAULT NULL,
+            features TEXT DEFAULT NULL,
+            role TEXT DEFAULT NULL,
+            github VARCHAR(255) DEFAULT NULL,
+            link VARCHAR(255) DEFAULT NULL,
+            created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
+        )');
     }
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE reset_password_request DROP CONSTRAINT fk_7ce748aa76ed395');
-        $this->addSql('ALTER TABLE reset_password_request ADD CONSTRAINT fk_7ce748aa76ed395 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('DROP TABLE project');
     }
 }
