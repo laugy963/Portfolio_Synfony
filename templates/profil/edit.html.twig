@@ -41,15 +41,15 @@
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
                     
                     <div class="mb-3">
-                        {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.firstName) }}
-                        {{ form_errors(form.firstName) }}
-                    </div>
-
-                    <div class="mb-3">
                         {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.lastName) }}
                         {{ form_errors(form.lastName) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.firstName) }}
+                        {{ form_errors(form.firstName) }}
                     </div>
 
                     <div class="mb-3">
