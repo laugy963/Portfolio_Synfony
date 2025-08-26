@@ -27,7 +27,6 @@ services:
       - mailer
     environment:
       DATABASE_URL: "postgresql://symfony:symfony@database:5432/symfony"
-      MAILER_DSN: "smtp://laukingportfolio%40gmail.com:lrdjxyqkxkyryahy@smtp.gmail.com:587?encryption=tls&auth_mode=login"
-
+      MAILER_DSN: "smtp://mailer:1025"          
 volumes:
   portfolio_synfony_database_data:
