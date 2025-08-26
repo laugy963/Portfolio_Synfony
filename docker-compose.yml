@@ -11,7 +11,7 @@ services:
       - portfolio_synfony_database_data:/var/lib/postgresql/data
 
   mailer:
-    image: mailhog/mailhog
+    image: axllent/mailpit
     ports:
       - "1025:1025"
       - "8025:8025"
