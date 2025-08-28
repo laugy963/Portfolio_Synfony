@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block body %}
+<div class="container page-container content-fade-in">
+    <header class="text-center mb-5">
+        <h1 class="h2 mb-3" style="margin-top:2.5rem;">Mentions légales</h1>
+    </header>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="legal-content bg-white p-5 rounded shadow-sm">
+                <h2 class="section-title">Éditeur du site</h2>
+                <p class="section-content">
+                    King LAU<br>
+                    Email : laukingportfolio@gmail.com<br>
+                    Ville : Strasbourg, France <br>
+                </p>
+                <div class="my-4"></div>
+                <h2 class="section-title">Hébergeur</h2>
+                <p class="section-content">
+                    [Nom de l’hébergeur]<br>
+                    [Adresse de l’hébergeur]<br>
+                    [Téléphone de l’hébergeur] <br>
+                </p>
+                <div class="my-4"></div>
+                <h2 class="section-title">Contact</h2>
+                <p class="section-content">
+                    Pour toute question, contactez : <a href="mailto:laukingportfolio@gmail.com">laukingportfolio@gmail.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+.section-title {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--light-blue);
+    padding-bottom: 0.5rem;
+}
+.section-content {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+.my-4 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 2rem 1.5rem !important;
+    }
+    .section-title {
+        font-size: 1.2rem;
+    }
+    .section-content {
+        font-size: 0.95rem;
+    }
+}
+</style>
+{% endblock %}

@@ -133,10 +133,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
-    #[\Deprecated]
+    /**
+     * @deprecated Depuis Symfony 7, cette méthode n'est plus nécessaire si vous ne stockez pas de données sensibles temporaires.
+     */
     public function eraseCredentials(): void
     {
-        // @deprecated, to be removed when upgrading to Symfony 8
+        // Ne rien faire, méthode laissée vide pour compatibilité.
     }
 
     public function getFirstName(): ?string

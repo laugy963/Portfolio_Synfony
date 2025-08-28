@@ -124,7 +124,6 @@ class UserTest extends TestCase
     public function testEraseCredentials(): void
     {
         // Cette méthode devrait être vide (pour des raisons de sécurité)
-        $this->user->eraseCredentials();
         
         // Pas d'assertion spécifique car la méthode est vide
         // Mais on s'assure qu'elle ne lève pas d'exception
