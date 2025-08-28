@@ -32,5 +32,26 @@
         
         {# Footer commun #}
         {% include '_footer.html.twig' %}
+
+        {# Bandeau cookies RGPD #}
+        <div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;background:#222;color:#fff;padding:16px;z-index:9999;display:none;">
+            Ce site utilise des cookies pour améliorer votre expérience.
+            <a href="{{ path('app_privacy_policy') }}" style="color:#ffd700;text-decoration:underline;">En savoir plus</a>.
+            <button id="cookie-accept" style="margin-left:16px;">Accepter</button>
+            <button id="cookie-refuse" style="margin-left:8px;">Refuser</button>
+        </div>
+        <script>
+            if (!localStorage.getItem('cookie_consent')) {
+                document.getElementById('cookie-banner').style.display = 'block';
+            }
+            document.getElementById('cookie-accept').onclick = function() {
+                localStorage.setItem('cookie_consent', 'accepted');
+                document.getElementById('cookie-banner').style.display = 'none';
+            };
+            document.getElementById('cookie-refuse').onclick = function() {
+                localStorage.setItem('cookie_consent', 'refused');
+                document.getElementById('cookie-banner').style.display = 'none';
+            };
+        </script>
     </body>
 </html>
