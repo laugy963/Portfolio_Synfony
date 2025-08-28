@@ -35,8 +35,8 @@ class Project
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column]
-    private ?bool $featured = false;
+    #[ORM\Column(type: "boolean", name: "features")]
+    private ?bool $features = false;
 
     public function __construct()
     {
@@ -125,14 +125,14 @@ class Project
         return $this;
     }
 
-    public function isFeatured(): ?bool
+    public function isFeatures(): ?bool
     {
-        return $this->featured;
+        return $this->features;
     }
 
-    public function setFeatured(bool $featured): static
+    public function setFeatures(bool $features): static
     {
-        $this->featured = $featured;
+        $this->features = $features;
         return $this;
     }
 
