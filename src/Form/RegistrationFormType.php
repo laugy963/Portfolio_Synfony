@@ -22,18 +22,28 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-input',
                     'placeholder' => 'Votre prénom'
                 ],
+                'constraints' => [
+                    new NotBlank(
+                        message: 'Veuillez entrer votre prénom'
+                    ),
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-input',
                     'placeholder' => 'Votre nom'
+                ],
+                'constraints' => [
+                    new NotBlank(
+                        message: 'Veuillez entrer votre nom'
+                    ),
                 ],
             ])
             ->add('email', EmailType::class, [
@@ -78,7 +88,7 @@ class RegistrationFormType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas.',
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'J\'accepte les conditions d\'utilisation',
+                'label' => false, // On va gérer le label dans le template
                 'mapped' => false,
                 'attr' => ['class' => 'form-check-input'],
                 'constraints' => [

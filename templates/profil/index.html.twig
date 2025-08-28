@@ -1,0 +1,301 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+<div class="container py-5 page-container content-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        Mon Profil
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('warning') %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-times-circle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="profile-info">
+                                <h5 class="text-muted mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Informations personnelles
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Nom complet</label>
+                                    <p class="fw-bold">
+                                        {{ user.lastName }} {{ user.firstName }}
+                                    </p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Email</label>
+                                    <p class="fw-bold">
+                                        {{ user.email }}
+                                        {% if user.isVerified %}
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fas fa-check"></i> Vérifié
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning ms-2">
+                                                <i class="fas fa-exclamation-triangle"></i> Non vérifié
+                                            </span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="profile-actions">
+                                <h5 class="text-muted mb-3">
+                                    <i class="fas fa-cogs me-2"></i>
+                                    Actions
+                                </h5>
+                                
+                                <div class="d-grid gap-2">
+                                    <a href="{{ path('app_profil_edit') }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-edit me-2"></i>
+                                        Modifier mon profil
+                                    </a>
+                                    
+                                    <a href="{{ path('app_profil_change_password') }}" class="btn btn-outline-warning">
+                                        <i class="fas fa-lock me-2"></i>
+                                        Changer mon mot de passe
+                                    </a>
+                                    
+                                    <a href="{{ path('app_home') }}" class="btn btn-outline-info">
+                                        <i class="fas fa-home me-2"></i>
+                                        Retour à l'accueil
+                                    </a>
+
+                                    <hr class="my-3">
+                                    
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                        <i class="fas fa-trash me-2"></i>
+                                        Supprimer mon compte
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAccountModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Supprimer le compte
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-user-times fa-3x text-danger mb-3"></i>
+                    <h5>Êtes-vous sûr(e) de vouloir supprimer votre compte ?</h5>
+                    <p class="text-muted">Cette action est <strong>irréversible</strong>. Toutes vos données seront définitivement supprimées.</p>
+                    
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Attention :</strong> 
+                        <ul class="list-unstyled mt-2 mb-0">
+                            <li>• Votre profil sera supprimé</li>
+                            <li>• Vous serez déconnecté automatiquement</li>
+                            <li>• Cette action ne peut pas être annulée</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="fw-bold text-danger mb-2">Pour confirmer, tapez "SUPPRIMER" ci-dessous :</p>
+                        <input type="text" class="form-control text-center" id="deleteConfirmation" placeholder="Tapez SUPPRIMER">
+                        <small class="text-muted">Cette vérification permet d'éviter les suppressions accidentelles</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Annuler
+                </button>
+                <button type="button" class="btn btn-danger" id="deleteAccountBtn" disabled onclick="submitDeleteForm()">
+                    <i class="fas fa-trash me-2"></i>Supprimer définitivement
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulaire de suppression caché -->
+<form id="deleteAccountForm" method="POST" action="{{ path('app_profil_delete_account') }}" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+</form>
+
+<style>
+.profile-info .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-info p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-actions .btn {
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+/* Styles pour la modal de suppression */
+#deleteAccountBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+#deleteAccountBtn:not(:disabled) {
+    opacity: 1;
+    cursor: pointer;
+}
+
+#deleteConfirmation {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.modal-footer form {
+    display: inline-block;
+    margin: 0;
+}
+</style>
+
+<script>
+// Fonction pour soumettre le formulaire de suppression
+function submitDeleteForm() {
+    console.log('submitDeleteForm appelée');
+    
+    const finalConfirm = confirm(
+        'DERNIÈRE CONFIRMATION :\n\n' +
+        'Êtes-vous absolument certain(e) de vouloir supprimer votre compte ?\n\n' +
+        '⚠️ Cette action est IRRÉVERSIBLE ⚠️\n\n' +
+        'Cliquez sur "OK" pour supprimer définitivement votre compte\n' +
+        'ou "Annuler" pour revenir en arrière.'
+    );
+    
+    if (finalConfirm) {
+        console.log('Suppression confirmée - soumission du formulaire');
+        document.getElementById('deleteAccountForm').submit();
+    } else {
+        console.log('Suppression annulée par l\'utilisateur');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Script de suppression de compte chargé');
+    
+    // Gestion de la confirmation de suppression
+    const deleteConfirmationInput = document.getElementById('deleteConfirmation');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const deleteModal = document.getElementById('deleteAccountModal');
+
+    console.log('Éléments trouvés:', {
+        input: deleteConfirmationInput,
+        button: deleteAccountBtn,
+        modal: deleteModal
+    });
+
+    if (deleteConfirmationInput && deleteAccountBtn) {
+        // Désactiver le bouton au début
+        deleteAccountBtn.disabled = true;
+        deleteAccountBtn.style.opacity = '0.6';
+        deleteAccountBtn.style.cursor = 'not-allowed';
+        
+        deleteConfirmationInput.addEventListener('input', function() {
+            const inputValue = this.value.trim().toUpperCase();
+            console.log('Valeur saisie:', inputValue);
+            
+            if (inputValue === 'SUPPRIMER') {
+                console.log('Activation du bouton');
+                deleteAccountBtn.disabled = false;
+                deleteAccountBtn.classList.remove('btn-danger');
+                deleteAccountBtn.classList.add('btn-outline-danger');
+                deleteAccountBtn.style.opacity = '1';
+                deleteAccountBtn.style.cursor = 'pointer';
+            } else {
+                console.log('Désactivation du bouton');
+                deleteAccountBtn.disabled = true;
+                deleteAccountBtn.classList.remove('btn-outline-danger');
+                deleteAccountBtn.classList.add('btn-danger');
+                deleteAccountBtn.style.opacity = '0.6';
+                deleteAccountBtn.style.cursor = 'not-allowed';
+            }
+        });
+
+        // Réinitialiser quand la modal se ferme
+        if (deleteModal) {
+            deleteModal.addEventListener('hidden.bs.modal', function() {
+                console.log('Modal fermée - réinitialisation');
+                deleteConfirmationInput.value = '';
+                deleteAccountBtn.disabled = true;
+                deleteAccountBtn.classList.remove('btn-outline-danger');
+                deleteAccountBtn.classList.add('btn-danger');
+                deleteAccountBtn.style.opacity = '0.6';
+                deleteAccountBtn.style.cursor = 'not-allowed';
+            });
+            
+            // Log quand la modal s'ouvre
+            deleteModal.addEventListener('shown.bs.modal', function() {
+                console.log('Modal ouverte');
+                deleteConfirmationInput.focus();
+            });
+        }
+    } else {
+        console.error('Éléments non trouvés pour la suppression de compte');
+    }
+});
+</script>
+{% endblock %}

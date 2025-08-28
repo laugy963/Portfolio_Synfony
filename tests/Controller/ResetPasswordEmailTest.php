@@ -245,7 +245,10 @@ class ResetPasswordEmailTest extends WebTestCase
         
         $client->followRedirect();
         
-        // Vérifier qu'il y a un message d'erreur
-        $this->assertSelectorTextContains('.alert-danger', 'password reset');
+        // Vérifier qu'il y a un message d'erreur (en français)
+        $this->assertSelectorTextContains(
+            '.alert-danger',
+            "Un problème est survenu lors de la validation de votre demande de réinitialisation de mot de passe"
+        );
     }
 }

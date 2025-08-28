@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions générales d'utilisation{% endblock %}
+
+{% block body %}
+<div class="container page-container content-fade-in">
+    <!-- En-tête -->
+    <header class="text-center mb-5">
+        <h1 class="h2 mb-3" style="margin-top:2.5rem;">Conditions générales d'utilisation</h1>
+        <p class="text-muted">Dernière mise à jour : 23 août 2025</p>
+    </header>
+
+    <!-- Contenu principal -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="legal-content bg-white p-5 rounded shadow-sm">
+                
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">1. Objet</h2>
+                    <p class="section-content">
+                        Le présent site a pour objectif de présenter mes projets informatiques et de permettre l'accès à certains jeux développés.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">2. Accès au site</h2>
+                    <p class="section-content">
+                        L'accès au site est gratuit. L'éditeur du site se réserve le droit de modifier ou suspendre tout ou partie des services sans préavis.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">3. Propriété intellectuelle</h2>
+                    <p class="section-content">
+                        L'ensemble des contenus (textes, images, codes, jeux) présents sur ce site sont ma propriété et ne peuvent être reproduits ou utilisés sans mon accord.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">4. Utilisation interdite</h2>
+                    <p class="section-content mb-3">L'utilisateur s'engage à ne pas :</p>
+                    <ul class="legal-list">
+                        <li>détourner le site à des fins illégales,</li>
+                        <li>tenter de pirater ou perturber son fonctionnement,</li>
+                        <li>diffuser du contenu offensant ou nuisible.</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">5. Responsabilité</h2>
+                    <p class="section-content">
+                        Je ne peux être tenu responsable d'éventuels bugs, interruptions ou pertes de données liées à l'utilisation du site.
+                    </p>
+                </div>
+
+                <div class="legal-section mb-5">
+                    <h2 class="section-title">6. Modifications</h2>
+                    <p class="section-content">
+                        Les présentes conditions peuvent être mises à jour à tout moment. L'utilisateur est invité à les consulter régulièrement.
+                    </p>
+                </div>
+
+                <!-- Navigation entre les pages légales -->
+                <div class="legal-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_privacy_policy') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-shield-alt me-2"></i>Politique de confidentialité
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ path('app_home') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-home me-2"></i>Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* Style pour le titre principal */
+.legal-main-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.section-title {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--light-blue);
+    padding-bottom: 0.5rem;
+}
+
+.section-content {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.legal-list {
+    color: var(--dark-gray);
+    font-size: 1rem;
+    padding-left: 1.5rem;
+}
+
+.legal-list li {
+    margin-bottom: 0.5rem;
+}
+
+.legal-navigation {
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .section-content {
+        font-size: 0.95rem;
+    }
+}
+</style>
+{% endblock %}

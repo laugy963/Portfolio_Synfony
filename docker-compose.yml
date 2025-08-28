@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+      POSTGRES_DB: symfony
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    depends_on:
+      - database
+      - mailer
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    environment:
+      DATABASE_URL: "postgresql://symfony:symfony@database:5432/symfony"
+      MAILER_DSN: "smtp://mailer:1025"
+      MAILER_FROM_EMAIL: "laukingportfolio@gmail.com"
+      MAILER_FROM_NAME: "Portfolio"
+      APP_ENV: "dev"
+      APP_SECRET: "changeme"
+
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  db_data:

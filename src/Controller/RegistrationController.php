@@ -32,6 +32,32 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Validation supplémentaire côté serveur
+            $missingFields = [];
+            
+            if (empty(trim($user->getFirstName()))) {
+                $missingFields[] = 'prénom';
+            }
+            
+            if (empty(trim($user->getLastName()))) {
+                $missingFields[] = 'nom';
+            }
+            
+            if (empty(trim($user->getEmail()))) {
+                $missingFields[] = 'email';
+            }
+            
+            if (empty(trim($form->get('plainPassword')->getData()))) {
+                $missingFields[] = 'mot de passe';
+            }
+            
+            if (!empty($missingFields)) {
+                $this->addFlash('error', 'Veuillez remplir tous les champs requis : ' . implode(', ', $missingFields) . '.');
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form,
+                ]);
+            }
+            
             // Vérifier si l'email existe déjà
             $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
             
