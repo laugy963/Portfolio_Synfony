@@ -35,6 +35,13 @@ services:
             $fromEmail: '%env(MAILER_FROM_EMAIL)%'
             $fromName: '%env(MAILER_FROM_NAME)%'
 
+    App\DataFixtures\AdminFixtures:
+        arguments:
+            $adminEmail: '%env(ADMIN_EMAIL)%'
+            $adminFirstName: '%env(ADMIN_FIRSTNAME)%'
+            $adminLastName: '%env(ADMIN_LASTNAME)%'
+            $adminPassword: '%env(ADMIN_PASSWORD)%'
+
 when@test:
     services:
         # Rendre le password hasher public pour les tests
