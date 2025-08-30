@@ -19,16 +19,14 @@ final class Version20250830163509 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE project ADD made_by VARCHAR(255) DEFAULT NULL');
-        $this->addSql('ALTER TABLE project DROP made');
+        // $this->addSql('ALTER TABLE project ADD made_by VARCHAR(255) DEFAULT NULL');
+        // $this->addSql('ALTER TABLE project DROP made');
     }
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE project ADD made BOOLEAN DEFAULT false NOT NULL');
-        $this->addSql('ALTER TABLE project DROP made_by');
+        // $this->addSql('ALTER TABLE project ADD made BOOLEAN DEFAULT false NOT NULL');
+        // $this->addSql('ALTER TABLE project DROP made_by');
     }
 }
+       // $this->addSql('ALTER TABLE project DROP made_by');
