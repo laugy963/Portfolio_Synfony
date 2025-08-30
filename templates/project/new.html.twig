@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Projet{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4"><i class="fas fa-plus-circle me-2 text-primary"></i>Créer un nouveau projet</h2>
+    <form method="post" enctype="multipart/form-data" action="{{ path('app_project_new') }}">
+        <div class="mb-3">
+            <label for="project_title" class="form-label">Titre du projet</label>
+            <input type="text" class="form-control" id="project_title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="project_smallDescription" class="form-label">Petite description</label>
+            <input type="text" class="form-control" id="project_smallDescription" name="smallDescription">
+        </div>
+        <div class="mb-3">
+            <label for="project_description" class="form-label">Description détaillée</label>
+            <textarea class="form-control" id="project_description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="project_bannerImage" class="form-label">Image principale (bannière)</label>
+            <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
+        </div>
+        <div class="mb-3">
+            <label for="project_images" class="form-label">Autres images (plusieurs possibles)</label>
+            <input type="file" class="form-control" id="project_images" name="images[]" accept="image/*" multiple>
+        </div>
+        <div class="mb-3">
+            <label for="project_link" class="form-label">Lien du projet</label>
+            <input type="url" class="form-control" id="project_link" name="link">
+        </div>
+        <div class="mb-3">
+            <label for="project_technologies" class="form-label">Technologies (séparées par une virgule)</label>
+            <input type="text" class="form-control" id="project_technologies" name="technologies" placeholder="Ex: PHP, Symfony, JavaScript">
+        </div>
+        <div class="mb-3">
+            <label for="project_madeBy" class="form-label">Projet réalisé par</label>
+            <input type="text" class="form-control" id="project_madeBy" name="madeBy" placeholder="Nom ou équipe ayant réalisé le projet">
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-2"></i>Enregistrer
+        </button>
+        <a href="{{ path('app_project_index') }}" class="btn btn-secondary ms-2">Annuler</a>
+    </form>
+</div>
+{% endblock %}

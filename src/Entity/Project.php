@@ -17,26 +17,29 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $smallDescription = null;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
+    private ?string $bannerImage = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $images = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $github = null;
-
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $technologies = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $madeBy = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
-
-    #[ORM\Column(type: "boolean", name: "features")]
-    private ?bool $features = false;
 
     public function __construct()
     {
@@ -59,6 +62,17 @@ class Project
         return $this;
     }
 
+    public function getSmallDescription(): ?string
+    {
+        return $this->smallDescription;
+    }
+
+    public function setSmallDescription(?string $smallDescription): static
+    {
+        $this->smallDescription = $smallDescription;
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -70,14 +84,25 @@ class Project
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getBannerImage(): ?string
     {
-        return $this->image;
+        return $this->bannerImage;
     }
 
-    public function setImage(?string $image): static
+    public function setBannerImage(?string $bannerImage): static
     {
-        $this->image = $image;
+        $this->bannerImage = $bannerImage;
+        return $this;
+    }
+
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    public function setImages(?array $images): static
+    {
+        $this->images = $images;
         return $this;
     }
 
@@ -92,17 +117,6 @@ class Project
         return $this;
     }
 
-    public function getGithub(): ?string
-    {
-        return $this->github;
-    }
-
-    public function setGithub(?string $github): static
-    {
-        $this->github = $github;
-        return $this;
-    }
-
     public function getTechnologies(): ?string
     {
         return $this->technologies;
@@ -114,28 +128,6 @@ class Project
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function isFeatures(): ?bool
-    {
-        return $this->features;
-    }
-
-    public function setFeatures(bool $features): static
-    {
-        $this->features = $features;
-        return $this;
-    }
-
     public function getTechnologiesArray(): array
     {
         return $this->technologies ? explode(',', $this->technologies) : [];
@@ -144,6 +136,28 @@ class Project
     public function setTechnologiesFromArray(array $technologies): static
     {
         $this->technologies = implode(',', $technologies);
+        return $this;
+    }
+
+    public function getMadeBy(): ?string
+    {
+        return $this->madeBy;
+    }
+
+    public function setMadeBy(?string $madeBy): static
+    {
+        $this->madeBy = $madeBy;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
         return $this;
     }
 }
