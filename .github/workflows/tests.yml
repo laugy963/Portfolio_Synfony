@@ -139,6 +139,7 @@ jobs:
       continue-on-error: true
 
     env:
-      ADMIN_EMAIL: "laukingstephane@gmail.com"
-      ADMIN_FIRSTNAME: "LAU"
-      ADMIN_LASTNAME: "KING"
+      ADMIN_EMAIL: "test@example.com"
+      ADMIN_FIRSTNAME: "Test"
+      ADMIN_LASTNAME: "User"
+      ADMIN_PASSWORD: "dummy_password"
