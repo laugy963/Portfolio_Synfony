@@ -140,3 +140,5 @@ jobs:
 
     env:
       ADMIN_EMAIL: "laukingstephane@gmail.com"
+      ADMIN_FIRSTNAME: "LAU"
+      ADMIN_LASTNAME: "KING"
