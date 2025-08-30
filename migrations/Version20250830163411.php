@@ -20,7 +20,7 @@ final class Version20250830163411 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE project ADD made_by VARCHAR(255) DEFAULT NULL');
+        // $this->addSql('ALTER TABLE project ADD made_by VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE project DROP made');
     }
 
