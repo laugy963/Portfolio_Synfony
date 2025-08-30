@@ -47,11 +47,41 @@
             document.getElementById('cookie-accept').onclick = function() {
                 localStorage.setItem('cookie_consent', 'accepted');
                 document.getElementById('cookie-banner').style.display = 'none';
+                loadTrackingScripts();
             };
             document.getElementById('cookie-refuse').onclick = function() {
                 localStorage.setItem('cookie_consent', 'refused');
                 document.getElementById('cookie-banner').style.display = 'none';
             };
+
+            // Fonction pour charger les scripts de suivi uniquement après consentement
+            function loadTrackingScripts() {
+                // Google Analytics (remplace G-XXXXXXXXXX par ton ID)
+                var gaScript = document.createElement('script');
+                gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+                gaScript.async = true;
+                document.head.appendChild(gaScript);
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', 'G-XXXXXXXXXX');
+            }
+
+            // Charger GA seulement si consentement
+            if (localStorage.getItem('cookie_consent') === 'accepted') {
+                loadTrackingScripts();
+            }
         </script>
+
+        {% if app.environment == 'prod' %}
+            <script>
+                if (localStorage.getItem('cookie_consent') === 'accepted') {
+                    // Ici, insérez vos scripts de suivi, ex :
+                    // (function(){ ... Google Analytics ... })();
+                }
+            </script>
+        {% endif %}
     </body>
 </html>
