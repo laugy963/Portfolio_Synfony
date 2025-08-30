@@ -137,3 +137,6 @@ jobs:
           echo "PHP CS Fixer not installed, skipping..."
         fi
       continue-on-error: true
+
+    env:
+      ADMIN_EMAIL: "laukingstephane@gmail.com"
