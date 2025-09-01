@@ -15,12 +15,6 @@
                     </h1>
                     <p class="text-muted">Administrez les projets affichés sur votre portfolio</p>
                 </div>
-                <div>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>
-                        Nouveau Projet
-                    </button>
-                </div>
             </div>
 
             <!-- Messages flash -->
@@ -43,16 +37,62 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <p class="text-muted text-center py-5">
-                                <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary"></i>
-                                Aucun projet configuré pour le moment.
-                                <br>
-                                <small>Commencez par ajouter votre premier projet !</small>
-                            </p>
+                    {% if projects is empty %}
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-muted text-center py-5">
+                                    <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary"></i>
+                                    Aucun projet configuré pour le moment.
+                                    <br>
+                                    <small>Commencez par ajouter votre premier projet !</small>
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Bannière</th>
+                                        <th>Titre</th>
+                                        <th>Petite description</th>
+                                        <th>Date de création</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for project in projects %}
+                                        <tr>
+                                            <td>
+                                                {% if project.bannerImage %}
+                                                    <img src="{{ asset('uploads/images/' ~ project.bannerImage) }}" alt="Bannière" style="height:50px;">
+                                                {% else %}
+                                                    <span class="text-muted">Aucune</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ project.title }}</td>
+                                            <td>{{ project.smallDescription }}</td>
+                                            <td>{{ project.createdAt|date('d/m/Y') }}</td>
+                                            <td>
+                                                <a href="{{ path('app_project_show', {id: project.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ path('app_project_edit', {id: project.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form method="post" action="{{ path('app_project_delete', {id: project.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer ce projet ?');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ project.id) }}">
+                                                    <button class="btn btn-sm btn-danger" title="Supprimer">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -64,7 +104,7 @@
                             <i class="fas fa-plus-circle fa-2x text-primary mb-3"></i>
                             <h5>Ajouter un Projet</h5>
                             <p class="text-muted small">Créez un nouveau projet à afficher sur votre portfolio</p>
-                            <button class="btn btn-outline-primary btn-sm">Créer</button>
+                            <a href="{{ path('app_project_new') }}" class="btn btn-outline-primary btn-sm">Créer</a>
                         </div>
                     </div>
                 </div>

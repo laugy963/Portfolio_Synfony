@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   database:
     image: postgres:16
@@ -14,11 +12,8 @@ services:
 
   web:
     build: .
-    depends_on:
-      - database
-      - mailer
     ports:
-      - "8000:8000"
+      - "8000:80"
     volumes:
       - .:/var/www/html
     environment:

@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    images_directory: '%kernel.project_dir%/public/uploads/images'
 
 services:
     # default configuration for services in *this* file
@@ -34,6 +35,13 @@ services:
         arguments:
             $fromEmail: '%env(MAILER_FROM_EMAIL)%'
             $fromName: '%env(MAILER_FROM_NAME)%'
+
+    App\DataFixtures\AdminFixtures:
+        arguments:
+            $adminEmail: '%env(ADMIN_EMAIL)%'
+            $adminFirstName: '%env(ADMIN_FIRSTNAME)%'
+            $adminLastName: '%env(ADMIN_LASTNAME)%'
+            $adminPassword: '%env(ADMIN_PASSWORD)%'
 
 when@test:
     services:
