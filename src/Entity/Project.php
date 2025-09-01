@@ -32,7 +32,7 @@ class Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(length: 1000, nullable: true)]
+    #[ORM\Column(length: 2000, nullable: true)]
     private ?string $technologies = null;
 
     #[ORM\Column(length: 255, nullable: true)]
