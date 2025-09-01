@@ -27,12 +27,12 @@ class Project
     private ?string $bannerImage = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $images = null;
+    private array $images = [];
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
+    #[ORM\Column(length: 1000, nullable: true)]
     private ?string $technologies = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -95,12 +95,12 @@ class Project
         return $this;
     }
 
-    public function getImages(): ?array
+    public function getImages(): array
     {
         return $this->images;
     }
 
-    public function setImages(?array $images): static
+    public function setImages(array $images): static
     {
         $this->images = $images;
         return $this;

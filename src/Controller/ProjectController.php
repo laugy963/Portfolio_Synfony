@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/projects')]
 #[IsGranted('ROLE_ADMIN')]
@@ -28,23 +29,57 @@ class ProjectController extends AbstractController
     #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $project = new Project();
-        $form = $this->createForm(ProjectType::class, $project);
-        $form->handleRequest($request);
+        if ($request->isMethod('POST')) {
+            $project = new Project();
+            $project->setTitle($request->request->get('title'));
+            $project->setSmallDescription($request->request->get('smallDescription'));
+            $project->setDescription($request->request->get('description'));
+            $project->setLink($request->request->get('link'));
+            $project->setTechnologies($request->request->get('technologies'));
+            $project->setMadeBy($request->request->get('madeBy'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            // Gestion de l'image principale (bannière)
+            $bannerImageFile = $request->files->get('bannerImage');
+            if ($bannerImageFile) {
+                $newFilename = uniqid().'.'.$bannerImageFile->guessExtension();
+                try {
+                    $bannerImageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                    $project->setBannerImage($newFilename);
+                } catch (FileException $e) {
+                    // Gérer l'erreur
+                }
+            }
+
+            // Gestion des autres images
+            $imagesFiles = $request->files->get('images');
+            $imagesNames = [];
+            if ($imagesFiles) {
+                foreach ($imagesFiles as $imageFile) {
+                    $imgFilename = uniqid().'.'.$imageFile->guessExtension();
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('images_directory'),
+                            $imgFilename
+                        );
+                        $imagesNames[] = $imgFilename;
+                    } catch (FileException $e) {
+                        // Gérer l'erreur
+                    }
+                }
+                $project->setImages($imagesNames); // Assurez-vous que le champ est bien un array ou JSON
+            }
+
             $entityManager->persist($project);
             $entityManager->flush();
 
             $this->addFlash('success', 'Projet créé avec succès !');
-
-            return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_project_new');
         }
 
-        return $this->render('project/new.html.twig', [
-            'project' => $project,
-            'form' => $form,
-        ]);
+        return $this->render('project/new.html.twig');
     }
 
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
