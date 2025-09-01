@@ -12,6 +12,12 @@
         </div>
     {% endfor %}
 
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <form method="post" enctype="multipart/form-data" action="{{ path('app_project_new') }}">
         <div class="mb-3">
             <label for="project_title" class="form-label">Titre du projet</label>
@@ -28,10 +34,22 @@
         <div class="mb-3">
             <label for="project_bannerImage" class="form-label">Image principale (bannière)</label>
             <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
+            {% for message in app.flashes('filename_bannerImage') %}
+                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
         </div>
         <div class="mb-3">
             <label for="project_images" class="form-label">Autres images (plusieurs possibles)</label>
             <input type="file" class="form-control" id="project_images" name="images[]" accept="image/*" multiple>
+            {% for message in app.flashes('filename_images') %}
+                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
         </div>
         <div class="mb-3">
             <label for="project_link" class="form-label">Lien du projet</label>
