@@ -62,18 +62,6 @@ class ProjectController extends AbstractController
                 $hasError = true;
             }
 
-            // Récupérer tous les noms de fichiers existants
-            $allProjects = $projectRepository->findAll();
-            $existingFilenames = [];
-            foreach ($allProjects as $p) {
-                if ($p->getBannerImage()) {
-                    $existingFilenames[] = $p->getBannerImage();
-                }
-                if (is_array($p->getImages())) {
-                    $existingFilenames = array_merge($existingFilenames, $p->getImages());
-                }
-            }
-
             // Gestion de l'image principale (bannière)
             $bannerImageFile = $request->files->get('bannerImage');
             $newFilename = null;
@@ -81,12 +69,6 @@ class ProjectController extends AbstractController
                 $originalFilename = pathinfo($bannerImageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $extension = $bannerImageFile->guessExtension();
                 $newFilename = $originalFilename . '.' . $extension;
-
-                // Vérifier si le nom existe déjà
-                if (in_array($newFilename, $existingFilenames)) {
-                    $this->addFlash('filename_bannerImage', "L'image '$newFilename' existe déjà. Veuillez renommer votre fichier ou choisir une autre image.");
-                    $hasError = true;
-                }
             }
 
             // Gestion des autres images
@@ -98,14 +80,7 @@ class ProjectController extends AbstractController
                         $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                         $extension = $imageFile->guessExtension();
                         $imgFilename = $originalFilename . '.' . $extension;
-
-                        // Vérifier si le nom existe déjà
-                        if (in_array($imgFilename, $existingFilenames) || in_array($imgFilename, $imagesNames)) {
-                            $this->addFlash('filename_images', "L'image '$imgFilename' existe déjà. Veuillez renommer vos fichiers ou choisir d'autres images.");
-                            $hasError = true;
-                        } else {
-                            $imagesNames[] = $imgFilename;
-                        }
+                        $imagesNames[] = $imgFilename;
                     }
                 }
             }

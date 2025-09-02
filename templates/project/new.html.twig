@@ -171,45 +171,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const imagesInputsContainer = document.getElementById('images-inputs-container');
     const addImageInputBtn = document.getElementById('add-image-input');
     const imagesPreview = document.getElementById('selected-images-preview');
-
-    function checkFilename(filename, inputElement) {
-        fetch('{{ path('app_project_check_filename') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'filename=' + encodeURIComponent(filename)
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Supprimer les anciens messages d'erreur
-            const existingAlert = inputElement.parentNode.querySelector('.filename-error-alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            if (data.exists) {
-                // Créer le message d'erreur
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-danger d-flex align-items-center py-2 px-3 mt-2 filename-error-alert';
-                alertDiv.setAttribute('role', 'alert');
-                alertDiv.innerHTML = `
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span>L'image '${filename}' existe déjà. Veuillez renommer votre fichier ou choisir une autre image.</span>
-                `;
-                
-                // Ajouter après l'input
-                inputElement.parentNode.appendChild(alertDiv);
-            }
-        });
-    }
-    
     // Vérification pour l'image bannière + affichage de l'aperçu
     bannerInput.addEventListener('change', function() {
         if (this.files.length > 0) {
             const file = this.files[0];
-            const filename = file.name;
-            checkFilename(filename, this);
             // Affichage de l'aperçu
             bannerPreview.innerHTML = '';
             bannerFilename.textContent = '';
@@ -321,5 +286,5 @@ document.addEventListener('DOMContentLoaded', function() {
     addRemoveImageInputListeners();
 });
 </script>
-                            {% endblock %}
+{% endblock %}
                             
