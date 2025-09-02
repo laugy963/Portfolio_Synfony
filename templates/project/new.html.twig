@@ -12,38 +12,47 @@
         </div>
     {% endfor %}
 
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
-    {% endfor %}
-
     <form method="post" enctype="multipart/form-data" action="{{ path('app_project_new') }}">
         <div class="mb-3">
             <label for="project_title" class="form-label">Titre du projet</label>
-            <input type="text" class="form-control" id="project_title" name="title" required>
+            <input type="text" class="form-control" id="project_title" name="title" required value="{{ old.title|default('') }}">
+            {% for message in app.flashes('error_title') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_smallDescription" class="form-label">Petite description</label>
-            <input type="text" class="form-control" id="project_smallDescription" name="smallDescription">
+            <input type="text" class="form-control" id="project_smallDescription" name="smallDescription" value="{{ old.smallDescription|default('') }}">
+            {% for message in app.flashes('error_smallDescription') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_description" class="form-label">Description détaillée</label>
-            <textarea class="form-control" id="project_description" name="description" rows="4" required></textarea>
+            <textarea class="form-control" id="project_description" name="description" rows="4" required>{{ old.description|default('') }}</textarea>
+            {% for message in app.flashes('error_description') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_bannerImage" class="form-label">Image principale (bannière)</label>
             <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
+            <small class="form-text text-muted">Formats acceptés : JPG, PNG, GIF. Taille max : 2MB</small>
             {% for message in app.flashes('filename_bannerImage') %}
-                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
+    <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span>{{ message }}</span>
+    </div>
+{% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_images" class="form-label">Autres images (plusieurs possibles)</label>
             <input type="file" class="form-control" id="project_images" name="images[]" accept="image/*" multiple>
+            <small class="form-text text-muted">Vous pouvez sélectionner plusieurs images. Formats acceptés : JPG, PNG, GIF</small>
             {% for message in app.flashes('filename_images') %}
                 <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
@@ -51,22 +60,96 @@
                 </div>
             {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_link" class="form-label">Lien du projet</label>
-            <input type="url" class="form-control" id="project_link" name="link">
+            <input type="url" class="form-control" id="project_link" name="link" value="{{ old.link|default('') }}">
+            {% for message in app.flashes('error_link') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_technologies" class="form-label">Technologies (séparées par une virgule)</label>
-            <input type="text" class="form-control" id="project_technologies" name="technologies" placeholder="Ex: PHP, Symfony, JavaScript">
+            <input type="text" class="form-control" id="project_technologies" name="technologies" placeholder="Ex: PHP, Symfony, JavaScript" value="{{ old.technologies|default('') }}">
+            {% for message in app.flashes('error_technologies') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <div class="mb-3">
             <label for="project_madeBy" class="form-label">Projet réalisé par</label>
-            <input type="text" class="form-control" id="project_madeBy" name="madeBy" placeholder="Nom ou équipe ayant réalisé le projet">
+            <input type="text" class="form-control" id="project_madeBy" name="madeBy" placeholder="Nom ou équipe ayant réalisé le projet" value="{{ old.madeBy|default('') }}">
+            {% for message in app.flashes('error_madeBy') %}
+                <div class="alert alert-danger mt-2">{{ message }}</div>
+            {% endfor %}
         </div>
+        
         <button type="submit" class="btn btn-success">
             <i class="fas fa-save me-2"></i>Enregistrer
         </button>
         <a href="{{ path('app_project_index') }}" class="btn btn-secondary ms-2">Annuler</a>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bannerInput = document.getElementById('project_bannerImage');
+    const imagesInput = document.getElementById('project_images');
+    
+    function checkFilename(filename, inputElement) {
+        fetch('{{ path('app_project_check_filename') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'filename=' + encodeURIComponent(filename)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Supprimer les anciens messages d'erreur
+            const existingAlert = inputElement.parentNode.querySelector('.filename-error-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            if (data.exists) {
+                // Créer le message d'erreur
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger d-flex align-items-center py-2 px-3 mt-2 filename-error-alert';
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>L'image '${filename}' existe déjà. Veuillez renommer votre fichier ou choisir une autre image.</span>
+                `;
+                
+                // Ajouter après l'input
+                inputElement.parentNode.appendChild(alertDiv);
+            }
+        });
+    }
+    
+    // Vérification pour l'image bannière
+    bannerInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            const file = this.files[0];
+            const filename = file.name;
+            checkFilename(filename, this);
+        }
+    });
+    
+    // Vérification pour les autres images
+    imagesInput.addEventListener('change', function() {
+        // Supprimer les anciens messages
+        const existingAlerts = this.parentNode.querySelectorAll('.filename-error-alert');
+        existingAlerts.forEach(alert => alert.remove());
+        
+        if (this.files.length > 0) {
+            Array.from(this.files).forEach(file => {
+                checkFilename(file.name, this);
+            });
+        }
+    });
+});
+</script>
 {% endblock %}
