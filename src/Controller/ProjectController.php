@@ -151,10 +151,20 @@ class ProjectController extends AbstractController
         ]);
     }
 
+    // Route pour afficher les détails d'un projet pour admin
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
     public function show(Project $project): Response
     {
         return $this->render('project/show.html.twig', [
+            'project' => $project,
+        ]);
+    }
+
+    // Route publique pour afficher la page détaillée d'un projet
+    #[Route('/public/{id}', name: 'project_public_show', methods: ['GET'])]
+    public function publicShow(Project $project): Response
+    {
+        return $this->render('project/public_show.html.twig', [
             'project' => $project,
         ]);
     }
@@ -182,7 +192,7 @@ class ProjectController extends AbstractController
     #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
     public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
             // Supprimer les fichiers images associés
             $imagesDir = $this->getParameter('images_directory');
             // Bannière
@@ -215,11 +225,11 @@ class ProjectController extends AbstractController
     public function checkFilename(Request $request, ProjectRepository $projectRepository): Response
     {
         $filename = $request->request->get('filename');
-        
+
         if (!$filename) {
             return $this->json(['exists' => false]);
         }
-        
+
         // Récupérer tous les noms de fichiers existants
         $allProjects = $projectRepository->findAll();
         $existingFilenames = [];
@@ -231,9 +241,9 @@ class ProjectController extends AbstractController
                 $existingFilenames = array_merge($existingFilenames, $p->getImages());
             }
         }
-        
+
         $exists = in_array($filename, $existingFilenames);
-        
+
         return $this->json(['exists' => $exists]);
     }
 }

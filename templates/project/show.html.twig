@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {{ project.title }}
+    (Admin)
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">
+            {{ project.title }}
+        </h1>
+        {% if project.bannerImage %}
+            <img src="{{ asset('uploads/images/' ~ project.bannerImage) }}" alt="Bannière du projet" style="max-width:400px; border-radius:8px; margin-bottom:24px;">
+            {% endif %}
+            <p>
+                <strong>
+                    Petite description :
+                </strong>
+                {{ project.smallDescription }}
+            </p>
+            <p>
+                <strong>
+                    Description :
+                </strong>
+                {{ project.description|nl2br }}
+            </p>
+            <p>
+                <strong>
+                    Technologies :
+                </strong>
+                {{ project.technologies }}
+            </p>
+            <p>
+                <strong>
+                    Réalisé par :
+                </strong>
+                {{ project.madeBy }}
+            </p>
+            {% if project.link %}
+                <p>
+                    <strong>
+                        Lien :
+                    </strong>
+                    <a href="{{ project.link }}" target="_blank">
+                        {{ project.link }}
+                    </a>
+                </p>
+            {% endif %}
+            {% if project.images %}
+                <h4>
+                    Galerie
+                </h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    {% for img in project.images %}
+                        <img src="{{ asset('uploads/images/' ~ img) }}" alt="Image projet" style="max-width:120px; border-radius:6px;">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <a href="{{ path('app_project_index') }}" class="btn btn-secondary mt-4">
+                    Retour à la liste
+                </a>
+            </div>
+        {% endblock %}
+        
