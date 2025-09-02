@@ -42,23 +42,34 @@
             <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
             <small class="form-text text-muted">Formats acceptés : JPG, PNG, GIF. Taille max : 2MB</small>
             {% for message in app.flashes('filename_bannerImage') %}
-    <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        <span>{{ message }}</span>
-    </div>
-{% endfor %}
+                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+            <!-- Aperçu de la bannière sélectionnée -->
+            <div id="banner-image-preview" class="mt-2"></div>
+            <!-- Nom du fichier sélectionné -->
+            <div id="banner-image-filename" class="text-muted mt-1" style="font-size: 0.95em;"></div>
         </div>
         
         <div class="mb-3">
-            <label for="project_images" class="form-label">Autres images (plusieurs possibles)</label>
-            <input type="file" class="form-control" id="project_images" name="images[]" accept="image/*" multiple>
-            <small class="form-text text-muted">Vous pouvez sélectionner plusieurs images. Formats acceptés : JPG, PNG, GIF</small>
+            <label class="form-label">Autres images (plusieurs possibles)</label>
+            <div id="images-inputs-container">
+                <input type="file" class="form-control mb-2" name="images[]" accept="image/*">
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="add-image-input">
+                <i class="fas fa-plus"></i> Ajouter une image
+            </button>
+            <small class="form-text text-muted d-block mt-2">Vous pouvez sélectionner plusieurs images. Formats acceptés : JPG, PNG, GIF</small>
             {% for message in app.flashes('filename_images') %}
                 <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     <span>{{ message }}</span>
                 </div>
             {% endfor %}
+            <!-- Aperçu et nom des images sélectionnées -->
+            <div id="selected-images-preview" class="d-flex flex-wrap gap-3 mt-2"></div>
         </div>
         
         <div class="mb-3">
@@ -95,8 +106,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const bannerInput = document.getElementById('project_bannerImage');
-    const imagesInput = document.getElementById('project_images');
-    
+    const bannerPreview = document.getElementById('banner-image-preview');
+    const bannerFilename = document.getElementById('banner-image-filename');
+    const imagesInputsContainer = document.getElementById('images-inputs-container');
+    const addImageInputBtn = document.getElementById('add-image-input');
+    const imagesPreview = document.getElementById('selected-images-preview');
+
     function checkFilename(filename, inputElement) {
         fetch('{{ path('app_project_check_filename') }}', {
             method: 'POST',
@@ -129,26 +144,83 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Vérification pour l'image bannière
+    // Vérification pour l'image bannière + affichage de l'aperçu
     bannerInput.addEventListener('change', function() {
         if (this.files.length > 0) {
             const file = this.files[0];
             const filename = file.name;
             checkFilename(filename, this);
+            // Affichage de l'aperçu
+            bannerPreview.innerHTML = '';
+            bannerFilename.textContent = '';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = file.name;
+                img.style.height = '80px';
+                img.style.borderRadius = '8px';
+                img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.10)';
+                bannerPreview.appendChild(img);
+                // Affichage du nom du fichier
+                bannerFilename.textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            bannerPreview.innerHTML = '';
+            bannerFilename.textContent = '';
         }
     });
-    
-    // Vérification pour les autres images
-    imagesInput.addEventListener('change', function() {
-        // Supprimer les anciens messages
-        const existingAlerts = this.parentNode.querySelectorAll('.filename-error-alert');
-        existingAlerts.forEach(alert => alert.remove());
-        
-        if (this.files.length > 0) {
-            Array.from(this.files).forEach(file => {
-                checkFilename(file.name, this);
-            });
-        }
+
+    // Fonction pour gérer l'affichage des fichiers sélectionnés
+    function updateImagesDisplay() {
+        imagesPreview.innerHTML = '';
+        const files = [];
+        imagesInputsContainer.querySelectorAll('input[type="file"]').forEach(input => {
+            if (input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    files.push(file);
+                });
+            }
+        });
+        files.forEach(file => {
+            // Création du conteneur pour l'aperçu et le nom
+            const wrapper = document.createElement('div');
+            wrapper.className = 'd-flex flex-column align-items-center me-2 mb-2';
+            // Aperçu
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = file.name;
+                img.style.height = '60px';
+                img.style.borderRadius = '6px';
+                img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+                wrapper.appendChild(img);
+                // Nom du fichier
+                const filenameDiv = document.createElement('div');
+                filenameDiv.textContent = file.name;
+                filenameDiv.className = 'text-muted mt-1';
+                filenameDiv.style.fontSize = '0.95em';
+                wrapper.appendChild(filenameDiv);
+            };
+            reader.readAsDataURL(file);
+            imagesPreview.appendChild(wrapper);
+        });
+    }
+
+    addImageInputBtn.addEventListener('click', function() {
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.name = 'images[]';
+        newInput.accept = 'image/*';
+        newInput.className = 'form-control mb-2';
+        imagesInputsContainer.appendChild(newInput);
+        newInput.addEventListener('change', updateImagesDisplay);
+    });
+
+    imagesInputsContainer.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', updateImagesDisplay);
     });
 });
 </script>
