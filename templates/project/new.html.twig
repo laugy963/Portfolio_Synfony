@@ -1,111 +1,171 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Projet{% endblock %}
+{% block title %}
+    Nouveau Projet
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2 class="mb-4"><i class="fas fa-plus-circle me-2 text-primary"></i>Créer un nouveau projet</h2>
-    
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
+    <div class="container mt-5">
+        <h2 class="mb-4">
+            <i class="fas fa-plus-circle me-2 text-primary"></i>
+            Créer un nouveau projet
+        </h2>
 
-    <form method="post" enctype="multipart/form-data" action="{{ path('app_project_new') }}">
-        <div class="mb-3">
-            <label for="project_title" class="form-label">Titre du projet</label>
-            <input type="text" class="form-control" id="project_title" name="title" required value="{{ old.title|default('') }}">
-            {% for message in app.flashes('error_title') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_smallDescription" class="form-label">Petite description</label>
-            <input type="text" class="form-control" id="project_smallDescription" name="smallDescription" value="{{ old.smallDescription|default('') }}">
-            {% for message in app.flashes('error_smallDescription') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_description" class="form-label">Description détaillée</label>
-            <textarea class="form-control" id="project_description" name="description" rows="4" required>{{ old.description|default('') }}</textarea>
-            {% for message in app.flashes('error_description') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_bannerImage" class="form-label">Image principale (bannière)</label>
-            <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
-            <small class="form-text text-muted">Formats acceptés : JPG, PNG, GIF. Taille max : 2MB</small>
-            {% for message in app.flashes('filename_bannerImage') %}
-                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-            <!-- Aperçu de la bannière sélectionnée -->
-            <div id="banner-image-preview" class="mt-2"></div>
-            <!-- Nom du fichier sélectionné -->
-            <div id="banner-image-filename" class="text-muted mt-1" style="font-size: 0.95em;"></div>
-        </div>
-        
-        <div class="mb-3">
-            <label class="form-label">Autres images (plusieurs possibles)</label>
-            <div id="images-inputs-container">
-                <input type="file" class="form-control mb-2" name="images[]" accept="image/*">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
             </div>
-            <button type="button" class="btn btn-outline-primary btn-sm" id="add-image-input">
-                <i class="fas fa-plus"></i> Ajouter une image
-            </button>
-            <small class="form-text text-muted d-block mt-2">Vous pouvez sélectionner plusieurs images. Formats acceptés : JPG, PNG, GIF</small>
-            {% for message in app.flashes('filename_images') %}
-                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span>{{ message }}</span>
+        {% endfor %}
+
+        <form method="post" enctype="multipart/form-data" action="{{ path('app_project_new') }}">
+            <div class="mb-3">
+                <label for="project_title" class="form-label">
+                    Titre du projet
+                </label>
+                <input type="text" class="form-control" id="project_title" name="title" required value="{{ old.title|default('') }}">
+                    {% for message in app.flashes('error_title') %}
+                        <div class="alert alert-danger mt-2">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-            <!-- Aperçu et nom des images sélectionnées -->
-            <div id="selected-images-preview" class="d-flex flex-wrap gap-3 mt-2"></div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_link" class="form-label">Lien du projet</label>
-            <input type="url" class="form-control" id="project_link" name="link" value="{{ old.link|default('') }}">
-            {% for message in app.flashes('error_link') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_technologies" class="form-label">Technologies (séparées par une virgule)</label>
-            <input type="text" class="form-control" id="project_technologies" name="technologies" placeholder="Ex: PHP, Symfony, JavaScript" value="{{ old.technologies|default('') }}">
-            {% for message in app.flashes('error_technologies') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <div class="mb-3">
-            <label for="project_madeBy" class="form-label">Projet réalisé par</label>
-            <input type="text" class="form-control" id="project_madeBy" name="madeBy" placeholder="Nom ou équipe ayant réalisé le projet" value="{{ old.madeBy|default('') }}">
-            {% for message in app.flashes('error_madeBy') %}
-                <div class="alert alert-danger mt-2">{{ message }}</div>
-            {% endfor %}
-        </div>
-        
-        <button type="submit" class="btn btn-success">
-            <i class="fas fa-save me-2"></i>Enregistrer
-        </button>
-        <a href="{{ path('app_project_index') }}" class="btn btn-secondary ms-2">Annuler</a>
-    </form>
-</div>
+
+                <div class="mb-3">
+                    <label for="project_smallDescription" class="form-label">
+                        Petite description
+                    </label>
+                    <input type="text" class="form-control" id="project_smallDescription" name="smallDescription" value="{{ old.smallDescription|default('') }}">
+                        {% for message in app.flashes('error_smallDescription') %}
+                            <div class="alert alert-danger mt-2">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="project_description" class="form-label">
+                            Description détaillée
+                        </label>
+                        <textarea class="form-control" id="project_description" name="description" rows="4" required>
+                            {{ old.description|default('') }}
+                        </textarea>
+                        {% for message in app.flashes('error_description') %}
+                            <div class="alert alert-danger mt-2">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="project_bannerImage" class="form-label">
+                            Image principale (bannière)
+                        </label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="file" class="form-control" id="project_bannerImage" name="bannerImage" accept="image/*">
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="remove-banner-image" title="Supprimer la bannière">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                Formats acceptés : JPG, PNG, GIF. Taille max : 2MB
+                            </small>
+                            {% for message in app.flashes('filename_bannerImage') %}
+                                <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <span>
+                                        {{ message }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                            <!-- Aperçu de la bannière sélectionnée -->
+                            <div id="banner-image-preview" class="mt-2"></div>
+                            <!-- Nom du fichier sélectionné -->
+                            <div id="banner-image-filename" class="text-muted mt-1" style="font-size: 0.95em;"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Autres images (plusieurs possibles)
+                            </label>
+                            <div id="images-inputs-container">
+                                <div class="image-input-wrapper d-flex align-items-center gap-2 mb-2">
+                                    <input type="file" class="form-control" name="images[]" accept="image/*">
+                                        <button type="button" class="btn btn-outline-danger btn-sm remove-image-input" title="Supprimer cette image">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="add-image-input">
+                                    <i class="fas fa-plus"></i>
+                                    Ajouter une image
+                                </button>
+
+                                <small class="form-text text-muted d-block mt-2">
+                                    Vous pouvez sélectionner plusieurs images. Formats acceptés : JPG, PNG, GIF
+                                </small>
+                                {% for message in app.flashes('filename_images') %}
+                                    <div class="alert alert-danger d-flex align-items-center py-2 px-3 mt-2" role="alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <span>
+                                            {{ message }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                                <!-- Aperçu et nom des images sélectionnées -->
+                                <div id="selected-images-preview" class="d-flex flex-wrap gap-3 mt-2"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="project_link" class="form-label">
+                                    Lien du projet
+                                </label>
+                                <input type="url" class="form-control" id="project_link" name="link" value="{{ old.link|default('') }}">
+                                    {% for message in app.flashes('error_link') %}
+                                        <div class="alert alert-danger mt-2">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="project_technologies" class="form-label">
+                                        Technologies (séparées par une virgule)
+                                    </label>
+                                    <input type="text" class="form-control" id="project_technologies" name="technologies" placeholder="Ex: PHP, Symfony, JavaScript" value="{{ old.technologies|default('') }}">
+                                        {% for message in app.flashes('error_technologies') %}
+                                            <div class="alert alert-danger mt-2">
+                                                {{ message }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="project_madeBy" class="form-label">
+                                            Projet réalisé par
+                                        </label>
+                                        <input type="text" class="form-control" id="project_madeBy" name="madeBy" placeholder="Nom ou équipe ayant réalisé le projet" value="{{ old.madeBy|default('') }}">
+                                            {% for message in app.flashes('error_madeBy') %}
+                                                <div class="alert alert-danger mt-2">
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-save me-2"></i>
+                                            Enregistrer
+                                        </button>
+                                        <a href="{{ path('app_project_index') }}" class="btn btn-secondary ms-2">
+                                            Annuler
+                                        </a>
+                                    </form>
+                                </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const bannerInput = document.getElementById('project_bannerImage');
+    const removeBannerBtn = document.getElementById('remove-banner-image');
     const bannerPreview = document.getElementById('banner-image-preview');
     const bannerFilename = document.getElementById('banner-image-filename');
     const imagesInputsContainer = document.getElementById('images-inputs-container');
@@ -172,6 +232,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Bouton pour supprimer la bannière
+    removeBannerBtn.addEventListener('click', function() {
+        bannerInput.value = '';
+        bannerPreview.innerHTML = '';
+        bannerFilename.textContent = '';
+        // Supprimer les éventuels messages d'erreur liés au nom
+        const existingAlert = bannerInput.parentNode.querySelector('.filename-error-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+    });
+
     // Fonction pour gérer l'affichage des fichiers sélectionnés
     function updateImagesDisplay() {
         imagesPreview.innerHTML = '';
@@ -209,19 +281,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Fonction pour supprimer un input image
+    function addRemoveImageInputListeners() {
+        imagesInputsContainer.querySelectorAll('.remove-image-input').forEach(btn => {
+            btn.onclick = function() {
+                const wrapper = btn.closest('.image-input-wrapper');
+                if (wrapper) {
+                    wrapper.remove();
+                    updateImagesDisplay();
+                }
+            };
+        });
+    }
+
     addImageInputBtn.addEventListener('click', function() {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'image-input-wrapper d-flex align-items-center gap-2 mb-2';
         const newInput = document.createElement('input');
         newInput.type = 'file';
         newInput.name = 'images[]';
         newInput.accept = 'image/*';
-        newInput.className = 'form-control mb-2';
-        imagesInputsContainer.appendChild(newInput);
+        newInput.className = 'form-control';
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-outline-danger btn-sm remove-image-input';
+        removeBtn.title = 'Supprimer cette image';
+        removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        wrapper.appendChild(newInput);
+        wrapper.appendChild(removeBtn);
+        imagesInputsContainer.appendChild(wrapper);
         newInput.addEventListener('change', updateImagesDisplay);
+        addRemoveImageInputListeners();
     });
 
+    // Initialiser les listeners pour les inputs existants
     imagesInputsContainer.querySelectorAll('input[type="file"]').forEach(input => {
         input.addEventListener('change', updateImagesDisplay);
     });
+    addRemoveImageInputListeners();
 });
 </script>
-{% endblock %}
+                            {% endblock %}
+                            
