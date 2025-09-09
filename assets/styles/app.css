@@ -42,8 +42,8 @@
 body {
     padding-top: 0; /* Supprime le padding-top du body */
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--lighter-gray);
-    color: var(--dark-gray);
+    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+    color: #ffffff;
     line-height: 1.6;
     overflow-x: hidden; /* Évite le scroll horizontal */
     width: 100%;
@@ -287,11 +287,10 @@ main {
 /* Contenu hero centré */
 .hero-content {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
     width: 100%;
     height: 100vh;
     display: flex;
@@ -302,7 +301,7 @@ main {
 }
 
 .hero-content h1 {
-    text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.9), 1px 1px 4px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out;
     color: var(--primary-blue);
     font-weight: 800;
@@ -312,7 +311,7 @@ main {
 }
 
 .hero-content p {
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 1px 1px 4px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out 0.3s both;
     color: var(--dark-blue);
     font-size: 1.25rem;
@@ -675,15 +674,118 @@ section.hero-banner {
     padding: 0 1rem;
 }
 
-/* Garantit l'adaptation parfaite des éléments */
-* {
-    box-sizing: border-box;
+/* ===== STYLES POUR LA PAGE D'ACCUEIL ===== */
+
+/* Section bannière */
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 100%;
 }
 
-/* Supprime les marges par défaut qui pourraient créer des espaces */
-body, html {
-    margin: 0;
-    padding: 0;
+.hero-content h1 {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Badges de compétences harmonieux */
+.skill-badge {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.skill-badge:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Cards des projets */
+.card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.card-title {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.card-text {
+    color: #cbd5e1;
+}
+
+/* Section Contact */
+#contact {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+#contact h2 {
+    color: #60a5fa;
+}
+
+#contact .lead {
+    color: #cbd5e1;
+}
+
+.btn-outline-primary {
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    border-color: #3b82f6;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+/* Animations d'apparition */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.2s;
 }
 
 /* Responsive containers */
@@ -874,10 +976,19 @@ footer p {
 
 /* Section spéciale pour les projets */
 #projects {
-    background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-orange) 50%, var(--lighter-gray) 100%) !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
     width: 100%;
     margin: 0;
     padding: 80px 0;
+}
+
+#projects h2 {
+    color: #60a5fa !important;
+    margin-bottom: 1rem;
+}
+
+#projects .lead {
+    color: #cbd5e1 !important;
 }
 
 /* Section contact avec accent */
@@ -903,9 +1014,19 @@ footer p {
 
 /* Section à propos */
 #about {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     width: 100%;
     margin: 0;
     padding: 80px 0;
+}
+
+#about h2 {
+    color: #60a5fa;
+    margin-bottom: 2rem;
+}
+
+#about .lead {
+    color: #cbd5e1;
 }
 
 /* ===== RESPONSIVE DESIGN POUR LE NOUVEAU CARROUSEL ===== */
