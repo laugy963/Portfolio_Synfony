@@ -59,4 +59,32 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * Récupère tous les projets triés par position puis par date de création
+     * @return Project[] Returns an array of Project objects ordered by position
+     */
+    public function findAllOrderedByPosition(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.position', 'ASC')
+            ->addOrderBy('p.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Récupère la prochaine position disponible
+     * @return int Returns the next available position
+     */
+    public function getNextPosition(): int
+    {
+        $result = $this->createQueryBuilder('p')
+            ->select('MAX(p.position) as maxPosition')
+            ->getQuery()
+            ->getSingleScalarResult();
+        
+        return ($result ? (int)$result : 0) + 1;
+    }
 }

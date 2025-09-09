@@ -21,7 +21,7 @@ class ProjectController extends AbstractController
     public function index(ProjectRepository $projectRepository): Response
     {
         return $this->render('project/index.html.twig', [
-            'projects' => $projectRepository->findBy([], ['createdAt' => 'DESC']),
+            'projects' => $projectRepository->findAllOrderedByPosition(),
             'controller_name' => 'ProjectController',
         ]);
     }
@@ -135,6 +135,9 @@ class ProjectController extends AbstractController
                 $project->setImages($uploadedImages);
             }
 
+            // Assigner automatiquement la prochaine position disponible
+            $project->setPosition($projectRepository->getNextPosition());
+
             $entityManager->persist($project);
             $entityManager->flush();
 
@@ -245,5 +248,28 @@ class ProjectController extends AbstractController
         $exists = in_array($filename, $existingFilenames);
 
         return $this->json(['exists' => $exists]);
+    }
+
+    #[Route('/api/reorder', name: 'app_project_reorder', methods: ['POST'])]
+    public function reorderProjects(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!isset($data['projectIds']) || !is_array($data['projectIds'])) {
+            return $this->json(['success' => false, 'message' => 'Données invalides'], 400);
+        }
+
+        $projectIds = $data['projectIds'];
+        
+        foreach ($projectIds as $position => $projectId) {
+            $project = $entityManager->getRepository(Project::class)->find($projectId);
+            if ($project) {
+                $project->setPosition($position + 1); // Position commence à 1
+            }
+        }
+
+        $entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'Ordre sauvegardé avec succès']);
     }
 }

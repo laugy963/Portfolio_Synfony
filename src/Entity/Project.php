@@ -41,6 +41,9 @@ class Project
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $position = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -158,6 +161,17 @@ class Project
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(?int $position): static
+    {
+        $this->position = $position;
         return $this;
     }
 }

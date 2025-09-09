@@ -96,6 +96,50 @@
                 </div>
             </div>
 
+            <!-- Section de réorganisation (cachée par défaut) -->
+            <div id="reorder-section" class="card shadow-sm mt-4" style="display: none;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-arrows-alt me-2"></i>
+                        Réorganiser les projets
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Glissez et déposez les projets pour changer leur ordre d'affichage sur la page d'accueil.
+                    </p>
+                    
+                    <div id="sortable-projects" class="list-group mb-3">
+                        {% for project in projects %}
+                            <div class="list-group-item list-group-item-action d-flex align-items-center" data-project-id="{{ project.id }}">
+                                <i class="fas fa-grip-vertical text-muted me-3" style="cursor: grab;"></i>
+                                <img src="{{ project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+' }}" 
+                                     alt="Miniature" 
+                                     class="rounded me-3" 
+                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ project.title }}</h6>
+                                    <small class="text-muted">{{ project.smallDescription ?: 'Aucune description' }}</small>
+                                </div>
+                                <small class="text-muted">Position: <span class="position-indicator">{{ project.position ?: 'Non définie' }}</span></small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button id="save-order-btn" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>
+                            Enregistrer l'ordre
+                        </button>
+                        <button id="cancel-order-btn" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Actions rapides -->
             <div class="row mt-4">
                 <div class="col-md-4">
@@ -124,7 +168,7 @@
                             <i class="fas fa-cogs fa-2x text-success mb-3"></i>
                             <h5>Paramètres</h5>
                             <p class="text-muted small">Configurez l'affichage des projets</p>
-                            <button class="btn btn-outline-success btn-sm">Configurer</button>
+                            <button id="configure-order-btn" class="btn btn-outline-success btn-sm">Configurer l'ordre</button>
                         </div>
                     </div>
                 </div>
@@ -132,4 +176,169 @@
         </div>
     </div>
 </div>
+
+<!-- CDN SortableJS -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<style>
+/* Styles pour le drag & drop */
+#sortable-projects .list-group-item {
+    cursor: move;
+    transition: background-color 0.2s ease;
+}
+
+#sortable-projects .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+#sortable-projects .list-group-item.sortable-ghost {
+    opacity: 0.4;
+    background-color: #e9ecef;
+}
+
+#sortable-projects .list-group-item.sortable-chosen {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.grip-handle {
+    cursor: grab;
+}
+
+.grip-handle:active {
+    cursor: grabbing;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const configureBtn = document.getElementById('configure-order-btn');
+    const reorderSection = document.getElementById('reorder-section');
+    const saveBtn = document.getElementById('save-order-btn');
+    const cancelBtn = document.getElementById('cancel-order-btn');
+    const sortableContainer = document.getElementById('sortable-projects');
+    
+    let sortable = null;
+    
+    // Afficher/masquer la section de réorganisation
+    configureBtn.addEventListener('click', function() {
+        if (reorderSection.style.display === 'none') {
+            reorderSection.style.display = 'block';
+            configureBtn.textContent = 'Masquer la configuration';
+            configureBtn.classList.remove('btn-outline-success');
+            configureBtn.classList.add('btn-success');
+            initSortable();
+        } else {
+            hideReorderSection();
+        }
+    });
+    
+    // Masquer la section
+    cancelBtn.addEventListener('click', hideReorderSection);
+    
+    function hideReorderSection() {
+        reorderSection.style.display = 'none';
+        configureBtn.textContent = 'Configurer l\'ordre';
+        configureBtn.classList.remove('btn-success');
+        configureBtn.classList.add('btn-outline-success');
+        if (sortable) {
+            sortable.destroy();
+        }
+    }
+    
+    // Initialiser SortableJS
+    function initSortable() {
+        if (sortable) {
+            sortable.destroy();
+        }
+        
+        sortable = Sortable.create(sortableContainer, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            handle: '.fa-grip-vertical',
+            onEnd: function(evt) {
+                updatePositionIndicators();
+            }
+        });
+        
+        updatePositionIndicators();
+    }
+    
+    // Mettre à jour les indicateurs de position
+    function updatePositionIndicators() {
+        const items = sortableContainer.querySelectorAll('.list-group-item');
+        items.forEach((item, index) => {
+            const indicator = item.querySelector('.position-indicator');
+            if (indicator) {
+                indicator.textContent = index + 1;
+            }
+        });
+    }
+    
+    // Sauvegarder l'ordre
+    saveBtn.addEventListener('click', function() {
+        const projectIds = Array.from(sortableContainer.querySelectorAll('.list-group-item'))
+            .map(item => parseInt(item.dataset.projectId));
+        
+        // Désactiver le bouton pendant l'envoi
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enregistrement...';
+        
+        fetch('{{ path('app_project_reorder') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                projectIds: projectIds
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Afficher un message de succès
+                showAlert('success', data.message);
+                hideReorderSection();
+            } else {
+                showAlert('danger', data.message || 'Erreur lors de la sauvegarde');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showAlert('danger', 'Erreur de connexion');
+        })
+        .finally(() => {
+            // Réactiver le bouton
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Enregistrer l\'ordre';
+        });
+    });
+    
+    // Fonction pour afficher les alertes
+    function showAlert(type, message) {
+        const alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        // Insérer l'alerte au début du contenu
+        const container = document.querySelector('.page-container .col-12');
+        const firstChild = container.querySelector('h1').parentElement.nextElementSibling;
+        firstChild.insertAdjacentHTML('beforebegin', alertHtml);
+        
+        // Auto-suppression après 5 secondes
+        setTimeout(() => {
+            const alert = container.querySelector('.alert');
+            if (alert) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+});
+</script>
 {% endblock %}
