@@ -159,15 +159,28 @@ footer a:hover .fas {
 
 /* ============ BOUTON RETOUR EN HAUT ============ */
 #backToTop {
-    background: var(--gradient-primary) !important;
+    position: fixed;
+    right: 32px;
+    bottom: 40px;
+    z-index: 999;
+    background: var(--primary-blue);
+    color: #fff;
     border: none;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2);
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s, bottom 0.3s;
+    font-size: 1.5rem;
 }
 
 #backToTop:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    background: var(--accent-teal);
+    box-shadow: 0 8px 32px rgba(20, 184, 166, 0.2);
 }
 
 /* ============ STRUCTURE DE PAGE ============ */
