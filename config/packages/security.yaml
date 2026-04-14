@@ -16,10 +16,14 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\VerifiedUserChecker
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -38,6 +42,8 @@ security:
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/verify, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/projects/public/, roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         
         # Zones réservées aux administrateurs
@@ -45,7 +51,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         
         # Zones réservées aux utilisateurs connectés
-        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/dashboard, roles: ROLE_USER }
         
         # Par défaut, toutes les autres pages nécessitent une authentification

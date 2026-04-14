@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
+    private const RESEND_COOLDOWN_SECONDS = 60;
+
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request, 
@@ -95,6 +97,7 @@ class RegistrationController extends AbstractController
                 
                 // Stocker l'email en session pour la page de vérification
                 $request->getSession()->set('verification_email', $user->getEmail());
+                $request->getSession()->set('verification_code_last_sent_at', time());
                 
                 $this->addFlash('success', 'Votre compte a été créé ! Un code de vérification a été envoyé à votre adresse email.');
                 
@@ -150,9 +153,15 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/resend', name: 'app_resend_code')]
+    #[Route('/verify/resend', name: 'app_resend_code', methods: ['POST'])]
     public function resendCode(Request $request, EmailVerificationService $emailVerificationService, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isCsrfTokenValid('resend_verification_code', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton de securite invalide. Veuillez reessayer.');
+
+            return $this->redirectToRoute('app_verify_code');
+        }
+
         $email = $request->getSession()->get('verification_email');
         
         if (!$email) {
@@ -160,11 +169,21 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
+        $lastSentAt = (int) $request->getSession()->get('verification_code_last_sent_at', 0);
+        $secondsRemaining = self::RESEND_COOLDOWN_SECONDS - (time() - $lastSentAt);
+
+        if ($secondsRemaining > 0) {
+            $this->addFlash('warning', sprintf('Veuillez patienter %d seconde(s) avant de demander un nouveau code.', $secondsRemaining));
+
+            return $this->redirectToRoute('app_verify_code');
+        }
+
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         
         if ($user && !$user->isVerified()) {
             try {
                 $emailVerificationService->resendVerificationCode($user);
+                $request->getSession()->set('verification_code_last_sent_at', time());
                 $this->addFlash('success', 'Un nouveau code de vérification a été envoyé à votre adresse email.');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Impossible d\'envoyer le code. Veuillez réessayer plus tard.');

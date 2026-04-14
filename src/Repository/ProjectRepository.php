@@ -17,21 +17,6 @@ class ProjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les projets en vedette pour la page d'accueil
-     * @return Project[] Returns an array of featured Project objects
-     */
-    public function findFeaturedProjects(): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.featured = :featured')
-            ->setParameter('featured', true)
-            ->orderBy('p.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
      * Récupère les projets les plus récents
      * @return Project[] Returns an array of recent Project objects
      */
@@ -86,5 +71,35 @@ class ProjectRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
         
         return ($result ? (int)$result : 0) + 1;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public function findHomepageProjects(int $limit = 6): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.position', 'ASC')
+            ->addOrderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function mediaFilenameExists(string $filename, ?int $excludeProjectId = null): bool
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.bannerImage = :filename OR p.images LIKE :imageNeedle')
+            ->setParameter('filename', $filename)
+            ->setParameter('imageNeedle', '%"' . $filename . '"%');
+
+        if ($excludeProjectId !== null) {
+            $queryBuilder
+                ->andWhere('p.id != :excludeProjectId')
+                ->setParameter('excludeProjectId', $excludeProjectId);
+        }
+
+        return (int) $queryBuilder->getQuery()->getSingleScalarResult() > 0;
     }
 }

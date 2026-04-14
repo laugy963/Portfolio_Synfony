@@ -38,7 +38,7 @@
                         </div>
                     {% endfor %}
 
-                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+                    {{ form_start(form) }}
                     
                     <div class="mb-3">
                         {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
@@ -98,61 +98,4 @@
     </div>
 </div>
 
-<style>
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.card {
-    border: none;
-    border-radius: 12px;
-}
-
-.card-header {
-    border-radius: 12px 12px 0 0 !important;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-}
-
-.btn {
-    border-radius: 8px;
-    font-weight: 500;
-    padding: 0.625rem 1.25rem;
-}
-
-.form-label {
-    font-weight: 600;
-    color: #495057;
-}
-
-.form-text {
-    font-size: 0.875rem;
-}
-
-.border-info {
-    border-color: #17a2b8 !important;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Validation côté client
-    const form = document.querySelector('.needs-validation');
-    
-    form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        
-        form.classList.add('was-validated');
-    });
-    
-    // Focus automatique sur le premier champ
-    const firstInput = form.querySelector('input');
-    if (firstInput) {
-        firstInput.focus();
-    }
-});
-</script>
 {% endblock %}

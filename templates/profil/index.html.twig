@@ -148,7 +148,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Annuler
                 </button>
-                <button type="button" class="btn btn-danger" id="deleteAccountBtn" disabled onclick="submitDeleteForm()">
+                <button type="button" class="btn btn-danger" id="deleteAccountBtn" disabled>
                     <i class="fas fa-trash me-2"></i>Supprimer définitivement
                 </button>
             </div>
@@ -157,145 +157,7 @@
 </div>
 
 <!-- Formulaire de suppression caché -->
-<form id="deleteAccountForm" method="POST" action="{{ path('app_profil_delete_account') }}" style="display: none;">
+<form id="deleteAccountForm" method="POST" action="{{ path('app_profil_delete_account') }}" class="d-none">
     <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
 </form>
-
-<style>
-.profile-info .form-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.profile-info p {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.profile-actions .btn {
-    padding: 0.75rem 1.25rem;
-    font-weight: 500;
-}
-
-.card {
-    border: none;
-    border-radius: 12px;
-}
-
-.card-header {
-    border-radius: 12px 12px 0 0 !important;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-}
-
-/* Styles pour la modal de suppression */
-#deleteAccountBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed !important;
-}
-
-#deleteAccountBtn:not(:disabled) {
-    opacity: 1;
-    cursor: pointer;
-}
-
-#deleteConfirmation {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.modal-footer form {
-    display: inline-block;
-    margin: 0;
-}
-</style>
-
-<script>
-// Fonction pour soumettre le formulaire de suppression
-function submitDeleteForm() {
-    console.log('submitDeleteForm appelée');
-    
-    const finalConfirm = confirm(
-        'DERNIÈRE CONFIRMATION :\n\n' +
-        'Êtes-vous absolument certain(e) de vouloir supprimer votre compte ?\n\n' +
-        '⚠️ Cette action est IRRÉVERSIBLE ⚠️\n\n' +
-        'Cliquez sur "OK" pour supprimer définitivement votre compte\n' +
-        'ou "Annuler" pour revenir en arrière.'
-    );
-    
-    if (finalConfirm) {
-        console.log('Suppression confirmée - soumission du formulaire');
-        document.getElementById('deleteAccountForm').submit();
-    } else {
-        console.log('Suppression annulée par l\'utilisateur');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Script de suppression de compte chargé');
-    
-    // Gestion de la confirmation de suppression
-    const deleteConfirmationInput = document.getElementById('deleteConfirmation');
-    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-    const deleteModal = document.getElementById('deleteAccountModal');
-
-    console.log('Éléments trouvés:', {
-        input: deleteConfirmationInput,
-        button: deleteAccountBtn,
-        modal: deleteModal
-    });
-
-    if (deleteConfirmationInput && deleteAccountBtn) {
-        // Désactiver le bouton au début
-        deleteAccountBtn.disabled = true;
-        deleteAccountBtn.style.opacity = '0.6';
-        deleteAccountBtn.style.cursor = 'not-allowed';
-        
-        deleteConfirmationInput.addEventListener('input', function() {
-            const inputValue = this.value.trim().toUpperCase();
-            console.log('Valeur saisie:', inputValue);
-            
-            if (inputValue === 'SUPPRIMER') {
-                console.log('Activation du bouton');
-                deleteAccountBtn.disabled = false;
-                deleteAccountBtn.classList.remove('btn-danger');
-                deleteAccountBtn.classList.add('btn-outline-danger');
-                deleteAccountBtn.style.opacity = '1';
-                deleteAccountBtn.style.cursor = 'pointer';
-            } else {
-                console.log('Désactivation du bouton');
-                deleteAccountBtn.disabled = true;
-                deleteAccountBtn.classList.remove('btn-outline-danger');
-                deleteAccountBtn.classList.add('btn-danger');
-                deleteAccountBtn.style.opacity = '0.6';
-                deleteAccountBtn.style.cursor = 'not-allowed';
-            }
-        });
-
-        // Réinitialiser quand la modal se ferme
-        if (deleteModal) {
-            deleteModal.addEventListener('hidden.bs.modal', function() {
-                console.log('Modal fermée - réinitialisation');
-                deleteConfirmationInput.value = '';
-                deleteAccountBtn.disabled = true;
-                deleteAccountBtn.classList.remove('btn-outline-danger');
-                deleteAccountBtn.classList.add('btn-danger');
-                deleteAccountBtn.style.opacity = '0.6';
-                deleteAccountBtn.style.cursor = 'not-allowed';
-            });
-            
-            // Log quand la modal s'ouvre
-            deleteModal.addEventListener('shown.bs.modal', function() {
-                console.log('Modal ouverte');
-                deleteConfirmationInput.focus();
-            });
-        }
-    } else {
-        console.error('Éléments non trouvés pour la suppression de compte');
-    }
-});
-</script>
 {% endblock %}

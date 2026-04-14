@@ -3,11 +3,13 @@
 namespace App\Tests\Service;
 
 use App\Entity\User;
+use App\Service\AppEmailFactory;
 use App\Service\EmailVerificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 class EmailVerificationServiceTest extends TestCase
@@ -15,19 +17,20 @@ class EmailVerificationServiceTest extends TestCase
     private EmailVerificationService $emailVerificationService;
     private MailerInterface&MockObject $mailer;
     private EntityManagerInterface&MockObject $entityManager;
+    private AppEmailFactory&MockObject $emailFactory;
 
     protected function setUp(): void
     {
         // Créer des mocks pour les dépendances
         $this->mailer = $this->createMock(MailerInterface::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->emailFactory = $this->createMock(AppEmailFactory::class);
 
         // Créer le service avec les mocks
         $this->emailVerificationService = new EmailVerificationService(
             $this->mailer,
             $this->entityManager,
-            'test@example.com',
-            'Test Service'
+            $this->emailFactory
         );
     }
 
@@ -67,6 +70,17 @@ class EmailVerificationServiceTest extends TestCase
             ->expects($this->once())
             ->method('flush');
 
+        $this->emailFactory
+            ->expects($this->once())
+            ->method('createTemplatedEmail')
+            ->with('Code de verification - Portfolio')
+            ->willReturn((new TemplatedEmail())->subject('Code de verification - Portfolio'));
+
+        $this->emailFactory
+            ->expects($this->once())
+            ->method('getFromAddress')
+            ->willReturn(new Address('test@example.com', 'Test Service'));
+
         // Configurer le mock du Mailer pour vérifier l'envoi
         $this->mailer
             ->expects($this->once())
@@ -74,7 +88,7 @@ class EmailVerificationServiceTest extends TestCase
             ->with($this->callback(function ($email) {
                 return $email instanceof TemplatedEmail &&
                        $email->getTo()[0]->getAddress() === 'test@example.com' &&
-                       $email->getSubject() === '🔐 Code de vérification - Portfolio';
+                       $email->getSubject() === 'Code de verification - Portfolio';
             }));
 
         // Appeler la méthode
@@ -95,6 +109,14 @@ class EmailVerificationServiceTest extends TestCase
         $user->setEmail('test@example.com');
 
         $this->entityManager->expects($this->once())->method('flush');
+        $this->emailFactory
+            ->expects($this->once())
+            ->method('createTemplatedEmail')
+            ->willReturn((new TemplatedEmail())->subject('Code de verification - Portfolio'));
+        $this->emailFactory
+            ->expects($this->once())
+            ->method('getFromAddress')
+            ->willReturn(new Address('test@example.com', 'Test Service'));
         $this->mailer->expects($this->once())->method('send');
 
         $beforeSend = new \DateTimeImmutable();

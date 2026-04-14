@@ -7,8 +7,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(
     name: 'app:delete-all-users',
@@ -17,16 +19,37 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class DeleteAllUsersCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private KernelInterface $kernel,
     ) {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this->addOption(
+            'force',
+            null,
+            InputOption::VALUE_NONE,
+            'Autorise l execution hors environnement dev/test.'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $environment = $this->kernel->getEnvironment();
 
         $io->title('Suppression de tous les utilisateurs');
+
+        if (!in_array($environment, ['dev', 'test'], true) && !$input->getOption('force')) {
+            $io->error(sprintf(
+                'Commande refusee en environnement "%s". Utilisez --force en connaissance de cause.',
+                $environment
+            ));
+
+            return Command::INVALID;
+        }
 
         try {
             // Compter le nombre d'utilisateurs

@@ -5,157 +5,63 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use App\Service\ProjectMediaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/projects')]
-#[IsGranted('ROLE_ADMIN')]
 class ProjectController extends AbstractController
 {
     #[Route('/', name: 'app_project_index', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(ProjectRepository $projectRepository): Response
     {
         return $this->render('project/index.html.twig', [
             'projects' => $projectRepository->findAllOrderedByPosition(),
-            'controller_name' => 'ProjectController',
         ]);
     }
 
     #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
-    {
-        if ($request->isMethod('POST')) {
-            $project = new Project();
-            $title = $request->request->get('title');
-            $smallDescription = $request->request->get('smallDescription');
-            $description = $request->request->get('description');
-            $link = $request->request->get('link');
-            $technologies = $request->request->get('technologies');
-            $madeBy = $request->request->get('madeBy');
+    #[IsGranted('ROLE_ADMIN')]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ProjectRepository $projectRepository,
+        ProjectMediaService $projectMediaService,
+    ): Response {
+        $project = new Project();
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
 
-            $hasError = false;
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $project->setPosition($projectRepository->getNextPosition());
+                $projectMediaService->handleUploads($form, $project);
 
-            // Validation des champs
-            if (!$title || strlen(trim($title)) < 3) {
-                $this->addFlash('error_title', 'Le titre est obligatoire (min 3 caractères).');
-                $hasError = true;
+                $entityManager->persist($project);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Projet cree avec succes.');
+
+                return $this->redirectToRoute('app_project_index');
+            } catch (\RuntimeException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
             }
-            if ($smallDescription && strlen($smallDescription) > 255) {
-                $this->addFlash('error_smallDescription', 'La petite description est trop longue (max 255 caractères).');
-                $hasError = true;
-            }
-            if (!$description || strlen(trim($description)) < 10) {
-                $this->addFlash('error_description', 'La description détaillée est obligatoire (min 10 caractères).');
-                $hasError = true;
-            }
-            if ($technologies && strlen($technologies) > 2000) {
-                $this->addFlash('error_technologies', 'Le champ "Technologies" est trop long (max 2000 caractères).');
-                $hasError = true;
-            }
-            if ($madeBy && strlen($madeBy) > 255) {
-                $this->addFlash('error_madeBy', 'Le champ "Projet réalisé par" est trop long (max 255 caractères).');
-                $hasError = true;
-            }
-
-            // Gestion de l'image principale (bannière)
-            $bannerImageFile = $request->files->get('bannerImage');
-            $newFilename = null;
-            if ($bannerImageFile) {
-                $originalFilename = pathinfo($bannerImageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $extension = $bannerImageFile->guessExtension();
-                $newFilename = $originalFilename . '.' . $extension;
-            }
-
-            // Gestion des autres images
-            $imagesFiles = $request->files->get('images');
-            $imagesNames = [];
-            if ($imagesFiles) {
-                foreach ($imagesFiles as $imageFile) {
-                    if ($imageFile->getSize() > 0) { // Vérifier que le fichier n'est pas vide
-                        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                        $extension = $imageFile->guessExtension();
-                        $imgFilename = $originalFilename . '.' . $extension;
-                        $imagesNames[] = $imgFilename;
-                    }
-                }
-            }
-
-            // Si erreur, ajouter les valeurs en session et rediriger
-            if ($hasError) {
-                // Redirection vers la page de création, pas vers la liste
-                $request->getSession()->set('form_data', [
-                    'title' => $title,
-                    'smallDescription' => $smallDescription,
-                    'description' => $description,
-                    'link' => $link,
-                    'technologies' => $technologies,
-                    'madeBy' => $madeBy,
-                ]);
-                return $this->redirectToRoute('app_project_new');
-            }
-
-            $project->setTitle($title);
-            $project->setSmallDescription($smallDescription);
-            $project->setDescription($description);
-            $project->setLink($link);
-            $project->setTechnologies($technologies);
-            $project->setMadeBy($madeBy);
-
-            // Upload et sauvegarde uniquement si pas d'erreur
-            if ($bannerImageFile) {
-                try {
-                    $bannerImageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                    $project->setBannerImage($newFilename);
-                } catch (FileException $e) {
-                    // Gérer l'erreur
-                }
-            }
-
-            if ($imagesFiles) {
-                $uploadedImages = [];
-                foreach ($imagesFiles as $idx => $imageFile) {
-                    try {
-                        $imageFile->move(
-                            $this->getParameter('images_directory'),
-                            $imagesNames[$idx]
-                        );
-                        $uploadedImages[] = $imagesNames[$idx];
-                    } catch (FileException $e) {
-                        // Gérer l'erreur
-                    }
-                }
-                $project->setImages($uploadedImages);
-            }
-
-            // Assigner automatiquement la prochaine position disponible
-            $project->setPosition($projectRepository->getNextPosition());
-
-            $entityManager->persist($project);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Projet créé avec succès !');
-            return $this->redirectToRoute('app_project_new');
         }
 
-        // Récupérer les données du formulaire depuis la session
-        $formData = $request->getSession()->get('form_data', []);
-        $request->getSession()->remove('form_data'); // Nettoyer après utilisation
-
         return $this->render('project/new.html.twig', [
-            'old' => $formData
+            'project' => $project,
+            'form' => $form->createView(),
         ]);
     }
 
-    // Route pour afficher les détails d'un projet pour admin
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function show(Project $project): Response
     {
         return $this->render('project/show.html.twig', [
@@ -163,7 +69,6 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    // Route publique pour afficher la page détaillée d'un projet
     #[Route('/public/{id}', name: 'project_public_show', methods: ['GET'])]
     public function publicShow(Project $project): Response
     {
@@ -173,103 +78,121 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_project_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Project $project, EntityManagerInterface $entityManager): Response
-    {
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(
+        Request $request,
+        Project $project,
+        EntityManagerInterface $entityManager,
+        ProjectMediaService $projectMediaService,
+    ): Response {
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            try {
+                $projectMediaService->handleUploads($form, $project);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Projet modifié avec succès !');
+                $this->addFlash('success', 'Projet modifie avec succes.');
 
-            return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+            } catch (\RuntimeException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
+            }
         }
 
         return $this->render('project/edit.html.twig', [
             'project' => $project,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
-    public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
-            // Supprimer les fichiers images associés
-            $imagesDir = $this->getParameter('images_directory');
-            // Bannière
-            if ($project->getBannerImage()) {
-                $bannerPath = $imagesDir . '/' . $project->getBannerImage();
-                if (file_exists($bannerPath)) {
-                    @unlink($bannerPath);
-                }
-            }
-            // Autres images
-            if (is_array($project->getImages())) {
-                foreach ($project->getImages() as $img) {
-                    $imgPath = $imagesDir . '/' . $img;
-                    if (file_exists($imgPath)) {
-                        @unlink($imgPath);
-                    }
-                }
-            }
-
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(
+        Request $request,
+        Project $project,
+        EntityManagerInterface $entityManager,
+        ProjectMediaService $projectMediaService,
+    ): Response {
+        if ($this->isCsrfTokenValid('delete' . $project->getId(), (string) $request->request->get('_token'))) {
+            $projectMediaService->deleteProjectMedia($project);
             $entityManager->remove($project);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Projet supprimé avec succès !');
+            $this->addFlash('success', 'Projet supprime avec succes.');
+        } else {
+            $this->addFlash('error', 'Jeton de securite invalide. Veuillez reessayer.');
         }
 
         return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/check-filename', name: 'app_project_check_filename', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function checkFilename(Request $request, ProjectRepository $projectRepository): Response
     {
-        $filename = $request->request->get('filename');
+        $filename = trim((string) $request->request->get('filename'));
+        $excludeProjectId = $request->request->getInt('projectId') ?: null;
 
-        if (!$filename) {
+        if ($filename === '') {
             return $this->json(['exists' => false]);
         }
 
-        // Récupérer tous les noms de fichiers existants
-        $allProjects = $projectRepository->findAll();
-        $existingFilenames = [];
-        foreach ($allProjects as $p) {
-            if ($p->getBannerImage()) {
-                $existingFilenames[] = $p->getBannerImage();
-            }
-            if (is_array($p->getImages())) {
-                $existingFilenames = array_merge($existingFilenames, $p->getImages());
-            }
-        }
-
-        $exists = in_array($filename, $existingFilenames);
-
-        return $this->json(['exists' => $exists]);
+        return $this->json([
+            'exists' => $projectRepository->mediaFilenameExists($filename, $excludeProjectId),
+        ]);
     }
 
     #[Route('/api/reorder', name: 'app_project_reorder', methods: ['POST'])]
-    public function reorderProjects(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        
-        if (!isset($data['projectIds']) || !is_array($data['projectIds'])) {
-            return $this->json(['success' => false, 'message' => 'Données invalides'], 400);
+    #[IsGranted('ROLE_ADMIN')]
+    public function reorderProjects(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ProjectRepository $projectRepository,
+    ): Response {
+        $csrfToken = $request->headers->get('X-CSRF-Token');
+
+        if (!$this->isCsrfTokenValid('project_reorder', (string) $csrfToken)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Jeton CSRF invalide.',
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        $projectIds = $data['projectIds'];
-        
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (!is_array($data) || !isset($data['projectIds']) || !is_array($data['projectIds'])) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Donnees invalides.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $projectIds = array_values(array_unique(array_map('intval', $data['projectIds'])));
+        $projects = $projectRepository->findBy(['id' => $projectIds]);
+
+        if (count($projects) !== count($projectIds)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Un ou plusieurs projets sont introuvables.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $projectsById = [];
+        foreach ($projects as $project) {
+            $projectsById[$project->getId()] = $project;
+        }
+
         foreach ($projectIds as $position => $projectId) {
-            $project = $entityManager->getRepository(Project::class)->find($projectId);
-            if ($project) {
-                $project->setPosition($position + 1); // Position commence à 1
-            }
+            $projectsById[$projectId]->setPosition($position + 1);
         }
 
         $entityManager->flush();
 
-        return $this->json(['success' => true, 'message' => 'Ordre sauvegardé avec succès']);
+        return $this->json([
+            'success' => true,
+            'message' => 'Ordre sauvegarde avec succes.',
+        ]);
     }
 }

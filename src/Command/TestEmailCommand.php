@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Service\AppEmailFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +18,10 @@ use Symfony\Component\Mime\Email;
 )]
 class TestEmailCommand extends Command
 {
-    private MailerInterface $mailer;
-
-    public function __construct(MailerInterface $mailer)
-    {
-        $this->mailer = $mailer;
+    public function __construct(
+        private readonly MailerInterface $mailer,
+        private readonly AppEmailFactory $emailFactory,
+    ) {
         parent::__construct();
     }
 
@@ -41,9 +41,9 @@ class TestEmailCommand extends Command
 
         try {
             $email = (new Email())
-                ->from('laukingportfolio@gmail.com')
+                ->from($this->emailFactory->getFromAddress())
                 ->to($emailAddress)
-                ->subject('🔧 Test de configuration - Portfolio')
+                ->subject('Test de configuration - Portfolio')
                 ->html('<h1>Test réussi ! ✅</h1><p>Votre configuration Gmail fonctionne parfaitement.</p>')
                 ->text('Test réussi ! Votre configuration Gmail fonctionne parfaitement.');
 
@@ -52,7 +52,7 @@ class TestEmailCommand extends Command
             $io->success([
                 'Email envoyé avec succès !',
                 'Destination: ' . $emailAddress,
-                'Expéditeur: laukingportfolio@gmail.com'
+                'Expéditeur: ' . $this->emailFactory->getFromAddress()->toString()
             ]);
 
             return Command::SUCCESS;

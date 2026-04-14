@@ -1,143 +1,100 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
+{% block meta_description %}Connectez-vous a votre espace portfolio en toute securite.{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block body %}
-<div class="form-page page-container content-fade-in">
-    <!-- En-tête avec sous-titre -->
-    <header class="header">
-        <div class="container text-center">
-            <h1 class="header-title">Connexion</h1>
-        </div>
-    </header>
-
-    <section class="form-section">
-        {% if app.user %}
-            <div class="alert alert-success mb-4">
-                <i class="fas fa-user-check me-2"></i>
-                Vous êtes connecté en tant que {{ app.user.userIdentifier }}
-                <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger ms-2">Se déconnecter</a>
+    <div class="form-page page-container content-fade-in">
+        <header class="header">
+            <div class="container text-center">
+                <h1 class="header-title">Connexion</h1>
             </div>
-        {% else %}
-            <form method="post" class="form-container">
-                <div class="form-group">
-                    <label for="username">
-                        <i class="fas fa-envelope me-2"></i>Email
-                    </label>
-                    <input type="email" 
-                           value="{{ last_username }}" 
-                           name="_username" 
-                           id="username" 
-                           class="form-input" 
-                           placeholder="votre@email.com"
-                           autocomplete="email" 
-                           required 
-                           autofocus>
-                </div>
+        </header>
 
-                <div class="form-group">
-                    <label for="password">
-                        <i class="fas fa-lock me-2"></i>Mot de passe
-                    </label>
-                    <div class="password-input-container">
-                        <input type="password" 
-                               name="_password" 
-                               id="password" 
-                               class="form-input password-input" 
-                               autocomplete="current-password" 
-                               required>
-                        <button type="button" class="password-toggle-btn" onclick="togglePassword()" title="Afficher/Masquer le mot de passe">
-                            <i class="fas fa-eye-slash" id="password-toggle-icon"></i>
-                            <span class="password-toggle-fallback" id="password-toggle-fallback" style="display: none;">�</span>
-                        </button>
+        <section class="form-section">
+            <div class="w-100">
+                {% if error %}
+                    <div class="alert alert-danger mb-4 form-feedback" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
                     </div>
-                </div>
+                {% endif %}
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                {% if app.user %}
+                    <div class="alert alert-success mb-4 form-feedback" role="alert">
+                        <i class="fas fa-user-check me-2"></i>
+                        Vous etes connecte en tant que {{ app.user.userIdentifier }}.
+                        <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger ms-2">Se deconnecter</a>
+                    </div>
+                {% else %}
+                    <form method="post" class="form-container">
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </label>
+                            <input
+                                type="email"
+                                value="{{ last_username }}"
+                                name="_username"
+                                id="username"
+                                class="form-input"
+                                placeholder="votre@email.com"
+                                autocomplete="email"
+                                required
+                                autofocus
+                            >
+                        </div>
 
-                <div class="form-group">
-                    <button type="submit" class="form-button">
-                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
-                    </button>
-                </div>
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock me-2"></i>Mot de passe
+                            </label>
+                            <div class="password-input-container">
+                                <input
+                                    type="password"
+                                    name="_password"
+                                    id="password"
+                                    class="form-input password-input"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button
+                                    type="button"
+                                    class="password-toggle-btn"
+                                    data-password-toggle
+                                    data-password-target="password"
+                                    aria-controls="password"
+                                    aria-label="Afficher le mot de passe"
+                                    aria-pressed="false"
+                                >
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="form-footer">
-                    <p class="text-center mb-2">
-                        <a href="{{ path('app_forgot_password_request') }}" class="link-primary">
-                            <i class="fas fa-key me-1"></i>Mot de passe oublié ?
-                        </a>
-                    </p>
-                    <p class="text-center">
-                        Vous n'avez pas de compte ? 
-                        <a href="{{ path('app_register') }}" class="link-primary">Créer un compte</a>
-                    </p>
-                </div>
-            </form>
-        {% endif %}
-    </section>
-        {% if error %}
-            <div class="alert alert-danger mb-4">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                {{ error.messageKey|trans(error.messageData, 'security') }}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="form-group">
+                            <button type="submit" class="form-button">
+                                <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                            </button>
+                        </div>
+
+                        <div class="form-footer">
+                            <p class="text-center mb-2">
+                                <a href="{{ path('app_forgot_password_request') }}" class="link-primary">
+                                    <i class="fas fa-key me-1"></i>Mot de passe oublie ?
+                                </a>
+                            </p>
+                            <p class="text-center mb-0">
+                                Vous n avez pas de compte ?
+                                <a href="{{ path('app_register') }}" class="link-primary">Creer un compte</a>
+                            </p>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
-        {% endif %}
-</div>
-
-<script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('password-toggle-icon');
-            const toggleFallback = document.getElementById('password-toggle-fallback');
-            
-            if (passwordInput.type === 'password') {
-                // Afficher le mot de passe
-                passwordInput.type = 'text';
-                // Icône œil ouvert (le mot de passe est visible)
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-                // Fallback emoji - œil ouvert
-                if (toggleFallback) {
-                    toggleFallback.textContent = '�️';
-                }
-            } else {
-                // Masquer le mot de passe
-                passwordInput.type = 'password';
-                // Icône œil barré (le mot de passe est masqué)
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-                // Fallback emoji - œil fermé/caché
-                if (toggleFallback) {
-                    toggleFallback.textContent = '�';
-                }
-            }
-        }
-
-        // Vérification si Font Awesome est chargé
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggleBtn = document.querySelector('.password-toggle-btn');
-            const toggleIcon = document.getElementById('password-toggle-icon');
-            const toggleFallback = document.getElementById('password-toggle-fallback');
-            
-            // Test si Font Awesome est disponible
-            setTimeout(function() {
-                const computedStyle = window.getComputedStyle(toggleIcon, '::before');
-                if (computedStyle.content === 'none' || computedStyle.content === '""') {
-                    // Font Awesome non disponible, utiliser le fallback
-                    toggleIcon.style.display = 'none';
-                    toggleFallback.style.display = 'inline';
-                }
-            }, 100);
-
-            // Gestion du clavier
-            if (toggleBtn) {
-                toggleBtn.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        togglePassword();
-                    }
-                });
-            }
-        });
-    </script>
-</div>
+        </section>
+    </div>
 {% endblock %}

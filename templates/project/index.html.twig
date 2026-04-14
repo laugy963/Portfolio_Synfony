@@ -1,344 +1,160 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des Projets{% endblock %}
+{% block title %}Gestion des projets{% endblock %}
+{% block meta_description %}Administration des projets du portfolio : creation, edition, suppression et ordre d affichage.{% endblock %}
 
 {% block body %}
-<div class="container page-container content-fade-in">
-    <div class="row">
-        <div class="col-12">
-            <!-- En-tête de la page -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h2 mb-1">
-                        <i class="fas fa-cog me-2 text-primary"></i>
-                        Gestion des Projets
-                    </h1>
-                    <p class="text-muted">Administrez les projets affichés sur votre portfolio</p>
-                </div>
-            </div>
+    {% set fallbackProjectImage = asset('images/projects/default-project.svg') %}
 
-            <!-- Messages flash -->
-            {% for type, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-triangle' }} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container page-container content-fade-in project-admin-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h1 class="h2 mb-1">
+                            <i class="fas fa-cog me-2 text-primary"></i>
+                            Gestion des projets
+                        </h1>
+                        <p class="text-muted mb-0">Administrez les projets affiches sur la page d accueil.</p>
                     </div>
+                    <a href="{{ path('app_project_new') }}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Ajouter un projet
+                    </a>
+                </div>
+
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                        </div>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
 
-            <!-- Contenu principal -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-list me-2"></i>
-                        Liste des Projets
-                    </h5>
-                </div>
-                <div class="card-body">
-                    {% if projects is empty %}
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="text-muted text-center py-5">
-                                    <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary"></i>
-                                    Aucun projet configuré pour le moment.
-                                    <br>
-                                    <small>Commencez par ajouter votre premier projet !</small>
-                                </p>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Bannière</th>
-                                        <th>Titre</th>
-                                        <th>Petite description</th>
-                                        <th>Date de création</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for project in projects %}
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <h2 class="h5 mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Liste des projets
+                        </h2>
+                        {% if projects is not empty %}
+                            <button id="configure-order-btn" type="button" class="btn btn-outline-success btn-sm">Configurer l ordre</button>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if projects is empty %}
+                            <p class="text-muted text-center py-5 mb-0">
+                                <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary"></i>
+                                Aucun projet configure pour le moment.
+                            </p>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                {% if project.bannerImage %}
-                                                    <img src="{{ asset('uploads/images/' ~ project.bannerImage) }}" alt="Bannière" style="height:50px;">
-                                                {% else %}
-                                                    <span class="text-muted">Aucune</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ project.title }}</td>
-                                            <td>{{ project.smallDescription }}</td>
-                                            <td>{{ project.createdAt|date('d/m/Y') }}</td>
-                                            <td>
-                                                <a href="{{ path('app_project_show', {id: project.id}) }}" class="btn btn-sm btn-info" title="Voir">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ path('app_project_edit', {id: project.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form method="post" action="{{ path('app_project_delete', {id: project.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer ce projet ?');">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ project.id) }}">
-                                                    <button class="btn btn-sm btn-danger" title="Supprimer">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
+                                            <th>Banniere</th>
+                                            <th>Titre</th>
+                                            <th>Description courte</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Section de réorganisation (cachée par défaut) -->
-            <div id="reorder-section" class="card shadow-sm mt-4" style="display: none;">
-                <div class="card-header bg-success text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-arrows-alt me-2"></i>
-                        Réorganiser les projets
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted mb-3">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Glissez et déposez les projets pour changer leur ordre d'affichage sur la page d'accueil.
-                    </p>
-                    
-                    <div id="sortable-projects" class="list-group mb-3">
-                        {% for project in projects %}
-                            <div class="list-group-item list-group-item-action d-flex align-items-center" data-project-id="{{ project.id }}">
-                                <i class="fas fa-grip-vertical text-muted me-3" style="cursor: grab;"></i>
-                                <img src="{{ project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+' }}" 
-                                     alt="Miniature" 
-                                     class="rounded me-3" 
-                                     style="width: 40px; height: 40px; object-fit: cover;">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ project.title }}</h6>
-                                    <small class="text-muted">{{ project.smallDescription ?: 'Aucune description' }}</small>
-                                </div>
-                                <small class="text-muted">Position: <span class="position-indicator">{{ project.position ?: 'Non définie' }}</span></small>
+                                    </thead>
+                                    <tbody>
+                                        {% for project in projects %}
+                                            <tr>
+                                                <td>
+                                                    <img
+                                                        src="{{ project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : fallbackProjectImage }}"
+                                                        alt="Miniature du projet {{ project.title }}"
+                                                        class="project-admin-table__thumb"
+                                                        width="80"
+                                                        height="48"
+                                                        loading="lazy"
+                                                    >
+                                                </td>
+                                                <td>{{ project.title }}</td>
+                                                <td>{{ project.smallDescription ?: 'Aucune description' }}</td>
+                                                <td>{{ project.createdAt|date('d/m/Y') }}</td>
+                                                <td class="project-admin-actions">
+                                                    <a href="{{ path('app_project_show', {id: project.id}) }}" class="btn btn-sm btn-info" aria-label="Voir le projet {{ project.title }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ path('app_project_edit', {id: project.id}) }}" class="btn btn-sm btn-warning" aria-label="Modifier le projet {{ project.title }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form method="post" action="{{ path('app_project_delete', {id: project.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce projet ?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ project.id) }}">
+                                                        <button class="btn btn-sm btn-danger" aria-label="Supprimer le projet {{ project.title }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <div class="d-flex gap-2">
-                        <button id="save-order-btn" class="btn btn-success">
-                            <i class="fas fa-save me-2"></i>
-                            Enregistrer l'ordre
-                        </button>
-                        <button id="cancel-order-btn" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>
-                            Annuler
-                        </button>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
 
-            <!-- Actions rapides -->
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card border-primary">
-                        <div class="card-body text-center">
-                            <i class="fas fa-plus-circle fa-2x text-primary mb-3"></i>
-                            <h5>Ajouter un Projet</h5>
-                            <p class="text-muted small">Créez un nouveau projet à afficher sur votre portfolio</p>
-                            <a href="{{ path('app_project_new') }}" class="btn btn-outline-primary btn-sm">Créer</a>
+                {% if projects is not empty %}
+                    <section
+                        id="reorder-section"
+                        class="card shadow-sm mt-4"
+                        hidden
+                        data-project-reorder
+                        data-reorder-url="{{ path('app_project_reorder') }}"
+                        data-csrf-token="{{ csrf_token('project_reorder') }}"
+                    >
+                        <div class="card-header bg-success text-white">
+                            <h2 class="h5 mb-0">
+                                <i class="fas fa-arrows-alt me-2"></i>
+                                Reorganiser les projets
+                            </h2>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-info">
-                        <div class="card-body text-center">
-                            <i class="fas fa-eye fa-2x text-info mb-3"></i>
-                            <h5>Prévisualiser</h5>
-                            <p class="text-muted small">Voir comment vos projets apparaissent sur le site</p>
-                            <a href="{{ path('app_home') }}#projects" class="btn btn-outline-info btn-sm">Voir</a>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">Deplacez les elements a la souris ou utilisez les boutons monter / descendre avant d enregistrer.</p>
+
+                            <div id="sortable-projects" class="list-group mb-3 project-reorder-list">
+                                {% for project in projects %}
+                                    <div class="list-group-item project-reorder-item" data-project-id="{{ project.id }}" draggable="true">
+                                        <div class="project-reorder-item__media">
+                                            <i class="fas fa-grip-vertical text-muted" aria-hidden="true"></i>
+                                            <img
+                                                src="{{ project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : fallbackProjectImage }}"
+                                                alt="Miniature du projet {{ project.title }}"
+                                                class="rounded"
+                                                width="56"
+                                                height="56"
+                                                loading="lazy"
+                                            >
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h3 class="h6 mb-1">{{ project.title }}</h3>
+                                            <p class="text-muted small mb-0">{{ project.smallDescription ?: 'Aucune description' }}</p>
+                                        </div>
+                                        <div class="project-reorder-item__controls">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-reorder-move="up" aria-label="Monter {{ project.title }}">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-reorder-move="down" aria-label="Descendre {{ project.title }}">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                            <span class="text-muted small">Position <strong class="position-indicator">{{ loop.index }}</strong></span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button id="save-order-btn" type="button" class="btn btn-success">Enregistrer l ordre</button>
+                                <button id="cancel-order-btn" type="button" class="btn btn-secondary">Annuler</button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-success">
-                        <div class="card-body text-center">
-                            <i class="fas fa-cogs fa-2x text-success mb-3"></i>
-                            <h5>Paramètres</h5>
-                            <p class="text-muted small">Configurez l'affichage des projets</p>
-                            <button id="configure-order-btn" class="btn btn-outline-success btn-sm">Configurer l'ordre</button>
-                        </div>
-                    </div>
-                </div>
+                    </section>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
-
-<!-- CDN SortableJS -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
-<style>
-/* Styles pour le drag & drop */
-#sortable-projects .list-group-item {
-    cursor: move;
-    transition: background-color 0.2s ease;
-}
-
-#sortable-projects .list-group-item:hover {
-    background-color: #f8f9fa;
-}
-
-#sortable-projects .list-group-item.sortable-ghost {
-    opacity: 0.4;
-    background-color: #e9ecef;
-}
-
-#sortable-projects .list-group-item.sortable-chosen {
-    background-color: #d4edda;
-    border-color: #28a745;
-}
-
-.grip-handle {
-    cursor: grab;
-}
-
-.grip-handle:active {
-    cursor: grabbing;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const configureBtn = document.getElementById('configure-order-btn');
-    const reorderSection = document.getElementById('reorder-section');
-    const saveBtn = document.getElementById('save-order-btn');
-    const cancelBtn = document.getElementById('cancel-order-btn');
-    const sortableContainer = document.getElementById('sortable-projects');
-    
-    let sortable = null;
-    
-    // Afficher/masquer la section de réorganisation
-    configureBtn.addEventListener('click', function() {
-        if (reorderSection.style.display === 'none') {
-            reorderSection.style.display = 'block';
-            configureBtn.textContent = 'Masquer la configuration';
-            configureBtn.classList.remove('btn-outline-success');
-            configureBtn.classList.add('btn-success');
-            initSortable();
-        } else {
-            hideReorderSection();
-        }
-    });
-    
-    // Masquer la section
-    cancelBtn.addEventListener('click', hideReorderSection);
-    
-    function hideReorderSection() {
-        reorderSection.style.display = 'none';
-        configureBtn.textContent = 'Configurer l\'ordre';
-        configureBtn.classList.remove('btn-success');
-        configureBtn.classList.add('btn-outline-success');
-        if (sortable) {
-            sortable.destroy();
-        }
-    }
-    
-    // Initialiser SortableJS
-    function initSortable() {
-        if (sortable) {
-            sortable.destroy();
-        }
-        
-        sortable = Sortable.create(sortableContainer, {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            chosenClass: 'sortable-chosen',
-            handle: '.fa-grip-vertical',
-            onEnd: function(evt) {
-                updatePositionIndicators();
-            }
-        });
-        
-        updatePositionIndicators();
-    }
-    
-    // Mettre à jour les indicateurs de position
-    function updatePositionIndicators() {
-        const items = sortableContainer.querySelectorAll('.list-group-item');
-        items.forEach((item, index) => {
-            const indicator = item.querySelector('.position-indicator');
-            if (indicator) {
-                indicator.textContent = index + 1;
-            }
-        });
-    }
-    
-    // Sauvegarder l'ordre
-    saveBtn.addEventListener('click', function() {
-        const projectIds = Array.from(sortableContainer.querySelectorAll('.list-group-item'))
-            .map(item => parseInt(item.dataset.projectId));
-        
-        // Désactiver le bouton pendant l'envoi
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enregistrement...';
-        
-        fetch('{{ path('app_project_reorder') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                projectIds: projectIds
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Afficher un message de succès
-                showAlert('success', data.message);
-                hideReorderSection();
-            } else {
-                showAlert('danger', data.message || 'Erreur lors de la sauvegarde');
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showAlert('danger', 'Erreur de connexion');
-        })
-        .finally(() => {
-            // Réactiver le bouton
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Enregistrer l\'ordre';
-        });
-    });
-    
-    // Fonction pour afficher les alertes
-    function showAlert(type, message) {
-        const alertHtml = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        
-        // Insérer l'alerte au début du contenu
-        const container = document.querySelector('.page-container .col-12');
-        const firstChild = container.querySelector('h1').parentElement.nextElementSibling;
-        firstChild.insertAdjacentHTML('beforebegin', alertHtml);
-        
-        // Auto-suppression après 5 secondes
-        setTimeout(() => {
-            const alert = container.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
-    }
-});
-</script>
 {% endblock %}

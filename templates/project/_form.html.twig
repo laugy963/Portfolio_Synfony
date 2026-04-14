@@ -1,0 +1,87 @@
+{% set fallbackProjectImage = asset('images/projects/default-project.svg') %}
+
+{{ form_start(form, {'attr': {'data-project-form': 'true'}}) }}
+    {{ form_errors(form) }}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">{{ form_row(form.title) }}</div>
+                    <div class="mb-3">{{ form_row(form.smallDescription) }}</div>
+                    <div class="mb-3">{{ form_row(form.description) }}</div>
+                    <div class="mb-3">{{ form_row(form.link) }}</div>
+                    <div class="mb-3">{{ form_row(form.technologies) }}</div>
+                    <div class="mb-0">{{ form_row(form.madeBy) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Banniere</h2>
+                    {% if project.bannerImage %}
+                        <div class="project-existing-banner mb-3">
+                            <img
+                                src="{{ asset('uploads/images/' ~ project.bannerImage) }}"
+                                alt="Banniere actuelle du projet {{ project.title }}"
+                                class="img-fluid rounded"
+                                width="640"
+                                height="360"
+                            >
+                            <div class="form-check mt-2">
+                                {{ form_widget(form.removeBannerImage) }}
+                                {{ form_label(form.removeBannerImage) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form_row(form.bannerImageFile) }}
+                    <div class="project-form-preview" data-banner-preview></div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Galerie</h2>
+                    {{ form_row(form.galleryImages) }}
+                    <div class="project-form-gallery-preview" data-gallery-preview></div>
+
+                    {% if form.removeImages.vars.choices is not empty %}
+                        <div class="mt-4">
+                            <h3 class="h6">Images existantes</h3>
+                            <div class="project-existing-gallery">
+                                {% for child in form.removeImages %}
+                                    <label class="project-existing-media-card" for="{{ child.vars.id }}">
+                                        <img
+                                            src="{{ asset('uploads/images/' ~ child.vars.value) }}"
+                                            alt="Image existante {{ loop.index }} du projet {{ project.title }}"
+                                            width="240"
+                                            height="135"
+                                            loading="lazy"
+                                        >
+                                        <span class="project-existing-media-card__label">Image {{ loop.index }}</span>
+                                        <span class="form-check">
+                                            {{ form_widget(child) }}
+                                            <span>Supprimer</span>
+                                        </span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-2"></i>{{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_project_index') }}" class="btn btn-secondary">Annuler</a>
+    </div>
+
+    {{ form_rest(form) }}
+{{ form_end(form) }}

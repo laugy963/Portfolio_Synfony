@@ -60,6 +60,7 @@ class ResetPasswordEmailTest extends WebTestCase
         
         $email = $this->getMailerMessage();
         $this->assertEmailAddressContains($email, 'to', $testEmail);
+        $this->assertEmailAddressContains($email, 'from', 'test@example.com');
         $this->assertEmailTextBodyContains($email, 'reset');
         
         // Nettoyage avec suppression des relations d'abord

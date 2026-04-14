@@ -4,27 +4,15 @@ namespace App\Service;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 
 class EmailVerificationService
 {
-    private MailerInterface $mailer;
-    private EntityManagerInterface $entityManager;
-    private string $fromEmail;
-    private string $fromName;
-
     public function __construct(
-        MailerInterface $mailer,
-        EntityManagerInterface $entityManager,
-        string $fromEmail = 'laukingportfolio@gmail.com',
-        string $fromName = 'Portfolio - Verification'
+        private readonly MailerInterface $mailer,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AppEmailFactory $emailFactory,
     ) {
-        $this->mailer = $mailer;
-        $this->entityManager = $entityManager;
-        $this->fromEmail = $fromEmail;
-        $this->fromName = $fromName;
     }
 
     public function generateVerificationCode(): string
@@ -46,15 +34,15 @@ class EmailVerificationService
         $this->entityManager->flush();
 
         // Envoyer l'email avec le code
-        $email = (new TemplatedEmail())
-            ->from(new Address($this->fromEmail, $this->fromName))
+        $email = $this->emailFactory
+            ->createTemplatedEmail('Code de verification - Portfolio')
             ->to($user->getEmail())
-            ->subject('🔐 Code de vérification - Portfolio')
             ->htmlTemplate('emails/verification_code.html.twig')
             ->context([
                 'user' => $user,
                 'verificationCode' => $verificationCode,
                 'expiresAt' => $expiresAt,
+                'fromAddress' => $this->emailFactory->getFromAddress(),
             ]);
 
         $this->mailer->send($email);

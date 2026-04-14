@@ -123,8 +123,8 @@
         </div>
         
         <div class="footer">
-            <p>© 2025 Portfolio - Tous droits réservés</p>
-            <p>Cet email a été envoyé depuis <strong>laukingportfolio@gmail.com</strong> à {{ user.email }}</p>
+            <p>© {{ "now"|date("Y") }} Portfolio - Tous droits réservés</p>
+            <p>Cet email a été envoyé depuis <strong>{{ fromAddress.address }}</strong> à {{ user.email }}</p>
             <p>Si vous avez des questions, vous pouvez répondre directement à cet email.</p>
         </div>
     </div>

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ project.title }}{% endblock %}
+{% block meta_description %}Edition d un projet existant du portfolio avec gestion des medias et validations serveur.{% endblock %}
+
+{% block body %}
+    <div class="container page-container project-form-page">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="h2 mb-1"><i class="fas fa-edit me-2 text-primary"></i>Modifier {{ project.title }}</h1>
+                <p class="text-muted mb-0">Mettez a jour le contenu, remplacez la banniere ou nettoyez la galerie sans perdre les medias conserves.</p>
+            </div>
+        </div>
+
+        {% include 'project/_form.html.twig' with {
+            form: form,
+            project: project,
+            button_label: 'Enregistrer les modifications'
+        } %}
+    </div>
+{% endblock %}

@@ -1,199 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vérification d'email{% endblock %}
+{% block title %}Verification d email{% endblock %}
+{% block meta_description %}Saisissez votre code a 6 chiffres pour valider votre adresse email.{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h1 class="h2 mb-3">📧 Vérification d'email</h1>
-                        <p class="text-muted">
-                            Un code de vérification à 6 chiffres a été envoyé à :
-                        </p>
-                        <p class="fw-bold text-primary">{{ email }}</p>
-                        <p class="text-muted small">
-                            Veuillez vérifier votre boîte de réception et saisir le code ci-dessous.
-                        </p>
-                    </div>
-
-                    {{ form_start(verificationForm, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
-                        
-                        <div class="mb-3">
-                            {{ form_label(verificationForm.email) }}
-                            {{ form_widget(verificationForm.email, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'readonly': true
-                                }
-                            }) }}
-                            {{ form_errors(verificationForm.email) }}
+    <div class="container page-container verification-page">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm verification-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <h1 class="h2 mb-3">Verification d email</h1>
+                            <p class="text-muted mb-2">Un code de verification a 6 chiffres a ete envoye a :</p>
+                            <p class="fw-bold text-primary">{{ email }}</p>
                         </div>
 
-                        <div class="mb-4">
-                            {{ form_label(verificationForm.code, 'Code de vérification', {
-                                'label_attr': {'class': 'form-label fw-bold'}
-                            }) }}
-                            {{ form_widget(verificationForm.code, {
-                                'attr': {
-                                    'class': 'form-control form-control-lg text-center',
-                                    'style': 'letter-spacing: 0.5rem; font-size: 1.5rem; font-weight: bold;',
-                                    'placeholder': '123456',
-                                    'maxlength': '6',
-                                    'pattern': '[0-9]{6}',
-                                    'autocomplete': 'one-time-code'
-                                }
-                            }) }}
-                            {{ form_errors(verificationForm.code) }}
-                            <div class="form-text">
-                                <i class="fas fa-info-circle"></i>
-                                Saisissez le code à 6 chiffres reçu par email.
+                        {{ form_start(verificationForm) }}
+                            <div class="mb-3">
+                                {{ form_row(verificationForm.email, {
+                                    attr: {
+                                        class: 'form-control',
+                                        readonly: true
+                                    }
+                                }) }}
                             </div>
+
+                            <div class="mb-4">
+                                {{ form_row(verificationForm.code, {
+                                    attr: {
+                                        class: 'form-control form-control-lg text-center verification-code-input',
+                                        autocomplete: 'one-time-code',
+                                        inputmode: 'numeric'
+                                    }
+                                }) }}
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Vérifier le code</button>
+                            </div>
+                        {{ form_end(verificationForm) }}
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <p class="text-muted mb-2">Vous n avez pas recu le code ?</p>
+                            <form method="post" action="{{ path('app_resend_code') }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('resend_verification_code') }}">
+                                <button type="submit" class="btn btn-outline-secondary">Renvoyer le code</button>
+                            </form>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-check-circle"></i>
-                                Vérifier le code
-                            </button>
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_register') }}" class="text-muted">Retour a l inscription</a>
                         </div>
-
-                    {{ form_end(verificationForm) }}
-
-                    <hr class="my-4">
-
-                    <div class="text-center">
-                        <p class="text-muted mb-2">Vous n'avez pas reçu le code ?</p>
-                        <a href="{{ path('app_resend_code') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-redo"></i>
-                            Renvoyer le code
-                        </a>
-                    </div>
-
-                    <div class="text-center mt-3">
-                        <a href="{{ path('app_register') }}" class="text-muted">
-                            <i class="fas fa-arrow-left"></i>
-                            Retour à l'inscription
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Informations sur la sécurité -->
-            <div class="card mt-4 border-warning">
-                <div class="card-body">
-                    <h6 class="card-title text-warning">
-                        <i class="fas fa-shield-alt"></i>
-                        Information de sécurité
-                    </h6>
-                    <ul class="list-unstyled small text-muted mb-0">
-                        <li><i class="fas fa-clock text-warning"></i> Le code expire dans 15 minutes</li>
-                        <li><i class="fas fa-lock text-warning"></i> Ne partagez jamais votre code de vérification</li>
-                        <li><i class="fas fa-envelope text-warning"></i> Si vous n'avez pas demandé cette vérification, ignorez cet email</li>
-                    </ul>
+                <div class="card mt-4 border-warning verification-card">
+                    <div class="card-body">
+                        <h2 class="h6 text-warning mb-3">
+                            <i class="fas fa-shield-alt me-2"></i>Information de securite
+                        </h2>
+                        <ul class="list-unstyled small text-muted mb-0">
+                            <li class="mb-2"><i class="fas fa-clock text-warning me-2"></i>Le code expire dans 15 minutes.</li>
+                            <li class="mb-2"><i class="fas fa-lock text-warning me-2"></i>Ne partagez jamais votre code.</li>
+                            <li><i class="fas fa-envelope text-warning me-2"></i>Si vous n etes pas a l origine de cette demande, ignorez cet email.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<style>
-/* Animations pour le formulaire de vérification */
-.card {
-    animation: slideInUp 0.6s ease-out;
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Style pour le champ de code */
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-/* Effet hover sur les boutons */
-.btn:hover {
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
-}
-
-/* Style pour les alertes */
-.alert {
-    border-radius: 10px;
-    border: none;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .card-body {
-        padding: 2rem 1.5rem !important;
-    }
-    
-    .form-control-lg {
-        font-size: 1.2rem !important;
-    }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Focus automatique sur le champ de code
-    const codeInput = document.querySelector('input[name="verification_code_form[code]"]');
-    if (codeInput) {
-        codeInput.focus();
-        
-        // Formatage automatique du code (ajout d'espaces tous les 3 chiffres)
-        codeInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // Ne garder que les chiffres
-            if (value.length > 6) {
-                value = value.substr(0, 6);
-            }
-            e.target.value = value;
-        });
-        
-        // Soumission automatique quand 6 chiffres sont saisis
-        codeInput.addEventListener('input', function(e) {
-            if (e.target.value.length === 6) {
-                // Petite pause pour l'UX
-                setTimeout(() => {
-                    e.target.form.submit();
-                }, 500);
-            }
-        });
-    }
-    
-    // Animation pour les messages flash
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        alert.style.animation = 'fadeInDown 0.5s ease-out';
-    });
-});
-
-// Animation CSS pour les messages
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-`;
-document.head.appendChild(style);
-</script>
 {% endblock %}

@@ -40,6 +40,7 @@ class AdminAuthenticationTest extends WebTestCase
             'admin-login-test@example.com',
             'admin-wrong-password@example.com',
             'admin-unverified@example.com',
+            'admin-throttle@example.com',
             'admin-access-test@example.com',
             'user-normal@example.com'
         ];
@@ -205,12 +206,40 @@ class AdminAuthenticationTest extends WebTestCase
         
         $this->client->submit($form);
 
-        // Assert - La connexion peut réussir mais dépend de votre logique métier
-        // Si vous voulez empêcher les utilisateurs non vérifiés de se connecter,
-        // vous devrez ajouter cette logique dans votre EventListener
-        
-        // Pour ce test, nous vérifions juste que le mot de passe est correct
-        $this->assertTrue($this->passwordHasher->isPasswordValid($adminUser, $password));
+        $this->assertResponseRedirects('/login');
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains('.alert-danger', 'Veuillez vérifier votre adresse email avant de vous connecter.');
+    }
+
+    public function testLoginThrottlingBlocksAfterTooManyFailures(): void
+    {
+        $email = 'admin-throttle@example.com';
+        $password = 'goodPassword123';
+
+        $adminUser = $this->createUserWithCreatedAt();
+        $adminUser->setEmail($email);
+        $adminUser->setFirstName('Admin');
+        $adminUser->setLastName('Throttle');
+        $adminUser->setRoles(['ROLE_ADMIN']);
+        $adminUser->setIsVerified(true);
+        $adminUser->setPassword($this->passwordHasher->hashPassword($adminUser, $password));
+
+        $this->entityManager->persist($adminUser);
+        $this->entityManager->flush();
+
+        for ($attempt = 0; $attempt < 6; ++$attempt) {
+            $crawler = $this->client->request('GET', '/login');
+            $form = $crawler->selectButton('Se connecter')->form([
+                '_username' => $email,
+                '_password' => 'bad-password',
+            ]);
+
+            $this->client->submit($form);
+            $this->assertResponseRedirects('/login');
+            $this->client->followRedirect();
+        }
+
+        $this->assertSelectorTextContains('.alert-danger', 'Trop de tentatives de connexion échouées');
     }
 
     public function testAdminAccessToRestrictedArea(): void

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Créer un compte{% endblock %}
+{% block meta_description %}Créez votre compte pour accéder à l espace portfolio et vérifier votre adresse email.{% endblock %}
 
 {% block body %}
 <div class="form-page page-container content-fade-in">
-    <!-- En-tête avec sous-titre -->
     <header class="header">
         <div class="container text-center">
             <h1 class="header-title">Créer un compte</h1>
@@ -12,31 +12,25 @@
     </header>
 
     <section class="form-section">
-        {# Affichage des messages flash #}
         {% for type, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} mb-4">
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} mb-4 form-feedback">
                     <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-triangle' }} me-2"></i>
                     {{ message }}
                 </div>
             {% endfor %}
         {% endfor %}
 
-        {{ form_start(registrationForm, {'attr': {'class': 'form-container', 'novalidate': 'novalidate'}}) }}
-            
+        {{ form_start(registrationForm, {'attr': {'class': 'form-container'}}) }}
             <div class="registration-header mb-4">
                 <h2 class="form-title">Rejoignez-nous</h2>
-                <p class="form-subtitle">Créez votre compte pour accéder à toutes les fonctionnalités</p>
-                <div class="alert alert-info mb-3">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Tous les champs sont obligatoires</strong> pour créer votre compte
-                </div>
+                <p class="form-subtitle">Tous les champs sont requis pour créer votre compte.</p>
             </div>
 
             <div class="form-row">
                 <div class="form-group form-half">
                     <label class="form-label">
-                        <i class="fas fa-user me-2"></i>Nom <span style="color: #dc2626;">*</span>
+                        <i class="fas fa-user me-2"></i>Nom <span class="text-danger">*</span>
                     </label>
                     {{ form_widget(registrationForm.lastName) }}
                     {{ form_errors(registrationForm.lastName) }}
@@ -44,7 +38,7 @@
 
                 <div class="form-group form-half">
                     <label class="form-label">
-                        <i class="fas fa-user me-2"></i>Prénom <span style="color: #dc2626;">*</span>
+                        <i class="fas fa-user me-2"></i>Prénom <span class="text-danger">*</span>
                     </label>
                     {{ form_widget(registrationForm.firstName) }}
                     {{ form_errors(registrationForm.firstName) }}
@@ -53,7 +47,7 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-envelope me-2"></i>Adresse email <span style="color: #dc2626;">*</span>
+                    <i class="fas fa-envelope me-2"></i>Adresse email <span class="text-danger">*</span>
                 </label>
                 {{ form_widget(registrationForm.email) }}
                 {{ form_errors(registrationForm.email) }}
@@ -61,13 +55,12 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-lock me-2"></i>Mot de passe <span style="color: #dc2626;">*</span>
+                    <i class="fas fa-lock me-2"></i>Mot de passe <span class="text-danger">*</span>
                 </label>
                 <div class="password-input-container">
-                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input password-input', 'id': 'password'}}) }}
-                    <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
-                        <i class="fas fa-eye-slash" id="password-toggle-icon-1"></i>
-                        <span class="password-toggle-fallback" id="password-toggle-fallback-1" style="display: none;">🙈</span>
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-input password-input', 'id': 'registration-password'}}) }}
+                    <button type="button" class="password-toggle-btn" data-password-toggle data-password-target="registration-password" aria-controls="registration-password" aria-label="Afficher le mot de passe" aria-pressed="false">
+                        <i class="fas fa-eye-slash"></i>
                     </button>
                 </div>
                 {{ form_errors(registrationForm.plainPassword.first) }}
@@ -75,13 +68,12 @@
 
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe <span style="color: #dc2626;">*</span>
+                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe <span class="text-danger">*</span>
                 </label>
                 <div class="password-input-container">
-                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input password-input', 'id': 'password-confirm'}}) }}
-                    <button type="button" class="password-toggle-btn" onclick="togglePasswordByButton(this)" title="Afficher/Masquer le mot de passe">
-                        <i class="fas fa-eye-slash" id="password-toggle-icon-2"></i>
-                        <span class="password-toggle-fallback" id="password-toggle-fallback-2" style="display: none;">🙈</span>
+                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-input password-input', 'id': 'registration-password-confirm'}}) }}
+                    <button type="button" class="password-toggle-btn" data-password-toggle data-password-target="registration-password-confirm" aria-controls="registration-password-confirm" aria-label="Afficher la confirmation du mot de passe" aria-pressed="false">
+                        <i class="fas fa-eye-slash"></i>
                     </button>
                 </div>
                 {{ form_errors(registrationForm.plainPassword.second) }}
@@ -91,15 +83,11 @@
                 <div class="checkbox-container">
                     {{ form_widget(registrationForm.agreeTerms) }}
                     <label for="{{ registrationForm.agreeTerms.vars.id }}" class="checkbox-label">
-                        J'accepte les 
-                        <a href="{{ path('app_terms_of_service') }}" target="_blank" class="link-primary">
-                            conditions d'utilisation
-                        </a> 
-                        et la 
-                        <a href="{{ path('app_privacy_policy') }}" target="_blank" class="link-primary">
-                            politique de confidentialité
-                        </a>
-                        <span style="color: #dc2626;">*</span>
+                        J accepte les
+                        <a href="{{ path('app_terms_of_service') }}" target="_blank" rel="noopener noreferrer" class="link-primary">conditions d utilisation</a>
+                        et la
+                        <a href="{{ path('app_privacy_policy') }}" target="_blank" rel="noopener noreferrer" class="link-primary">politique de confidentialité</a>
+                        <span class="text-danger">*</span>
                     </label>
                 </div>
                 {{ form_errors(registrationForm.agreeTerms) }}
@@ -112,311 +100,12 @@
             </div>
 
             <div class="form-footer">
-                <p class="text-center">
-                    Vous avez déjà un compte ? 
+                <p class="text-center mb-0">
+                    Vous avez déjà un compte ?
                     <a href="{{ path('app_login') }}" class="link-primary">Se connecter</a>
                 </p>
             </div>
-
         {{ form_end(registrationForm) }}
     </section>
-</div>
-
-<script>
-        function togglePasswordField(inputId, iconId) {
-            console.log('togglePasswordField appelée avec:', inputId, iconId);
-            
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-            const fallbackId = iconId.replace('icon', 'fallback');
-            const toggleFallback = document.getElementById(fallbackId);
-            
-            console.log('Éléments trouvés:', {
-                passwordInput: passwordInput,
-                toggleIcon: toggleIcon,
-                toggleFallback: toggleFallback,
-                inputType: passwordInput ? passwordInput.type : 'null'
-            });
-            
-            if (!passwordInput) {
-                console.error('Input de mot de passe non trouvé:', inputId);
-                return;
-            }
-            
-            if (!toggleIcon) {
-                console.error('Icône toggle non trouvée:', iconId);
-                return;
-            }
-            
-            if (passwordInput.type === 'password') {
-                // Afficher le mot de passe
-                passwordInput.type = 'text';
-                // Icône œil ouvert (le mot de passe est visible)
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-                // Fallback emoji - œil ouvert
-                if (toggleFallback) {
-                    toggleFallback.textContent = '👁️';
-                }
-                console.log('Mot de passe affiché pour:', inputId);
-            } else {
-                // Masquer le mot de passe
-                passwordInput.type = 'password';
-                // Icône œil barré (le mot de passe est masqué)
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-                // Fallback emoji - œil fermé/caché
-                if (toggleFallback) {
-                    toggleFallback.textContent = '🙈';
-                }
-                console.log('Mot de passe masqué pour:', inputId);
-            }
-        }
-
-        // Fonction alternative basée sur la proximité des éléments
-        function togglePasswordByButton(button) {
-            console.log('togglePasswordByButton appelée');
-            
-            const container = button.closest('.password-input-container');
-            if (!container) {
-                console.error('Container parent non trouvé');
-                return;
-            }
-            
-            const passwordInput = container.querySelector('input[type="password"], input[type="text"]');
-            const toggleIcon = button.querySelector('i[class*="fa-eye"]');
-            const toggleFallback = button.querySelector('.password-toggle-fallback');
-            
-            if (!passwordInput) {
-                console.error('Input de mot de passe non trouvé dans le container');
-                return;
-            }
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
-                if (toggleFallback) {
-                    toggleFallback.textContent = '👁️';
-                }
-                console.log('Mot de passe affiché (méthode proximité)');
-            } else {
-                passwordInput.type = 'password';
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('fa-eye');
-                    toggleIcon.classList.add('fa-eye-slash');
-                }
-                if (toggleFallback) {
-                    toggleFallback.textContent = '🙈';
-                }
-                console.log('Mot de passe masqué (méthode proximité)');
-            }
-        }
-
-        // Validation en temps réel
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page d\'inscription chargée, initialisation...');
-            
-            const form = document.querySelector('form[name="registration_form"]');
-            const submitButton = document.querySelector('button[type="submit"]');
-            const password = document.getElementById('password');
-            const passwordConfirm = document.getElementById('password-confirm');
-            const firstNameField = document.querySelector('input[name="registration_form[firstName]"]');
-            const lastNameField = document.querySelector('input[name="registration_form[lastName]"]');
-            const emailField = document.querySelector('input[name="registration_form[email]"]');
-            const agreeTermsField = document.querySelector('input[name="registration_form[agreeTerms]"]');
-            
-            console.log('Champs trouvés:', {
-                form: form,
-                password: password,
-                passwordConfirm: passwordConfirm,
-                firstName: firstNameField,
-                lastName: lastNameField,
-                email: emailField,
-                agreeTerms: agreeTermsField
-            });
-
-            // Fonction pour valider un champ individuel
-            function validateField(field, isEmpty = false) {
-                if (!field) return true;
-                
-                const isValid = !isEmpty && field.value.trim().length > 0;
-                
-                if (isValid) {
-                    field.style.borderColor = 'var(--accent-green)';
-                    field.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
-                } else if (field.value.length > 0 || field.classList.contains('was-validated')) {
-                    field.style.borderColor = '#dc2626';
-                    field.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
-                } else {
-                    field.style.borderColor = '';
-                    field.style.boxShadow = '';
-                }
-                
-                return isValid;
-            }
-
-            // Fonction pour valider les mots de passe
-            function validatePasswords() {
-                if (!password || !passwordConfirm) return true;
-                
-                const passwordValue = password.value;
-                const confirmValue = passwordConfirm.value;
-                
-                // Validation du mot de passe principal
-                const isPasswordValid = passwordValue.length >= 6;
-                validateField(password, !isPasswordValid);
-                
-                // Validation de la confirmation
-                if (passwordValue && confirmValue) {
-                    if (passwordValue === confirmValue && isPasswordValid) {
-                        passwordConfirm.style.borderColor = 'var(--accent-green)';
-                        passwordConfirm.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
-                        return true;
-                    } else {
-                        passwordConfirm.style.borderColor = '#dc2626';
-                        passwordConfirm.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
-                        return false;
-                    }
-                } else {
-                    // Remettre le style par défaut
-                    passwordConfirm.style.borderColor = '';
-                    passwordConfirm.style.boxShadow = '';
-                    return false;
-                }
-            }
-
-            // Fonction pour valider l'email
-            function validateEmail() {
-                if (!emailField) return true;
-                
-                const emailValue = emailField.value.trim();
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                const isValid = emailValue.length > 0 && emailRegex.test(emailValue);
-                
-                validateField(emailField, !isValid);
-                return isValid;
-            }
-
-            // Fonction pour vérifier si tous les champs sont remplis
-            function validateAllFields() {
-                const isFirstNameValid = validateField(firstNameField, !firstNameField?.value.trim());
-                const isLastNameValid = validateField(lastNameField, !lastNameField?.value.trim());
-                const isEmailValid = validateEmail();
-                const arePasswordsValid = validatePasswords();
-                const isTermsChecked = agreeTermsField?.checked || false;
-                
-                return isFirstNameValid && isLastNameValid && isEmailValid && arePasswordsValid && isTermsChecked;
-            }
-
-            // Ajouter les écouteurs d'événements
-            [firstNameField, lastNameField, emailField, password, passwordConfirm].forEach(field => {
-                if (field) {
-                    field.addEventListener('input', function() {
-                        this.classList.add('was-validated');
-                        validateAllFields();
-                    });
-                    
-                    field.addEventListener('blur', function() {
-                        this.classList.add('was-validated');
-                        validateAllFields();
-                    });
-                }
-            });
-
-            if (agreeTermsField) {
-                agreeTermsField.addEventListener('change', validateAllFields);
-            }
-
-            // Validation lors de la soumission
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    // Marquer tous les champs comme validés
-                    [firstNameField, lastNameField, emailField, password, passwordConfirm].forEach(field => {
-                        if (field) field.classList.add('was-validated');
-                    });
-
-                    if (!validateAllFields()) {
-                        e.preventDefault();
-                        
-                        // Afficher un message d'erreur global
-                        let errorMessage = 'Veuillez corriger les erreurs suivantes :\n';
-                        
-                        if (!firstNameField?.value.trim()) errorMessage += '- Prénom requis\n';
-                        if (!lastNameField?.value.trim()) errorMessage += '- Nom requis\n';
-                        if (!emailField?.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) errorMessage += '- Email valide requis\n';
-                        if (!password?.value || password.value.length < 6) errorMessage += '- Mot de passe de 6 caractères minimum requis\n';
-                        if (password?.value !== passwordConfirm?.value) errorMessage += '- Les mots de passe doivent correspondre\n';
-                        if (!agreeTermsField?.checked) errorMessage += '- Acceptation des conditions requise\n';
-                        
-                        alert(errorMessage);
-                        
-                        // Scroll vers le premier champ en erreur
-                        const firstErrorField = [firstNameField, lastNameField, emailField, password, passwordConfirm, agreeTermsField]
-                            .find(field => {
-                                if (!field) return false;
-                                if (field.type === 'checkbox') return !field.checked;
-                                return !field.value.trim() || 
-                                       (field === emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) ||
-                                       (field === password && field.value.length < 6) ||
-                                       (field === passwordConfirm && field.value !== password?.value);
-                            });
-                        
-                        if (firstErrorField) {
-                            firstErrorField.focus();
-                            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }
-                });
-            }
-
-            // Test des boutons de toggle
-            const toggleButtons = document.querySelectorAll('.password-toggle-btn');
-            console.log('Boutons toggle trouvés:', toggleButtons.length);
-            
-            toggleButtons.forEach(function(button, index) {
-                console.log('Bouton toggle ' + (index + 1) + ':', button);
-                
-                // Test du clic
-                button.addEventListener('click', function() {
-                    console.log('Clic détecté sur bouton toggle ' + (index + 1));
-                });
-            });
-
-            // Vérification si Font Awesome est chargé
-            const toggleIcons = document.querySelectorAll('[id^="password-toggle-icon-"]');
-            const toggleFallbacks = document.querySelectorAll('[id^="password-toggle-fallback-"]');
-            
-            console.log('Icônes trouvées:', toggleIcons.length, 'Fallbacks trouvés:', toggleFallbacks.length);
-            
-            setTimeout(function() {
-                toggleIcons.forEach(function(icon, index) {
-                    const computedStyle = window.getComputedStyle(icon, '::before');
-                    if (computedStyle.content === 'none' || computedStyle.content === '""') {
-                        // Font Awesome non disponible, utiliser le fallback
-                        console.log('Font Awesome non disponible pour icône ' + (index + 1) + ', utilisation du fallback');
-                        icon.style.display = 'none';
-                        if (toggleFallbacks[index]) {
-                            toggleFallbacks[index].style.display = 'inline';
-                        }
-                    } else {
-                        console.log('Font Awesome disponible pour icône ' + (index + 1));
-                    }
-                });
-            }, 100);
-
-            // Gestion du clavier pour les boutons toggle
-            toggleButtons.forEach(function(button) {
-                button.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        button.click();
-                    }
-                });
-            });
-        });
-    </script>
 </div>
 {% endblock %}

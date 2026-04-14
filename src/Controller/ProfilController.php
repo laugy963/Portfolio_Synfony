@@ -3,18 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\EmailVerificationService;
 use App\Form\ProfilEditType;
 use App\Form\ChangePasswordType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil')]
 #[IsGranted('ROLE_USER')]
@@ -36,7 +36,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/edit', name: 'app_profil_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, EmailVerificationService $emailVerificationService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -55,18 +55,37 @@ class ProfilController extends AbstractController
             // Vérifier si l'email a été modifié
             $newEmail = $user->getEmail();
             $emailChanged = ($originalEmail !== $newEmail);
+
+            if ($emailChanged) {
+                $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $newEmail]);
+
+                if ($existingUser instanceof User && $existingUser->getId() !== $user->getId()) {
+                    $form->get('email')->addError(new FormError('Cette adresse email est deja utilisee.'));
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newEmail = $user->getEmail();
+            $emailChanged = ($originalEmail !== $newEmail);
             
             if ($emailChanged) {
                 // Si l'email a changé, marquer comme non vérifié
                 $user->setIsVerified(false);
-                $this->addFlash('warning', 'Votre email a été modifié. Vous devrez le vérifier à nouveau.');
             }
 
             try {
                 $entityManager->flush();
+
+                if ($emailChanged) {
+                    $emailVerificationService->sendEmailConfirmation($user);
+                    $request->getSession()->set('verification_email', $newEmail);
+                    $request->getSession()->set('verification_code_last_sent_at', time());
+                    $this->addFlash('warning', 'Votre email a ete modifie. Veuillez verifier votre nouvelle adresse.');
+                }
                 
                 $successMessage = $emailChanged 
-                    ? 'Profil mis à jour avec succès ! Un email de vérification sera envoyé à votre nouvelle adresse.'
+                    ? 'Profil mis a jour avec succes. Un code de verification vient d etre envoye a votre nouvelle adresse.'
                     : 'Profil mis à jour avec succès !';
                     
                 $this->addFlash('success', $successMessage);

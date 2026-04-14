@@ -1,161 +1,85 @@
-{# Footer/Navigation en bas de page commune pour toutes les pages #}
 <footer class="bg-dark text-light py-5">
     <div class="container">
         <div class="row">
-            <!-- Section À propos -->
             <div class="col-lg-4 col-md-6 mb-4">
-                <h5 class="text-primary mb-3">
+                <h2 class="h5 text-primary mb-3">
                     <i class="fas fa-user me-2"></i>
-                    À propos
-                </h5>
+                    A propos
+                </h2>
                 <p class="text-light">
-                    Développeur passionné par la création d'expériences web exceptionnelles. 
-                    Spécialisé dans les technologies modernes et les solutions innovantes.
+                    Developpeur specialise Symfony, securite web et amelioration continue de produits numeriques.
                 </p>
             </div>
-            
-            <!-- Section Navigation -->
+
             <div class="col-lg-2 col-md-6 mb-4">
-                <h5 class="text-primary mb-3">
+                <h2 class="h5 text-primary mb-3">
                     <i class="fas fa-sitemap me-2"></i>
                     Navigation
-                </h5>
+                </h2>
                 <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="{{ path('app_home') }}" class="text-light text-decoration-none">
-                            <i class="fas fa-home me-2"></i>Accueil
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="{{ path('app_home') }}#about" class="text-light text-decoration-none">
-                            <i class="fas fa-user me-2"></i>À propos
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="{{ path('app_home') }}#projects" class="text-light text-decoration-none">
-                            <i class="fas fa-folder-open me-2"></i>Projets
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="{{ path('app_home') }}#contact" class="text-light text-decoration-none">
-                            <i class="fas fa-envelope me-2"></i>Contact
-                        </a>
-                    </li>
+                    <li class="mb-2"><a href="{{ path('app_home') }}" class="text-light text-decoration-none">Accueil</a></li>
+                    <li class="mb-2"><a href="{{ path('app_home') }}#about" class="text-light text-decoration-none">A propos</a></li>
+                    <li class="mb-2"><a href="{{ path('app_home') }}#projects" class="text-light text-decoration-none">Projets</a></li>
+                    <li class="mb-2"><a href="{{ path('app_home') }}#contact" class="text-light text-decoration-none">Contact</a></li>
                 </ul>
             </div>
-            
-            <!-- Section Compte -->
+
             <div class="col-lg-3 col-md-6 mb-4">
-                <h5 class="text-primary mb-3">
+                <h2 class="h5 text-primary mb-3">
                     <i class="fas fa-user-circle me-2"></i>
                     Compte
-                </h5>
+                </h2>
                 <ul class="list-unstyled">
                     {% if app.user %}
-                        <li class="mb-2">
-                            <a href="{{ path('app_profil_index') }}" class="text-light text-decoration-none">
-                                <i class="fas fa-user me-2"></i>Mon Profil
-                            </a>
-                        </li>
+                        <li class="mb-2"><a href="{{ path('app_profil_index') }}" class="text-light text-decoration-none">Mon profil</a></li>
                         {% if is_granted('ROLE_ADMIN') %}
-                        <li class="mb-2">
-                            <a href="{{ path('app_project_index') }}" class="text-light text-decoration-none">
-                                <i class="fas fa-cog me-2"></i>Gestion
-                            </a>
-                        </li>
+                            <li class="mb-2"><a href="{{ path('app_project_index') }}" class="text-light text-decoration-none">Gestion</a></li>
                         {% endif %}
-                        <li class="mb-2">
-                            <a href="{{ path('app_logout') }}" class="text-light text-decoration-none">
-                                <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
-                            </a>
-                        </li>
+                        <li class="mb-2"><a href="{{ path('app_logout') }}" class="text-light text-decoration-none">Deconnexion</a></li>
                     {% else %}
-                        <li class="mb-2">
-                            <a href="{{ path('app_login') }}" class="text-light text-decoration-none">
-                                <i class="fas fa-sign-in-alt me-2"></i>Connexion
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ path('app_register') }}" class="text-light text-decoration-none">
-                                <i class="fas fa-user-plus me-2"></i>Inscription
-                            </a>
-                        </li>
+                        <li class="mb-2"><a href="{{ path('app_login') }}" class="text-light text-decoration-none">Connexion</a></li>
+                        <li class="mb-2"><a href="{{ path('app_register') }}" class="text-light text-decoration-none">Inscription</a></li>
                     {% endif %}
                 </ul>
             </div>
-            
-            <!-- Section Contact/Réseaux sociaux -->
+
             <div class="col-lg-3 col-md-6 mb-4">
-                <h5 class="text-primary mb-3">
+                <h2 class="h5 text-primary mb-3">
                     <i class="fas fa-share-alt me-2"></i>
-                    Suivez-moi
-                </h5>
+                    Me suivre
+                </h2>
                 <div class="d-flex gap-3 mb-3">
-                    <a href="https://www.linkedin.com/in/king-lau-a2771420b" class="text-light fs-4" title="LinkedIn" target="_blank">
+                    <a href="https://www.linkedin.com/in/king-lau-a2771420b" class="text-light fs-4" title="Profil LinkedIn" aria-label="Profil LinkedIn" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://github.com/laugy963" class="text-light fs-4" title="GitHub" target="_blank">
+                    <a href="https://github.com/laugy963" class="text-light fs-4" title="Profil GitHub" aria-label="Profil GitHub" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="mailto:laukingstephane@gmail.com" class="text-light fs-4" title="Email">
+                    <a href="mailto:laukingstephane@gmail.com" class="text-light fs-4" title="Envoyer un email" aria-label="Envoyer un email">
                         <i class="fas fa-envelope"></i>
                     </a>
                 </div>
-                <p class="text-light small">
+                <p class="text-light small mb-0">
                     <i class="fas fa-map-marker-alt me-2"></i>
-                    Strasbourg, FRANCE
+                    Strasbourg, France
                 </p>
             </div>
         </div>
-        
-        <!-- Section légale -->
+
         <hr class="border-secondary my-4">
         <div class="row">
             <div class="col-md-6">
-                <p class="text-light small mb-0">
-                    © {{ "now"|date("Y") }} King LAU. Tous droits réservés.
-                </p>
+                <p class="text-light small mb-0">© {{ 'now'|date('Y') }} King LAU. Tous droits reserves.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a href="{{ path('app_privacy_policy') }}" class="text-light text-decoration-none small me-3">
-                    <i class="fas fa-shield-alt me-1"></i>Politique de confidentialité
-                </a>
-                <a href="{{ path('app_terms_of_service') }}" class="text-light text-decoration-none small me-3">
-                    <i class="fas fa-file-contract me-1"></i>Conditions d'utilisation
-                </a>
-                <a href="{{ path('app_mentions_legales') }}" class="text-light text-decoration-none small">
-                    <i class="fas fa-gavel me-1"></i>Mentions légales
-                </a>
+                <a href="{{ path('app_privacy_policy') }}" class="text-light text-decoration-none small me-3">Politique de confidentialite</a>
+                <a href="{{ path('app_terms_of_service') }}" class="text-light text-decoration-none small me-3">Conditions d utilisation</a>
+                <a href="{{ path('app_mentions_legales') }}" class="text-light text-decoration-none small">Mentions legales</a>
             </div>
         </div>
     </div>
 </footer>
 
-<!-- Bouton retour en haut -->
-<button id="backToTop" class="btn btn-primary position-fixed bottom-0 end-0 m-3 rounded-circle d-none d-flex align-items-center justify-content-center" style="z-index: 1000; width: 56px; height: 56px; padding:0;">
-    <i class="fas fa-arrow-up" style="font-size:1.7rem;line-height:1;"></i>
+<button id="backToTop" type="button" class="btn btn-primary back-to-top d-none" aria-label="Revenir en haut de la page">
+    <i class="fas fa-arrow-up"></i>
 </button>
-
-<!-- Script pour le bouton retour en haut -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const backToTopButton = document.getElementById('backToTop');
-    
-    // Afficher/masquer le bouton selon le scroll
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 300) {
-            backToTopButton.classList.remove('d-none');
-        } else {
-            backToTopButton.classList.add('d-none');
-        }
-    });
-    
-    // Action du bouton
-    backToTopButton.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-});
-</script>

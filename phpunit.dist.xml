@@ -13,6 +13,10 @@
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
+        <server name="APP_SECRET" value="test-secret" force="true" />
+        <server name="MAILER_DSN" value="null://null" force="true" />
+        <server name="MAILER_FROM_EMAIL" value="test@example.com" force="true" />
+        <server name="MAILER_FROM_NAME" value="Test Service" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
     </php>
 

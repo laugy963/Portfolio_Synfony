@@ -1,315 +1,105 @@
-{# filepath: /Users/king/Documents/Portfolio_Synfony/templates/project/public_show.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-        
-        body {
-            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%) !important;
-            color: #ffffff;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-        }
-        
-        .project-detail-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        /* HEADER DU PROJET */
-        .project-detail-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
-            grid-column: span 1;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-        
-        .project-detail-header h1 {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .project-detail-small-desc {
-            color: #bdc3c7;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-        
-        /* GRID PRINCIPAL */
-        .project-detail-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        
-        @media all and (max-width: 900px) {
-            .project-detail-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* SECTION PRINCIPALE */
-        .project-detail-main {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-        }
-        
-        .project-detail-description {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: #f8fafc;
-        }
-        
-        .project-detail-meta {
-            margin-bottom: 15px;
-            padding: 18px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            border-radius: 12px;
-            border-left: 4px solid #60a5fa;
-            color: #ffffff;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-        }
-        
-        .project-detail-meta strong {
-            color: #dbeafe;
-            font-weight: 700;
-        }
-        
-        /* SECTION LATÉRALE */
-        .project-detail-side {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            padding: 25px;
-            border-radius: 15px;
-            color: #f8fafc;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-        }
-        
-        /* BANNIÈRE IMAGE */
-        .project-detail-banner {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-        }
-        
-        /* LIEN DU PROJET */
-        .project-detail-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .project-detail-link a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: bold;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            padding: 14px 28px;
-            border-radius: 12px;
-            display: inline-block;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        
-        .project-detail-link a:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-        
-        /* GALERIE CAROUSEL */
-        .project-detail-gallery-section h3 {
-            color: #60a5fa;
-            font-weight: 700;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-        }
-        
-        .carousel {
-            position: relative;
-            max-width: 100%;
-            margin: 20px auto;
-            text-align: center;
-        }
-        
-        .carousel-img {
-            width: 100%;
-            height: auto;
-            display: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .carousel-img.active {
-            display: block;
-        }
-        
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            color: #ffffff;
-            border: none;
-            padding: 10px 14px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 18px;
-            user-select: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .carousel-btn:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-        }
-        
-        .carousel-btn.prev {
-            left: 10px;
-        }
-        
-        .carousel-btn.next {
-            right: 10px;
-        }
-        
-        /* BOUTON RETOUR */
-        .back-home-link {
-            display: inline-block;
-            margin: 30px auto;
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: bold;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            padding: 16px 32px;
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        
-        .back-home-link:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .project-detail-container {
-                padding: 10px;
-            }
-            
-            .project-detail-header {
-                padding: 20px;
-            }
-            
-            .project-detail-header h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+{% block title %}{{ project.title }} | Projet{% endblock %}
+{% block meta_description %}{{ (project.smallDescription ?: project.description)|striptags|slice(0, 160) }}{% endblock %}
+{% block canonical_url %}{{ url('project_public_show', {id: project.id}) }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}
+    {{ absolute_url(project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : asset('images/projects/default-project.svg')) }}
 {% endblock %}
-
-{% block title %}
-    {{ project.title }}
-{% endblock %}
+{% block body_class %}project-page{% endblock %}
 
 {% block body %}
-    <div class="project-detail-container">
-        <div class="project-detail-header">
-            <div>
-                <h1>{{ project.title }}</h1>
-            </div>
-        </div>
+    {% set fallbackProjectImage = asset('images/projects/default-project.svg') %}
+    {% set bannerPath = project.bannerImage ? asset('uploads/images/' ~ project.bannerImage) : fallbackProjectImage %}
+    {% set technologies = project.technologies ? project.technologies|split(',') : [] %}
+
+    <div class="project-detail-container page-container">
+        <header class="project-detail-header">
+            <p class="project-detail-kicker">Projet</p>
+            <h1>{{ project.title }}</h1>
+            {% if project.smallDescription %}
+                <p class="project-detail-small-desc">{{ project.smallDescription }}</p>
+            {% endif %}
+        </header>
+
         <div class="project-detail-content">
-            <div class="project-detail-main">
-                {% if project.bannerImage %}
-                    <img src="{{ asset('uploads/images/' ~ project.bannerImage) }}" alt="Bannière du projet" class="project-detail-banner">
-                {% endif %}
-                
+            <section class="project-detail-main">
+                <img
+                    src="{{ bannerPath }}"
+                    alt="Banniere du projet {{ project.title }}"
+                    class="project-detail-banner"
+                    width="1200"
+                    height="675"
+                    decoding="async"
+                >
+
                 <div class="project-detail-description">
                     {{ project.description|nl2br }}
                 </div>
-                
-                <div class="project-detail-meta">
-                    <strong>Technologies :</strong> {{ project.technologies }}
-                </div>
-                
-                <div class="project-detail-meta">
-                    <strong>Réalisé par :</strong> {{ project.madeBy }}
-                </div>
-                
-                {% if project.link %}
-                    <div class="project-detail-link">
-                        <a href="{{ project.link }}" target="_blank">Lien du projet</a>
+
+                {% if technologies is not empty %}
+                    <div class="project-detail-meta">
+                        <strong>Technologies</strong>
+                        <ul class="project-meta-list">
+                            {% for technology in technologies %}
+                                {% if technology|trim is not empty %}
+                                    <li>{{ technology|trim }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 {% endif %}
-            </div>
-            
-            <div class="project-detail-side">
+
+                {% if project.madeBy %}
+                    <div class="project-detail-meta">
+                        <strong>Realise par</strong>
+                        <p class="mb-0">{{ project.madeBy }}</p>
+                    </div>
+                {% endif %}
+
+                {% if project.link %}
+                    <div class="project-detail-link">
+                        <a href="{{ project.link }}" target="_blank" rel="noopener noreferrer">Voir le projet en ligne</a>
+                    </div>
+                {% endif %}
+            </section>
+
+            <aside class="project-detail-side">
                 {% if project.images %}
-                    <div class="project-detail-gallery-section">
-                        <h3>Galerie</h3>
-                        <div class="carousel">
+                    <div class="project-detail-gallery-section" data-project-gallery>
+                        <h2>Galerie</h2>
+                        <div class="project-gallery">
                             {% for img in project.images %}
-                                <img src="{{ asset('uploads/images/' ~ img) }}" alt="Image projet" class="carousel-img{% if loop.first %} active{% endif %}">
+                                <figure class="project-gallery__slide{% if loop.first %} is-active{% endif %}">
+                                    <img
+                                        src="{{ asset('uploads/images/' ~ img) }}"
+                                        alt="Capture {{ loop.index }} du projet {{ project.title }}"
+                                        class="project-gallery__image"
+                                        width="960"
+                                        height="540"
+                                        loading="lazy"
+                                        decoding="async"
+                                    >
+                                </figure>
                             {% endfor %}
+
                             {% if project.images|length > 1 %}
-                                <button class="carousel-btn prev" onclick="changeImage(-1)">❮</button>
-                                <button class="carousel-btn next" onclick="changeImage(1)">❯</button>
+                                <button type="button" class="project-gallery__control project-gallery__control--prev" data-gallery-direction="-1" aria-label="Image precedente">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button type="button" class="project-gallery__control project-gallery__control--next" data-gallery-direction="1" aria-label="Image suivante">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
                             {% endif %}
                         </div>
                     </div>
                 {% endif %}
-            </div>
+            </aside>
         </div>
-        
-        <div style="text-align: center;">
-            <a href="{{ path('app_home') }}" class="back-home-link">
-                Retour à l'accueil
-            </a>
+
+        <div class="text-center">
+            <a href="{{ path('app_home') }}" class="back-home-link">Retour a l accueil</a>
         </div>
     </div>
-    
-    <script>
-        let currentImageIndex = 0;
-        const images = document.querySelectorAll('.carousel-img');
-        
-        function changeImage(direction) {
-            if (images.length === 0) return;
-            
-            images[currentImageIndex].classList.remove('active');
-            currentImageIndex += direction;
-            
-            if (currentImageIndex >= images.length) {
-                currentImageIndex = 0;
-            } else if (currentImageIndex < 0) {
-                currentImageIndex = images.length - 1;
-            }
-            
-            images[currentImageIndex].classList.add('active');
-        }
-    </script>
 {% endblock %}

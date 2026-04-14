@@ -30,9 +30,7 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            # Pas de suffixe automatique pour les tests CI/CD
-            # Le nom de base sera utilisé tel quel depuis DATABASE_URL
-            url: '%env(resolve:DATABASE_URL)%'
+            url: '%env(default:test_database_url:TEST_DATABASE_URL)%'
 
 when@prod:
     doctrine:

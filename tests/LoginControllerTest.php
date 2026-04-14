@@ -30,6 +30,7 @@ class LoginControllerTest extends WebTestCase
         $passwordHasher = $container->get('security.user_password_hasher');
 
         $user = (new User())->setEmail('email@example.com');
+        $user->setIsVerified(true);
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $em->persist($user);
