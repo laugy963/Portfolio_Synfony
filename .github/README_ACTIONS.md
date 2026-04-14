@@ -1,138 +1,86 @@
-# GitHub Actions - Configuration des tests automatiques
+# GitHub Actions
 
-## 📋 Vue d'ensemble
+Ce dossier contient les workflows de validation continue du projet. Leur objectif est de detecter rapidement les regressions avant une fusion dans `main`.
 
-Ce projet utilise GitHub Actions pour exécuter automatiquement tous les tests à chaque push vers le repository.
+## Workflows en place
 
-## 🚀 Workflows configurés
+### `tests.yml`
 
-### 1. Tests complets (`tests.yml`)
+Nom du workflow : `Tests`
 
-**Déclenché sur :**
-- Push vers `main` seulement
-- Pull requests vers `main`
+Declencheurs :
 
-**Ce qui est testé :**
-- ✅ Installation des dépendances PHP avec Composer
-- ✅ Validation du `composer.json`
-- ✅ Configuration de PostgreSQL comme base de données de test
-- ✅ Exécution des migrations Doctrine
-- ✅ Chargement des fixtures (données de test)
-- ✅ **Tous vos tests PHPUnit** incluant :
-  - Tests de réinitialisation de mot de passe
-  - Tests des contrôleurs
-  - Tests des entités
-  - Tests des services
-- ✅ Tests sur plusieurs versions de PHP (8.2, 8.3)
+- `push` vers `main` ;
+- `pull_request` vers `main`.
 
-### 2. Vérifications rapides (`quick-check.yml`)
+Etapes principales :
 
-**Déclenché sur :**
-- Push vers `main` seulement
-- Pull requests vers `main`
+- recuperation du depot ;
+- installation de PHP 8.3 et des extensions necessaires ;
+- validation de `composer.json` ;
+- installation des dependances Composer ;
+- demarrage d'un service PostgreSQL 16 ;
+- generation de `.env.test.local` ;
+- execution des migrations Doctrine en environnement `test` ;
+- chargement des fixtures ;
+- lancement de `php bin/phpunit --testdox`.
 
-**Vérifications légères :**
-- ✅ Syntaxe PHP valide
-- ✅ Validation Composer
-- ✅ Vérification des requirements Symfony
+Variables preparees en CI :
 
-## 🔧 Configuration automatique
+- `DATABASE_URL` pointant vers la base PostgreSQL du job ;
+- `MAILER_DSN=null://null` ;
+- `MAILER_FROM_EMAIL` et `MAILER_FROM_NAME` ;
+- `ADMIN_EMAIL`, `ADMIN_FIRSTNAME`, `ADMIN_LASTNAME` et `ADMIN_PASSWORD` pour les fixtures admin.
 
-Les workflows sont configurés pour :
+### `quick-check.yml`
 
-1. **Utiliser la même base de données** que votre projet (PostgreSQL)
-2. **Installer toutes les dépendances** automatiquement
-3. **Configurer l'environnement de test** avec les bonnes variables
-4. **Exécuter TOUS vos tests** sans exception
+Nom du workflow : `Quick Checks`
 
-## 📊 Résultats des tests
+Declencheurs :
 
-Après chaque push, vous verrez :
+- `push` vers `main` ;
+- `pull_request` vers `main`.
 
-```
-✅ Tests (ubuntu-latest, 8.2)
-✅ Tests (ubuntu-latest, 8.3)  
-✅ Vérifications rapides
-```
+Etapes principales :
 
-### Exemple de sortie réussie :
-```
-PHPUnit 12.3.0 by Sebastian Bergmann and contributors.
+- recuperation du depot ;
+- installation de PHP 8.3 ;
+- installation des dependances Composer ;
+- `composer validate --strict` ;
+- verification de la syntaxe PHP sur `src/` et `tests/` ;
+- affichage des prerequis PHP utilises par le job.
 
-Runtime:       PHP 8.2.24
+## Reproduire la CI en local
 
-Reset password email is sent                                    ✓
-Reset password email not sent for inexistent user              ✓
-Reset password link works                                       ✓
-Invalid token does not work                                     ✓
+Par defaut, l'environnement `test` du projet peut utiliser `sqlite:///%kernel.project_dir%/var/test.db`. Pour coller davantage a la CI, definissez `TEST_DATABASE_URL` vers PostgreSQL avant d'executer les commandes ci-dessous.
 
-Time: 00:02.456, Memory: 124.00 MB
+Pour reproduire le workflow `Tests` au plus proche :
 
-OK (4 tests, 23 assertions)
-```
-
-## 🐛 Débuggage
-
-Si les tests échouent dans GitHub Actions :
-
-1. **Vérifiez l'onglet "Actions"** dans votre repository GitHub
-2. **Cliquez sur le workflow échoué** pour voir les détails
-3. **Consultez les logs** de chaque étape
-
-### Erreurs communes et solutions :
-
-**Base de données :**
 ```bash
-# Si erreur de connexion DB
-DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test
+composer install
+php bin/console doctrine:migrations:migrate --env=test --no-interaction
+php bin/console doctrine:fixtures:load --env=test --no-interaction
+php bin/phpunit --testdox
 ```
 
-**Dépendances manquantes :**
+Pour reproduire seulement `Quick Checks` :
+
 ```bash
-# Si erreur Composer
-composer install --no-dev --optimize-autoloader
+composer validate --strict
+find src tests -name "*.php" -exec php -l {} \;
 ```
 
-**Variables d'environnement :**
-```bash
-# Si erreur de configuration
-cp .env.test .env.test.local
-```
+## Consulter les resultats
 
-## 🔄 Comment ça marche
+- ouvrez l'onglet `Actions` du depot ;
+- choisissez le workflow `Tests` ou `Quick Checks` ;
+- inspectez l'etape en echec pour identifier si le probleme vient de Composer, de la base de test, des fixtures ou de PHPUnit.
 
-1. **Push de code** → Déclenche automatiquement les workflows
-2. **GitHub Actions** démarre des containers Ubuntu avec PHP et PostgreSQL
-3. **Installation** de toutes les dépendances
-4. **Configuration** de la base de données de test
-5. **Exécution** de tous vos tests PHPUnit
-6. **Rapport** des résultats (✅ succès / ❌ échec)
+## Quand modifier ces fichiers
 
-## 🎯 Avantages
+Mettez a jour les workflows si vous changez :
 
-- ✅ **Tests automatiques** à chaque push
-- ✅ **Détection précoce** des problèmes
-- ✅ **Tests sur plusieurs versions** de PHP
-- ✅ **Validation avant merge** des pull requests
-- ✅ **Historique complet** des tests dans GitHub
-
-## 🚨 Points importants
-
-1. **Tous vos tests existants** sont inclus automatiquement
-2. **La base de données est recréée** à chaque exécution
-3. **Les emails de test** sont capturés (pas d'envoi réel)
-4. **Échec = pas de merge** possible (protection des branches)
-
-## 📝 Modification des workflows
-
-Pour modifier les workflows :
-
-1. Éditez les fichiers dans `.github/workflows/`
-2. Commitez les changements
-3. Les nouveaux workflows s'appliquent automatiquement
-
-## 🔗 Liens utiles
-
-- [Documentation GitHub Actions](https://docs.github.com/en/actions)
-- [Actions pour PHP](https://github.com/marketplace/actions/setup-php-action)
-- [Documentation PHPUnit](https://phpunit.de/documentation.html)
+- la version de PHP supportee ;
+- la configuration de la base de test ;
+- les commandes a executer avant les tests ;
+- les outils de qualite utilises par le projet.

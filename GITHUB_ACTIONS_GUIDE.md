@@ -1,84 +1,72 @@
-# 🧪 Guide de test GitHub Actions
+# Guide GitHub Actions
 
-## Comment vérifier que vos tests automatiques fonctionnent
+Ce guide explique ou trouver les executions automatiques et comment verifier rapidement que la CI du projet fonctionne.
 
-### 1. 🔗 Accédez à GitHub Actions
+## Quand les workflows se declenchent
 
-1. Allez sur votre repository GitHub : `https://github.com/laugy963/Portfolio_Synfony`
-2. Cliquez sur l'onglet **"Actions"**
-3. Vous devriez voir les workflows qui s'exécutent automatiquement
+Les workflows du depot se lancent automatiquement :
 
-### 2. ✅ Tests déclenchés automatiquement
+- a chaque `push` vers `main` ;
+- a chaque `pull_request` vers `main`.
 
-Après votre dernier push, vous devriez voir :
+## Les deux workflows a surveiller
 
-```
-🟡 Tests - En cours...
-🟡 CI Quick - En cours...
-```
+### `Tests`
 
-Puis après quelques minutes :
+Ce workflow :
 
-```
-✅ Tests - Réussi (4 tests, 23 assertions)
-✅ CI Quick - Réussi
-```
+- prepare une base PostgreSQL de test ;
+- applique les migrations Doctrine ;
+- charge les fixtures ;
+- execute `php bin/phpunit --testdox`.
 
-### 3. 🔍 Voir les détails des tests
+### `Quick Checks`
 
-Cliquez sur un workflow pour voir :
-- Les étapes d'installation
-- L'exécution de vos tests PHPUnit
-- Les résultats détaillés
+Ce workflow :
 
-### 4. 🧪 Test manuel immédiat
+- installe les dependances ;
+- valide `composer.json` ;
+- verifie la syntaxe PHP dans `src/` et `tests/`.
 
-Pour déclencher les tests maintenant, faites un petit changement et mergez vers main :
+## Consulter une execution
+
+1. Ouvrez votre depot GitHub.
+2. Cliquez sur l'onglet `Actions`.
+3. Selectionnez le dernier run de `Tests` ou de `Quick Checks`.
+4. Ouvrez le job voulu pour consulter les logs et l'etape exacte en echec.
+
+## Reproduire la CI en local
+
+Workflow `Tests` :
 
 ```bash
-# Les tests ne se déclenchent QUE sur la branche main
-# Créez une Pull Request depuis votre branche feature
-git push origin feature/motdepasseoublier
-
-# Puis mergez vers main pour déclencher les tests
+composer install
+php bin/console doctrine:migrations:migrate --env=test --no-interaction
+php bin/console doctrine:fixtures:load --env=test --no-interaction
+php bin/phpunit --testdox
 ```
 
-### 5. 📊 Résultats attendus
+Par defaut, l'environnement `test` peut s'appuyer sur `var/test.db`. Si vous voulez vous rapprocher du workflow CI, definissez `TEST_DATABASE_URL` vers PostgreSQL avant ces commandes.
 
-Vos tests de réinitialisation de mot de passe devraient s'exécuter :
+Workflow `Quick Checks` :
 
-```
-✓ Reset password email is sent
-✓ Reset password email not sent for inexistent user  
-✓ Reset password link works
-✓ Invalid token does not work
-
-OK (4 tests, 23 assertions)
+```bash
+composer validate --strict
+find src tests -name "*.php" -exec php -l {} \;
 ```
 
-### 6. 🚨 En cas de problème
+## En cas d'echec
 
-Si les tests échouent :
+1. Reperez l'etape rouge dans l'onglet `Actions`.
+2. Reproduisez localement la commande correspondante.
+3. Corrigez le probleme dans le code ou la configuration.
+4. Relancez les tests localement.
+5. Poussez un nouveau commit ou utilisez `Re-run jobs` dans GitHub.
 
-1. **Cliquez sur le workflow échoué**
-2. **Consultez les logs** pour voir l'erreur
-3. **Corrigez le problème** dans votre code
-4. **Committez et poussez** → Les tests se relancent automatiquement
+## Resultat attendu
 
-### 7. 🎯 Prochaines étapes
+Quand tout se passe bien, vous devez avoir :
 
-Une fois que tout fonctionne :
-
-1. **Créez une Pull Request** vers `main`
-2. **Les tests s'exécuteront automatiquement** avant le merge
-3. **Merge impossible** si les tests échouent (protection)
-
-## 🔧 Configuration avancée
-
-Pour personnaliser les workflows, modifiez :
-- `.github/workflows/tests.yml` - Tests complets
-- `.github/workflows/quick-check.yml` - Vérifications rapides
-
----
-
-**🎉 Félicitations ! Vos tests s'exécutent maintenant automatiquement à chaque push !**
+- un workflow `Tests` en vert ;
+- un workflow `Quick Checks` en vert ;
+- une execution PHPUnit sans erreur.

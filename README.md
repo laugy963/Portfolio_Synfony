@@ -1,71 +1,55 @@
 # Portfolio Symfony
 
-Application web de portfolio developpee avec Symfony 7.3. Le site permet de presenter des projets publiquement, de gerer un espace utilisateur avec authentification, et de disposer d'un back-office simple pour administrer les projets affiches sur la page d'accueil.
+Application portfolio developpee avec Symfony 7.3. Le projet combine un site vitrine public, un espace utilisateur securise et un back-office pour administrer les projets affiches sur la page d'accueil.
 
-## Apercu du projet
-
-Ce projet combine une vitrine publique et une partie applicative plus complete :
-
-- page d'accueil avec banniere, presentation, liste des projets et section contact ;
-- fiches detaillees publiques pour chaque projet ;
-- inscription utilisateur avec verification d'email par code a 6 chiffres ;
-- connexion, deconnexion et reinitialisation de mot de passe par email ;
-- espace profil avec modification des informations, changement de mot de passe et suppression du compte ;
-- espace administrateur pour creer, modifier, supprimer et reordonner les projets ;
-- upload d'images pour les bannieres et galleries de projets ;
-- pages legales et bandeau cookies ;
-- commandes de maintenance pour nettoyer les comptes non verifies et les codes expires.
-
-## Stack technique
-
-- PHP 8.2
-- Symfony 7.3
-- Doctrine ORM + Doctrine Migrations
-- PostgreSQL
-- Twig
-- Bootstrap 5 + Font Awesome
-- AssetMapper / Importmap + Stimulus
-- Symfony Mailer
-- PHPUnit
-- Docker + Docker Compose
-
-## Fonctionnalites principales
+## Ce que fait l'application
 
 ### Partie publique
 
-- affichage des projets tries par position ;
-- navigation unifiee avec sections `A propos`, `Projets` et `Contact` ;
-- consultation publique d'un projet via une page detaillee ;
-- pages `Mentions legales`, `CGU` et `Politique de confidentialite`.
+- page d'accueil avec presentation, projets et contact ;
+- fiches projet publiques ;
+- pages legales et bandeau cookies.
 
 ### Partie utilisateur
 
-- creation de compte ;
-- verification de l'adresse email par code temporaire ;
-- connexion securisee avec formulaire Symfony ;
-- reinitialisation du mot de passe ;
-- gestion du profil utilisateur.
+- inscription ;
+- verification d'email par code a 6 chiffres ;
+- connexion et deconnexion ;
+- reinitialisation du mot de passe par email ;
+- gestion du profil : informations, mot de passe et suppression du compte.
 
 ### Partie administration
 
 - acces reserve aux comptes `ROLE_ADMIN` ;
-- creation de projets avec titre, descriptions, technologies, lien et images ;
-- suppression des fichiers uploades lors de la suppression d'un projet ;
-- reorganisation de l'ordre d'affichage des projets ;
-- commandes utilitaires pour recreer un compte admin et suivre l'etat des utilisateurs.
+- creation, modification, suppression et reordonnancement des projets ;
+- gestion des images de banniere et de galerie ;
+- commandes Symfony pour creer un administrateur, suivre l'etat des utilisateurs et lancer les nettoyages.
 
-## Structure du projet
+## Stack technique
+
+- PHP 8.2+ ;
+- Symfony 7.3 ;
+- Doctrine ORM + Doctrine Migrations ;
+- PostgreSQL ;
+- Twig, Bootstrap 5 et Font Awesome ;
+- AssetMapper / Importmap, Stimulus et Symfony UX Turbo ;
+- Symfony Mailer ;
+- PHPUnit ;
+- Docker Compose avec PostgreSQL et Mailpit.
+
+## Arborescence utile
 
 ```text
 .
-|- assets/                # JS, CSS, controllers Stimulus
-|- config/                # configuration Symfony, Doctrine, Security, Mailer
+|- assets/                # CSS, JS et controllers Stimulus
+|- config/                # configuration Symfony, Doctrine, Security et Mailer
 |- docs/                  # documentation complementaire
 |- migrations/            # migrations Doctrine
 |- public/                # point d'entree web et fichiers publics
 |- src/
 |  |- Command/            # commandes Symfony personnalisees
 |  |- Controller/         # controleurs HTTP
+|  |- DataFixtures/       # fixtures de developpement et de test
 |  |- Entity/             # entites Doctrine
 |  |- Form/               # formulaires Symfony
 |  |- Repository/         # acces aux donnees
@@ -74,46 +58,66 @@ Ce projet combine une vitrine publique et une partie applicative plus complete :
 |- tests/                 # tests fonctionnels et unitaires
 ```
 
-Le dossier d'upload utilise par l'application est `public/uploads/images`.
+Les medias uploades par l'application sont stockes dans `public/uploads/images`.
 
 ## Installation en local
 
 ### 1. Prerequis
 
-- PHP 8.2+
-- Composer
-- PostgreSQL 16 recommande
-- un serveur mail de dev ou un `MAILER_DSN` valide
+- PHP 8.2 ou plus ;
+- Composer ;
+- PostgreSQL ;
+- Symfony CLI (optionnel, mais pratique pour `symfony server:start`) ;
+- un `MAILER_DSN` valide ou un outil de capture d'emails comme Mailpit.
 
-### 2. Installation
+### 2. Installer les dependances
 
 ```bash
 composer install
-php bin/console doctrine:database:create --if-not-exists
-php bin/console doctrine:migrations:migrate
 ```
 
-Optionnel en developpement pour charger les fixtures :
+### 3. Creer `.env.local`
+
+Exemple minimal :
+
+```dotenv
+APP_SECRET=change-me
+DATABASE_URL="postgresql://symfony:symfony@127.0.0.1:5432/portfolio?serverVersion=16&charset=utf8"
+MAILER_DSN="smtp://127.0.0.1:1025"
+MAILER_FROM_EMAIL=app@example.com
+MAILER_FROM_NAME="Portfolio"
+ADMIN_EMAIL=admin@example.com
+ADMIN_FIRSTNAME=Admin
+ADMIN_LASTNAME=Portfolio
+ADMIN_PASSWORD=ChangeMe123!
+```
+
+Ce fichier reste local a votre machine et ne doit pas etre versionne.
+
+### 4. Initialiser la base
 
 ```bash
-php bin/console doctrine:fixtures:load
+php bin/console doctrine:database:create --if-not-exists
+php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-### 3. Configuration d'environnement
+En developpement, vous pouvez aussi charger les fixtures :
 
-Renseigner ou adapter les variables dans `.env.local` :
+```bash
+php bin/console doctrine:fixtures:load --no-interaction
+```
 
-- `APP_SECRET`
-- `DATABASE_URL`
-- `MAILER_DSN`
-- `MAILER_FROM_EMAIL`
-- `MAILER_FROM_NAME`
-- `ADMIN_EMAIL`
-- `ADMIN_FIRSTNAME`
-- `ADMIN_LASTNAME`
-- `ADMIN_PASSWORD`
+Attention : cette commande reinitialise les donnees de developpement.
 
-### 4. Lancer le projet
+### 5. Creer ou recreer l'administrateur
+
+```bash
+php bin/console app:recreate-admin
+```
+
+La commande lit les variables `ADMIN_*` depuis `.env.local`.
+
+### 6. Lancer l'application
 
 Avec Symfony CLI :
 
@@ -121,47 +125,62 @@ Avec Symfony CLI :
 symfony server:start
 ```
 
-Le site sera accessible sur `http://127.0.0.1:8000` selon votre configuration locale.
+L'application est ensuite disponible sur `http://127.0.0.1:8000`.
 
 ## Lancement avec Docker
 
-Le projet contient un `Dockerfile` et un `docker-compose.yml` prets pour un environnement de developpement avec PostgreSQL et Mailpit.
+Le depot contient un `Dockerfile` et un `docker-compose.yml` pour un environnement de developpement complet avec PostgreSQL et Mailpit.
 
 ```bash
 docker compose run --rm web composer install
 docker compose up --build -d
-docker compose exec web php bin/console doctrine:migrations:migrate
+docker compose exec web php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Optionnel en developpement pour charger les fixtures :
+En option :
 
 ```bash
-docker compose exec web php bin/console doctrine:fixtures:load
+docker compose exec web php bin/console doctrine:fixtures:load --no-interaction
 ```
 
-Services disponibles :
+Services exposes :
 
-- application web : `http://localhost:8000`
+- application : `http://localhost:8000`
 - Mailpit : `http://localhost:8025`
-- PostgreSQL : port `5432`
+- PostgreSQL : `localhost:5432`
 
-## Compte administrateur
+## Tests et CI
 
-La methode recommandee est :
+Tests locaux :
 
 ```bash
-php bin/console app:recreate-admin
+php bin/phpunit
 ```
 
-La commande `app:recreate-admin` lit les informations `ADMIN_*` depuis `.env.local`.
+Par defaut, l'environnement `test` peut utiliser la base SQLite `var/test.db`. Pour se rapprocher du workflow CI, vous pouvez definir `TEST_DATABASE_URL` vers une base PostgreSQL dediee.
 
-Les fixtures peuvent aussi creer un compte administrateur, mais `php bin/console doctrine:fixtures:load` est a reserver a un environnement de developpement car cette commande recharge les donnees.
+Pour executer uniquement un fichier :
+
+```bash
+php bin/phpunit tests/Controller/ResetPasswordEmailTest.php --testdox
+```
+
+Le depot inclut deja deux workflows GitHub Actions :
+
+- `Tests` : prepare PostgreSQL, applique les migrations, charge les fixtures et execute PHPUnit ;
+- `Quick Checks` : valide `composer.json` et la syntaxe PHP.
+
+Ces workflows se lancent sur :
+
+- les `push` vers `main` ;
+- les `pull_request` vers `main`.
 
 ## Commandes utiles
 
 ```bash
 php bin/console app:create-user email@example.com MotDePasse123! --admin
 php bin/console app:recreate-admin
+php bin/console app:test-email email@example.com
 php bin/console app:user-stats
 php bin/console app:cleanup-expired-codes
 php bin/console app:cleanup-unverified-users --dry-run
@@ -169,32 +188,16 @@ php bin/console app:scheduled-cleanup --report
 php bin/phpunit
 ```
 
-## Tests
-
-Les tests couvrent notamment :
-
-- l'inscription et la verification email ;
-- l'authentification admin ;
-- l'acces aux routes protegees ;
-- la reinitialisation de mot de passe ;
-- certains services metier.
-
-Lancement :
-
-```bash
-php bin/phpunit
-```
-
 ## Documentation complementaire
 
 - [Nettoyage automatique](docs/CLEANUP_DOCUMENTATION.md)
 - [Structure de navigation](docs/NAVIGATION_STRUCTURE.md)
-- [Tests email reset password](TESTS_EMAIL_RESET_PASSWORD.md)
-- [Guide GitHub Actions](GITHUB_ACTIONS_GUIDE.md)
+- [Reference technique GitHub Actions](.github/README_ACTIONS.md)
+- [Guide pratique GitHub Actions](GITHUB_ACTIONS_GUIDE.md)
+- [Tests de reinitialisation de mot de passe](TESTS_EMAIL_RESET_PASSWORD.md)
 
-## Pistes d'amelioration
+## Points d'attention
 
-- ajouter un vrai workflow CI pour executer les tests automatiquement ;
-- externaliser la gestion des medias avec un service dedie ;
-- renforcer la documentation des routes et des conventions de nommage ;
-- separer davantage le front public et le back-office si le projet grossit.
+- `doctrine:fixtures:load` est utile en dev et en test, mais reinitialise les donnees ;
+- les uploads sont stockes localement dans `public/uploads/images` ;
+- la commande `app:recreate-admin` depend des variables `ADMIN_*`.
