@@ -19,14 +19,12 @@ final class Version20250909145544 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE project ADD position INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE project ADD COLUMN IF NOT EXISTS position INT DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE project DROP position');
+        $this->addSql('ALTER TABLE project DROP COLUMN IF EXISTS position');
     }
 }
